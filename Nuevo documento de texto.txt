@@ -1,0 +1,56 @@
+1.	Estudio de viabilidad del Sistema (EVS)
+1.1.	Descripción general del sistema
+Con esta aplicación se pretende permitir a los usuarios que suban sus videojuegos a este repositorio y permitir que otros usuarios puedan descargarlos y jugarlos en su ordenador. Como esta aplicación solo está destinada a ser un proyecto de clase, no se implementarán métodos de pagos con los que permitir que los usuarios paguen por juegos, y por tanto todos los juegos que se suban deberán estar disponible para todos los usuarios sin pagar.
+La aplicación avisará al usuario cuando, de los juegos que tiene instalado, haya actualizaciones disponibles.
+Se deberá permitir el registro de nuevos usuarios, los cuales podrán acceder a los videojuegos que haya subidos en la plataforma, descargarlos y jugarlos en su ordenador con solo pulsar un botón. La finalidad es hacer la experiencia de usuario lo más fácil posible.
+Habrá una lista de amigos, donde los usuarios pueden agregar a otros usuarios que estén registrados. Los usuarios podrán chatear con los usuarios que tengan agregados en su lista de amigos y estén conectados.
+Los administradores podrán ver estadísticas en tiempo real de los juegos y los jugadores conectados.
+
+
+1.2.	Diagrama de contexto del Sistema
+ 
+
+1.3.	Estructura organizativa
+Los actores principales son los usuarios registrados y los administradores. Los usuarios registrados podrán descargar los juegos y enviar y recibir mensajes de jugadores, y por supuesto, como pueden descargar juegos, de igual forma recibirán las actualizaciones de los mismos. Los administradores podrán consultar las estadísticas en tiempo real de la plataforma (como los usuarios conectados y las descargas de los juegos), además de prohibir el acceso a ciertos usuarios en caso de que incumplan alguna norma de uso.
+
+2.	Descripción de la Situación Actual
+2.1.	Descripción de los sistemas de información actuales
+Actualmente existen muchas plataformas como la que se está planteando en este estudio de viabilidad. Algunas de las actualmente presentes son Steam, Origin, uPlay, etc. Todas estas plataformas ofrecen de una forma u otra los mismos servicios que se pretenden proporcionar con esta plataforma, pero al ser un proyecto final de grado, el proyecto sigue hacia adelante.
+
+3.	Catálogo de usuarios
+Código	Nombre	Descripción
+USU1	Usuario sin registrar	La aplicación permite a los usuarios que no están registrados ver los videojuegos disponibles en la plataforma
+USU2	Usuario registrado	Los usuarios que se han registrado y pueden logearse en la aplicación para descargar y jugar los juegos disponibles en la plataforma.
+USU3	Administrador	Igual que un usuario registrado, puede descargarse los juegos disponibles, pero además tiene permiso para ver las estadísticas de los juegos en tiempo real
+
+4.	Catálogo de requisitos previos
+Código	Descripción	Prioridad	Fecha
+RQF1		Debe controlar el registro de usuarios	1	11/03/2019
+RQF2	Debe controlar el login de usuarios	1	11/03/2019
+RQF3		Debe permitir agregar a usuarios como amigos	3	11/03/2019
+RQF4		Debe permitir chatear en tiempo real con los usuarios agregados como amigos	3	11/03/2019
+RQF5		Debe permitir la descarga e instalación y desinstalación de los juegos a los usuarios registrados	1	11/03/2019
+RQF6		Debe avisar a los usuarios de las actualizaciones de los juegos instalados	1	11/03/2019
+RQF7		Debe permitir visualizar las estadísticas de los juegos a los usuarios administradores	2	11/03/2019
+RQF8	Debe permitir a los usuarios registrados añadir comentarios de los juegos que han jugado	3	11/03/2019
+
+5.	Alternativas de construcción
+5.1.	Primera alternativa
+5.1.1.	Descripción completa
+5.1.1.1.	Hardware
+Si este proyecto fuera para una empresa grande y renombrada, se usarían servidores propios donde alojar los juegos, con espacio y ancho de banda de sobra para que todos los usuarios disfrutasen de la mejor experiencia posible, pero al tratarse de un proyecto final de curso, se usará un hosting gratuito, que tendrá muchas más limitaciones que si se usase hardware propio.
+5.1.1.2.	Requisitos
+Se deben usar tecnologías gratuitas por falta de dinero para usar herramientas de pago. No importa si las tecnologías que se usen permiten generar ingresos o no, ya que no se ha planteado en ningún momento añadir ningún tipo de monetización a la aplicación. Todas las funcionalidades de la misma son gratis para el cliente.
+5.1.1.3.	Tecnologías
+Va a ser una aplicación que se pueda usar en cualquier Windows (de XP en adelante al menos), por lo que usaremos Windows Presentation Foundation para asegurar la compatibilidad entre sistemas. Se ha planteado usar Windows Forms, pero no es tan potente ni asegura la escalabilidad gráfica como WPF, por lo que queda descartado.
+Para la programación de la API que proporcionará la información necesaria al cliente se usará Laravel.
+Para guardar los datos se usará MySQL.
+5.1.2.	Estudio de riesgos
+Riesgo	Porcentaje	Importancia
+Asegurar que los datos de los usuarios se mantienen de forma segura		
+Encontrar un alojamiento con suficiente espacio para todos los juegos que se suban		
+Inexperiencia del programador		
+
+6.	Solución propuesta
+6.1.	Justificación
+Debido a la falta de dinero y recursos, la única solución viable es la única que se ha descrito en el estudio. Todas las demás opciones requerirían de infraestructuras que cuestan dinero, el cual no está disponible. Al ser un proyecto de final de curso, todas las características de la aplicación estarán disponibles de forma gratuita para todos los usuarios
