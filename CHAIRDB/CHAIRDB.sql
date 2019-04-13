@@ -1,23 +1,25 @@
+-- DROP DATABASE CHAIRDB
+CREATE DATABASE CHAIRDB;
 USE CHAIRDB;
 
+/* TABLES */
 CREATE TABLE Users(
     nickname VARCHAR(20) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    profileDescription MEDIUMTEXT NULL,
+    profileDescription TEXT NULL,
     profileLocation TINYTEXT NULL,
-    birthDate DATE,
+    birthDate DATE NOT NULL,
     privateProfile BOOLEAN DEFAULT 0,
-    accountCreationDate DATE DEFAULT CURDATE(),
+    accountCreationDate DATE,
     admin BOOLEAN DEFAULT 0,
     bannedUntil DATETIME NULL DEFAULT NULL,
-    banReason MEDIUMTEXT NULL DEFAULT NULL,
-    CONSTRAINT PK_Users PRIMARY KEY(nickname),
-    CONSTRAINT CHK_BirthDateBeforeToday CHECK ( birthDate < CURDATE() )
+    banReason TEXT NULL DEFAULT NULL,
+    CONSTRAINT PK_Users PRIMARY KEY(nickname)
 );
 
 CREATE TABLE Messages(
     ID BIGINT AUTO_INCREMENT,
-    text MEDIUMTEXT,
+    text TEXT,
     sender VARCHAR(20),
     receiver VARCHAR(20),
     date DATETIME,
@@ -54,13 +56,40 @@ CREATE TABLE UsersGames(
     user VARCHAR(20) NOT NULL,
     game VARCHAR(50) NOT NULL,
     hoursPlayed DOUBLE NOT NULL DEFAULT 0,
+    lastPlayed DATETIME NULL,
     CONSTRAINT PK_UsersGames PRIMARY KEY (user, game),
-    CONSTRAINT FK_UsersGames_Users FOREIGN KEY (user) REFERENCES Users(nickname),
-    CONSTRAINT FK_UsersGames_Games FOREIGN KEY (game) REFERENCES Games(name)
+    CONSTRAINT FK_UsersGames_Users FOREIGN KEY (user) REFERENCES Users(nickname) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT FK_UsersGames_Games FOREIGN KEY (game) REFERENCES Games(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+
+/* TRIGGERS */
+CREATE TRIGGER trg_SetCreationDate_BI BEFORE INSERT ON Users FOR EACH ROW
+BEGIN
+    SET NEW.accountCreationDate = CURDATE();
+END;
+
+CREATE TRIGGER trg_CheckBirthDateBeforeToday_BI BEFORE INSERT ON Users FOR EACH ROW
+BEGIN
+    IF(NEW.birthDate >= CURDATE())
+    THEN
+        SET NEW.birthDate = NULL;
+    END IF;
+END;
+
+CREATE TRIGGER trg_CheckBirthDateBeforeToday_BU BEFORE UPDATE ON Users FOR EACH ROW
+BEGIN
+    IF(NEW.birthDate >= CURDATE())
+    THEN
+        SET NEW.birthDate = NULL;
+    END IF;
+END;
+
+
+
+
 /* NOT POSSIBLE
-CREATE TRIGGER triggerDeleteBan AFTER INSERT ON IPBans FOR EACH ROW
+CREATE TRIGGER trg_DeleteBan_AI AFTER INSERT ON IPBans FOR EACH ROW
 BEGIN
     IF(untilDate IS NULL)
     THEN
