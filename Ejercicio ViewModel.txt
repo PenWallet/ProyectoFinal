@@ -1,1 +1,0 @@
-Hacer una aplicación que muestre una lista de equipos de la NBA, de forma que el array con la información de los equipos esté en una clase ViewModel.

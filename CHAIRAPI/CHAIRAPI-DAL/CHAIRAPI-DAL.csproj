@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>CHAIRAPI_DAL</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Lists\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CHAIRAPI-Entidades\CHAIRAPI-Entities.csproj" />
+  </ItemGroup>
+
+</Project>
