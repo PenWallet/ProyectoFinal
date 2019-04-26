@@ -238,5 +238,51 @@ namespace CHAIRAPI_DAL.Handlers
 
             return list;
         }
+
+        /// <summary>
+        /// Method used to update the information of an user given the updated information and its nickname
+        /// </summary>
+        /// <param name="user">The updated info of the user</param>
+        /// <param name="nickname">The nickname of the user (in case the user is changing his nickname)</param>
+        /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
+        public static int updatePlayingStatus(string user, string game, bool playing)
+        {
+            Connection connection = new Connection();
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand command = new SqlCommand();
+            int affectedRows = -1;
+
+            try
+            {
+                //Define parameters
+                command.CommandText = "UPDATE UserGames SET playing = @playing WHERE [user] = @user AND game = @game";
+
+                //Create parameters
+                command.Parameters.Add("@user", SqlDbType.VarChar).Value = user;
+                command.Parameters.Add("@game", SqlDbType.VarChar).Value = game;
+                command.Parameters.Add("@playing", SqlDbType.Bit).Value = playing ? 1 : 0;
+
+                //Get connection
+                sqlConnection = connection.getConnection();
+
+                //Give the connection to the command
+                command.Connection = sqlConnection;
+
+                //Execute query
+                affectedRows = command.ExecuteNonQuery();
+
+            }
+            catch (Exception)
+            {
+                affectedRows = -1;
+            }
+            finally
+            {
+                //Close connection
+                connection.closeConnection(ref sqlConnection);
+            }
+
+            return affectedRows;
+        }
     }
 }

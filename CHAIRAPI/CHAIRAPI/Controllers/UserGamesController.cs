@@ -132,6 +132,50 @@ namespace CHAIRAPI.Controllers
 
         }
 
+        /// <summary>
+        /// PATCH Method is used here to change the playing status to playing given a name and a game
+        /// </summary>
+        /// <param name="nickname">The user's nickname</param>
+        [HttpPatch("{user}/playing/{game}")]
+        public IActionResult Playing(string user, string game)
+        {
+            if (Utilities.checkUsrClaimValidity(User, user))
+            {
+                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, true);
+                if (updateStatus == 1)
+                    return StatusCode(204); //No Content
+                else if (updateStatus == 0)
+                    return StatusCode(404); //Not Found
+                else
+                    return StatusCode(500); //Internal Server Error
+            }
+            else
+                return StatusCode(401); //Unauthorized
+
+        }
+
+        /// <summary>
+        /// PATCH Method is used here to change the playing status to playing given a name and a game
+        /// </summary>
+        /// <param name="nickname">The user's nickname</param>
+        [HttpPatch("{user}/notplaying/{game}")]
+        public IActionResult NotPlaying(string user, string game)
+        {
+            if (Utilities.checkUsrClaimValidity(User, user))
+            {
+                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, false);
+                if (updateStatus == 1)
+                    return StatusCode(204); //No Content
+                else if (updateStatus == 0)
+                    return StatusCode(404); //Not Found
+                else
+                    return StatusCode(500); //Internal Server Error
+            }
+            else
+                return StatusCode(401); //Unauthorized
+
+        }
+
 
     }
 }

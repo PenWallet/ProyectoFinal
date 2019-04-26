@@ -17,3 +17,23 @@ C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\ne
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.pdb
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-Entities.dll
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.deps.json
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.runtimeconfig.json
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.runtimeconfig.dev.json
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-DAL.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-Entities.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-DAL.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csprojAssemblyReference.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csproj.CoreCompileInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.RazorAssemblyInfo.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.RazorAssemblyInfo.cs
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.AssemblyInfoInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.AssemblyInfo.cs
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.RazorTargetAssemblyInfo.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csproj.CopyComplete
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.pdb

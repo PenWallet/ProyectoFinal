@@ -127,10 +127,10 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method used to update the information of an user given the updated information and its nickname
+        /// Method used to update the online status of the user to online
         /// </summary>
-        /// <param name="user">The updated info of the user</param>
-        /// <param name="nickname">The nickname of the user (in case the user is changing his nickname)</param>
+        /// <param name="nickname">The user to be updated</param>
+        /// <param name="online">His status, true to be online, false to be offline</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
         public static int updateUserStatus(string nickname, bool online)
         {

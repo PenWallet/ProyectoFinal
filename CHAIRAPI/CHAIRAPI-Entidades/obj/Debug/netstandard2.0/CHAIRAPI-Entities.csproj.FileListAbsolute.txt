@@ -7,3 +7,12 @@ C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\ob
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.AssemblyInfo.cs
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.dll
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entities.deps.json
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entities.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.csprojAssemblyReference.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.csproj.CoreCompileInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.AssemblyInfoInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.AssemblyInfo.cs
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entities.pdb

@@ -10,3 +10,15 @@ C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-DAL\obj\Debu
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.pdb
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-Entities.dll
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-DAL.deps.json
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-DAL.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-DAL.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-Entities.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\bin\Debug\netstandard2.0\CHAIRAPI-Entities.pdb
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.csprojAssemblyReference.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.csproj.CoreCompileInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.AssemblyInfoInputs.cache
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.AssemblyInfo.cs
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.csproj.CopyComplete
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.dll
+C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI-DAL\obj\Debug\netstandard2.0\CHAIRAPI-DAL.pdb
