@@ -179,23 +179,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ofunes\\.nuget\\packages\\": {},
+    "C:\\Users\\Oscar\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ofunes\\Desktop\\GitHub\\ProyectoFinal\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj",
+      "projectUniqueName": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj",
       "projectName": "CHAIRAPI-Entities",
-      "projectPath": "C:\\Users\\ofunes\\Desktop\\GitHub\\ProyectoFinal\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj",
-      "packagesPath": "C:\\Users\\ofunes\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ofunes\\Desktop\\GitHub\\ProyectoFinal\\CHAIRAPI\\CHAIRAPI-Entidades\\obj\\",
+      "projectPath": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj",
+      "packagesPath": "C:\\Users\\Oscar\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entidades\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\ofunes\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Oscar\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

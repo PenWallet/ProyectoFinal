@@ -1,0 +1,131 @@
+﻿<Window x:Class="CHAIR_UI.LoginWindow"
+        x:Name="LogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CHAIR_UI"
+        xmlns:vm="clr-namespace:CHAIR_UI.ViewModels"
+        xmlns:ut="clr-namespace:CHAIR_UI.Utils"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="LoginWindow" 
+        Height="380" 
+        Width="550"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="#858AE3"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <!-- Small border around the window (for aesthetics :D) -->
+    <Window.BorderBrush>#613DC1</Window.BorderBrush>
+    <Window.BorderThickness>1</Window.BorderThickness>
+
+    <!--<Window.DataContext>
+        <vm:LoginWindowViewModel/>
+    </Window.DataContext>-->
+
+    <StackPanel Orientation="Vertical" x:Name="RootWindow">
+        <DockPanel x:Name="TitleBar" Height="30" MouseDown="TitleBar_MouseDown" Grid.Row="0">
+
+            <!-- Gradient -->
+            <DockPanel.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#613DC1" Offset="0.0" />
+                    <GradientStop Color="#858AE3" Offset="0.99" />
+                </LinearGradientBrush>
+            </DockPanel.Background>
+
+            <!-- Closing button -->
+            <Button x:Name="CloseButton" Content="X" Command="{Binding closeCommand}" DockPanel.Dock="Right" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontSize="15" Margin="10, 0, 10, 0" Foreground="#2C0735"/>
+
+            <!-- Minimizing button -->
+            <Button x:Name="MinButton" Content="__" Command="{Binding minimizeCommand}" DockPanel.Dock="Right" FontSize="15" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#2C0735"/>
+
+            <!-- CHAIR Login text -->
+            <TextBlock HorizontalAlignment="Left" Margin="6, 6, 0, 0" Foreground="#2C0735">CHAIR Login</TextBlock>
+        </DockPanel>
+        
+        <!-- CHAIR using the logo as the A -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="C  H" VerticalAlignment="Center" FontSize="52" Foreground="#E94141" Margin="0, 0, 20, 0"/>
+            <Image Source="/Assets/chairlogo.png" Height="70" Width="70" />
+            <TextBlock Text="I  R" VerticalAlignment="Center" FontSize="52" Foreground="#E94141" Margin="20, 0, 0, 0"/>
+        </StackPanel>
+
+        <!-- Grid for username, password, remember me checkbox and login and cancel buttons -->
+        <Grid Margin="50, 20, 50, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- 0: Username -->
+                <RowDefinition Height="15"/> <!-- 1: Separation -->
+                <RowDefinition Height="Auto"/> <!-- 2: Password -->
+                <RowDefinition Height="Auto"/> <!-- 3: Remember be -->
+                <RowDefinition Height="Auto"/> <!-- 4: Login and Register button -->
+                
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Username -->
+            <TextBlock Text="Username" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
+            <TextBox Text="{Binding username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="0" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="20"/>
+
+            <!-- Password -->
+            <TextBlock Text="Password" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735" Margin="0, 0, 0, 0"/>
+            <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="50"/>
+
+            <!-- Remember me -->
+            <CheckBox Content="Remember me" IsChecked="{Binding rememberMe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="5, 10, 0, 0" Foreground="#2C0735" FontSize="15"/>
+
+            <!-- Login and cancel buttons -->
+            <Grid Grid.Row="4" Grid.Column="1" Margin="5, 10, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Login" Command="{Binding loginCommand}" Grid.Column="0" FontSize="15" Foreground="#2C0735" Background="#97DFFC"/>
+                <Button Content="Cancel" Grid.Column="2" FontSize="15" Foreground="#2C0735" Background="#97DFFC" Command="{Binding closeCommand}" CommandParameter="{Binding ElementName=LogWindow}"/>
+            </Grid>
+        </Grid>
+
+        <!-- Separator from logging and other options -->
+        <Separator Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Margin="20">
+            <Separator.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#613DC1" Offset="0.0" />
+                    <GradientStop Color="#858AE3" Offset="0.99" />
+                </LinearGradientBrush>
+            </Separator.Background>
+        </Separator>
+        
+        <!-- Grid with -->
+        <Grid Margin="50, 0, 50, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="7*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Recover password -->
+            <TextBlock Text="Need help to login?" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" FontSize="15" Foreground="#2C0735"/>
+            <Button Content="Yes! Please help me" Grid.Row="0" Grid.Column="1" Command="{Binding rickRollCommand}" FontSize="15" Foreground="#2C0735" Background="#97DFFC" Margin="10, 0, 0, 0"/>
+
+            <!-- Register button -->
+            <TextBlock Text="Still no account?" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontSize="15" Foreground="#2C0735"/>
+            <Button Content="Register now!" Command="{Binding registerClickCommand}" CommandParameter="{Binding ElementName=LogWindow}" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Background="#97DFFC" Margin="10, 0, 0, 0"/>
+
+        </Grid>
+        
+
+        <!-- No idea, tbh, don't delete it though, just in case -->
+        <ContentControl Content="{Binding CurrentPage}" />
+    </StackPanel>
+
+</Window>

@@ -1,0 +1,110 @@
+﻿<Window x:Class="CHAIR_UI.Views.RegisterWindow"
+        x:Name="RegWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CHAIR_UI.Views"
+        xmlns:vm="clr-namespace:CHAIR_UI.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="#858AE3"
+        MinWidth="600"
+        MinHeight="500"
+        Title="RegisterWindow" Height="500" Width="600">
+    <!-- Small border around the window (for aesthetics :D) -->
+    <Window.BorderBrush>#613DC1</Window.BorderBrush>
+    <Window.BorderThickness>1</Window.BorderThickness>
+    
+    <Window.DataContext>
+        <vm:RegisterWindowViewModel/>
+    </Window.DataContext>
+    
+    <StackPanel Orientation="Vertical" x:Name="RootWindow">
+        <DockPanel x:Name="TitleBar" Height="30" MouseDown="TitleBar_MouseDown" Grid.Row="0">
+
+            <!-- Gradient -->
+            <DockPanel.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#613DC1" Offset="0.0" />
+                    <GradientStop Color="#858AE3" Offset="0.99" />
+                </LinearGradientBrush>
+            </DockPanel.Background>
+
+            <!-- Closing button -->
+            <Button x:Name="CloseButton" Content="X" Command="{Binding closeCommand}" CommandParameter="{Binding ElementName=RegWindow}" DockPanel.Dock="Right" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontSize="15" Margin="10, 0, 10, 0" Foreground="#2C0735"/>
+
+            <!-- Minimizing button -->
+            <Button x:Name="MinButton" Content="__" Command="{Binding minimizeCommand}" CommandParameter="{Binding ElementName=RegWindow}" DockPanel.Dock="Right" FontSize="15" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#2C0735"/>
+
+            <!-- CHAIR Login text -->
+            <TextBlock HorizontalAlignment="Left" Margin="6, 6, 0, 0" Foreground="#2C0735">Create an Account</TextBlock>
+        </DockPanel>
+
+        <StackPanel Orientation="Vertical" Background="#777cc4" Margin="20">
+            <!-- CHAIR using the logo as the A -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20, 10, 0, 0">
+                <TextBlock Text="C  H" VerticalAlignment="Center" FontSize="25" Foreground="#E94141" Margin="0, 0, 20, 0"/>
+                <Image Source="/Assets/chairlogo.png" Height="40" Width="35" />
+                <TextBlock Text="I  R" VerticalAlignment="Center" FontSize="25" Foreground="#E94141" Margin="20, 0, 0, 0"/>
+            </StackPanel>
+
+            <!-- Registration fields -->
+            <Grid Margin="0, 20, 50, 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>  <!-- 0: Username -->
+                    <RowDefinition Height="15"/>    <!-- 1: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 2: Password -->
+                    <RowDefinition Height="15"/>    <!-- 3: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 4: Birthdate -->
+                    <RowDefinition Height="15"/>    <!-- 5: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 6: Location -->
+                    <RowDefinition Height="15"/>    <!-- 7: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 8: Private profile -->
+                    <RowDefinition Height="15"/>    <!-- 9: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 10: Private profile -->
+                    <RowDefinition Height="15"/>    <!-- 11: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 12: Register button -->
+                    <RowDefinition Height="15"/>    <!-- 13: Separation -->
+                    <RowDefinition Height="Auto"/>  <!-- 14: Errors -->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Username -->
+                <TextBlock Text="Username" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
+                <TextBox Text="{Binding username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="0" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" BorderBrush="{Binding usernameBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="20"/>
+
+                <!-- Password -->
+                <TextBlock Text="Password" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
+                <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" BorderBrush="{Binding passwordBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="40"/>
+
+                <!-- Birthdate -->
+                <TextBlock Text="Birth Date" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
+                <DatePicker Width="100" SelectedDate="{Binding birthdate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Pick Date" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" FontSize="15" Margin="5, 0, 0, 0" BorderBrush="{Binding birthdateBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <!-- Location -->
+                <TextBlock Text="Location" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
+                <TextBox Text="{Binding location, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="6" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="100"/>
+
+                <!-- Private profile -->
+                <CheckBox Content="Set profile to private?" IsChecked="{Binding privateProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="8" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0"/>
+
+                <!-- Register button -->
+                <Button Content="Register" Command="{Binding registerCommand}" Grid.Row="12" Grid.Column="1" FontSize="15" Foreground="#2C0735" Background="#97DFFC" Margin="10, 0, 0, 0"/>
+
+                <!-- Errors -->
+                <Border BorderBrush="Red" BorderThickness="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="40, 20, 0, 20" Visibility="{Binding errorsVisibility, Mode=TwoWay}">
+                    <TextBlock Text="{Binding errors}" Margin="15" Foreground="#2C0735"/>
+                </Border>
+                
+            </Grid>
+        </StackPanel>
+
+    </StackPanel>
+</Window>

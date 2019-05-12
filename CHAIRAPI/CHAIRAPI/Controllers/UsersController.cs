@@ -67,7 +67,7 @@ namespace CHAIRAPI.Controllers
         /// </summary>
         /// <param name="nickname"></param>
         /// <returns></returns>
-        [HttpGet("login")]
+        [HttpPost("login")]
         [AllowAnonymous]
         public IActionResult Login([FromBody] User user)
         {

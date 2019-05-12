@@ -1,1 +1,19 @@
 https://stackoverflow.com/questions/35684243/how-to-download-and-run-a-exe-file-c-sharp
+
+//Gradiente y titlebar
+https://stackoverflow.com/questions/6792275/how-to-create-custom-window-chrome-in-wpf
+https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/painting-with-solid-colors-and-gradients-overview
+
+//Logo
+https://www.flaticon.com/free-icon/gaming-chair_1707153
+https://www.flaticon.com/free-icon/mouse_1707187
+
+//RelayCommand
+https://gist.github.com/schuster-rainer/2648922
+https://web.csulb.edu/~pnguyen/cecs475/pdf/closingwindowmvvm.pdf
+
+//El async de cuando SignalR llama al cliente
+https://stackoverflow.com/questions/2329978/the-calling-thread-must-be-sta-because-many-ui-components-require-this
+
+//La forma más pura de cerrar con MVVM
+https://stackoverflow.com/questions/501886/how-should-the-viewmodel-close-the-form/3329467

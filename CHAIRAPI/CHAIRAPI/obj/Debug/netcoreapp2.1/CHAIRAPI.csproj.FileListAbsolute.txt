@@ -37,3 +37,4 @@ C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcore
 C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csproj.CopyComplete
 C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.dll
 C:\Users\ofunes\Desktop\GitHub\ProyectoFinal\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.pdb
+C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
