@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace CHAIRSignalR_DAL
+namespace CHAIRSignalR_DAL.Calls
 {
     public static class UserCallback
     {
@@ -41,7 +41,27 @@ namespace CHAIRSignalR_DAL
                 string token = ((string)response.Headers.Single(x => x.Name == "Authentication").Value).Split(' ')[1];
                 return new UserWithToken(usr, token);
             }
-            else if(status == HttpStatusCode.Unauthorized && string.IsNullOrEmpty(response.Content))
+            else if(status == HttpStatusCode.Unauthorized && !string.IsNullOrEmpty(response.Content))
+                return JsonConvert.DeserializeObject<BanResponse>(response.Content);
+
+            return null;
+        }
+
+        public static object register(User user, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("users/register", Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Accept", "application/json");
+            request.AddJsonBody(user);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+
+            if (status == HttpStatusCode.Unauthorized && !string.IsNullOrEmpty(response.Content))
                 return JsonConvert.DeserializeObject<BanResponse>(response.Content);
 
             return null;

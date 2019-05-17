@@ -82,7 +82,7 @@ namespace CHAIRAPI_DAL.Handlers
             try
             {
                 //Define parameters
-                command.CommandText = "UPDATE Games SET description = @description, developer = @developer, minimumAge = @minimumAge, releaseDate = @releaseDate, instructions = @instructions, downloadUrl = @downloadUrl, storeImageUrl = @storeImageUrl, libraryImageUrl = @libraryImageUrl WHERE name = @name";
+                command.CommandText = "UPDATE Games SET description = @description, developer = @developer, minimumAge = @minimumAge, releaseDate = @releaseDate, instructions = @instructions, downloadUrl = @downloadUrl, storeImageUrl = @storeImageUrl, libraryImageUrl = @libraryImageUrl, frontPage = @frontPage WHERE name = @name";
 
                 //Create parameters
                 command.Parameters.Add("@name", SqlDbType.VarChar).Value = game.name;
@@ -94,6 +94,7 @@ namespace CHAIRAPI_DAL.Handlers
                 command.Parameters.Add("@downloadUrl", SqlDbType.VarChar).Value = game.downloadUrl;
                 command.Parameters.Add("@storeImageUrl", SqlDbType.VarChar).Value = game.storeImageUrl;
                 command.Parameters.Add("@libraryImageUrl", SqlDbType.VarChar).Value = game.libraryImageUrl;
+                command.Parameters.Add("@frontPage", SqlDbType.Bit).Value = game.frontPage;
 
                 //Get connection
                 sqlConnection = connection.getConnection();
@@ -203,7 +204,7 @@ namespace CHAIRAPI_DAL.Handlers
                 sqlConnection = connection.getConnection();
 
                 //Define the command
-                command.CommandText = "SELECT name, description, developer, minimumAge, releaseDate, instructions, downloadUrl, storeImageUrl, libraryImageUrl FROM Games";
+                command.CommandText = "SELECT name, description, developer, minimumAge, releaseDate, instructions, downloadUrl, storeImageUrl, libraryImageUrl, frontPage FROM Games";
 
                 //Define the connection
                 command.Connection = sqlConnection;
@@ -227,6 +228,7 @@ namespace CHAIRAPI_DAL.Handlers
                         game.downloadUrl = reader["downloadUrl"] is DBNull ? "" : (string)reader["downloadUrl"];
                         game.storeImageUrl = reader["storeImageUrl"] is DBNull ? "" : (string)reader["storeImageUrl"];
                         game.libraryImageUrl = reader["libraryImageUrl"] is DBNull ? "" : (string)reader["libraryImageUrl"];
+                        game.frontPage = (bool)reader["frontPage"];
                         list.Add(game);
                     }
                 }

@@ -1,12 +1,14 @@
-﻿using CHAIR_UI.Interfaces;
+﻿using CHAIR_Entities.Responses;
+using CHAIR_UI.Interfaces;
+using CHAIR_UI.SignalR;
 using CHAIR_UI.Views;
 using CHAIRSignalR_Entities.Complex;
-using GalaSoft.MvvmLight.Command;
 using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -15,31 +17,47 @@ namespace CHAIR_UI.ViewModels
     public class LoginWindowViewModel : VMBase
     {
         #region Default constructor
-        public LoginWindowViewModel(ICloseableMinimizeable view)
+        public LoginWindowViewModel(IBasicActions view)
         {
             _username = "";
             _password = "";
             _view = view;
 
-            //SignalR
-            conn = new HubConnection("http://localhost:51930/");
-            proxy = conn.CreateHubProxy("LoginHub");
-            conn.Start();
+            //SignalR Connection
+            _signalR = SignalRHubsConnection.loginHub;
 
-            proxy.On<UserWithToken>("loginSuccessful", loginSuccessful);
+            _signalR.proxy.On<UserWithToken>("loginSuccessful", loginSuccessful);
+            _signalR.proxy.On<BanResponse>("loginUnauthorized", loginUnauthorized);
         }
         #endregion
 
         #region Private properties
-        public DelegateCommand _loginCommand { get; set; }
+        private DelegateCommand _loginCommand;
         private string _username;
         private string _password;
-        private Window _window;
         private bool? _closeWindow;
-        private ICloseableMinimizeable _view;
+        private string _errors;
+        private SignalRConnection _signalR;
+        private IBasicActions _view; //This allows me to close and minimize the view without breaking MVVM patterns
+        private bool _loadingLogin;
         #endregion
 
         #region Public properties
+        public bool rememberMe { get; set; }
+        public bool loadingLogin
+        {
+            get
+            {
+                return _loadingLogin;
+            }
+
+            set
+            {
+                _loadingLogin = value;
+                NotifyPropertyChanged("loadingLogin");
+                _loginCommand.RaiseCanExecuteChanged();
+            }
+        }
         //Apparently, RelayCommand is like DelegateCommand, only with a generic type
         public DelegateCommand registerClickCommand
         {
@@ -52,7 +70,7 @@ namespace CHAIR_UI.ViewModels
         {
             get
             {
-                _loginCommand = new DelegateCommand(LoginCommand_Executed, LoginCommand_CanExecute); ;
+                _loginCommand = new DelegateCommand(LoginCommand_Executed, LoginCommand_CanExecute);
                 return _loginCommand;
             }
         }
@@ -70,9 +88,6 @@ namespace CHAIR_UI.ViewModels
                 return new DelegateCommand(MinimizeCommand_Executed);
             }
         }
-        public bool rememberMe { get; set; }
-        public HubConnection conn { get; set; }
-        public IHubProxy proxy { get; set; }
         public bool? closeWindow
         {
             get
@@ -123,14 +138,26 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("password");
             }
         }
+        public string errors
+        {
+            get
+            {
+                return _errors;
+            }
+
+            set
+            {
+                _errors = value;
+                NotifyPropertyChanged("errors");
+            }
+        }
         #endregion
 
         #region Commands
         private void RegisterCommand_Executed()
         {
             //Show the registration window
-            RegisterWindow regWindow = new RegisterWindow();
-            regWindow.Show();
+            _view.OpenWindow("RegisterWindow");
 
             //Close this window
             _view.Close();
@@ -146,12 +173,14 @@ namespace CHAIR_UI.ViewModels
         private void LoginCommand_Executed()
         {
             //Login code, calls to SignalR, etc.
-            proxy.Invoke("login", _username, _password);
+            loadingLogin = true;
+            _signalR.proxy.Invoke("login", _username, _password);
         }
 
         private bool LoginCommand_CanExecute()
         {
-            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+            //Can't click login if there's nothing written on username or password fields or if it's already trying to log in
+            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password) || _loadingLogin)
                 return false;
 
             return true;
@@ -169,13 +198,39 @@ namespace CHAIR_UI.ViewModels
         #endregion
 
         #region SignalR Methods
-        private void loginSuccessful(UserWithToken obj)
+        private void loginSuccessful(UserWithToken user)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                ChairWindow chairWindow = new ChairWindow();
-                chairWindow.Show();
+                //Save the information in the SharedInfo for the ChairWindowViewModel to have
+                SharedInfo.loggedUser = user;
 
+                //Open the application window
+                _view.OpenWindow("ChairWindow");
+
+                //Close this one
                 _view.Close();
+
+                loadingLogin = false;
+            });
+        }
+
+        private void loginUnauthorized(BanResponse ban)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //If the object is null, it means there is no ban, and the Unauthorized comes from an incorrect login (username or password)
+                if(ban == null)
+                    _view.ShowPopUp("The username or password you introduced is incorrect! Please try again.");
+                else
+                {
+                    string str = "";
+
+                    str += $"You are banned until {ban.bannedUntil}.\n";
+                    str += $"Reason: {ban.banReason}";
+
+                    _view.ShowPopUp(str);
+                }
+
+                loadingLogin = false;
             });
         }
         #endregion

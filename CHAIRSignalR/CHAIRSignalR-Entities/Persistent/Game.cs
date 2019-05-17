@@ -15,8 +15,9 @@ namespace CHAIRSignalR_Entities.Persistent
         public string downloadUrl { get; set; }
         public string storeImageUrl { get; set; }
         public string libraryImageUrl { get; set; }
+        public bool frontPage { get; set; }
 
-        public Game(string name, string description, string developer, int minimumAge, DateTime releaseDate, string instructions, string downloadUrl, string storeImageUrl, string libraryImageUrl)
+        public Game(string name, string description, string developer, int minimumAge, DateTime releaseDate, string instructions, string downloadUrl, string storeImageUrl, string libraryImageUrl, bool frontPage)
         {
             this.name = name;
             this.description = description;
@@ -27,6 +28,7 @@ namespace CHAIRSignalR_Entities.Persistent
             this.downloadUrl = downloadUrl;
             this.storeImageUrl = storeImageUrl;
             this.libraryImageUrl = libraryImageUrl;
+            this.frontPage = frontPage;
         }
 
         public Game()

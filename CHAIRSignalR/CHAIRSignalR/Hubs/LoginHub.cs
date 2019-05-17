@@ -4,10 +4,12 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNet.SignalR;
 using System.Threading.Tasks;
-using CHAIRSignalR_DAL;
 using CHAIRSignalR_Entities.Persistent;
 using System.Net;
 using CHAIRSignalR_Entities.Complex;
+using CHAIRSignalR_Entities.Responses;
+using System.Threading;
+using CHAIRSignalR_DAL.Calls;
 
 namespace CHAIRSignalR.Hubs
 {
@@ -27,6 +29,25 @@ namespace CHAIRSignalR.Hubs
 
             if (statusCode == HttpStatusCode.OK)
                 Clients.Caller.loginSuccessful((UserWithToken)response);
+            else if (statusCode == HttpStatusCode.Unauthorized)
+                Clients.Caller.loginUnauthorized((BanResponse)response);
+        }
+
+        public void register(User user)
+        {
+            //Get the user's IP
+            user.lastIP = (string)Context.Request.Environment["server.RemoteIpAddress"];
+
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            object response = UserCallback.register(user, out statusCode);
+
+            if (statusCode == HttpStatusCode.Created)
+                Clients.Caller.registerSuccessful();
+            else if (statusCode == HttpStatusCode.Conflict)
+                Clients.Caller.registerUserTaken();
+            else if (statusCode == HttpStatusCode.Unauthorized)
+                Clients.Caller.registerBanned((BanResponse)response);
         }
 
 

@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Complex\GameBeingPlayed.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
+    <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Persistent\Game.cs" />
     <Compile Include="Persistent\IPBan.cs" />
     <Compile Include="Persistent\Message.cs" />

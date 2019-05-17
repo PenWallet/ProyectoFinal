@@ -1,4 +1,9 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using CHAIR_Entities.Persistent;
+using CHAIR_Entities.Responses;
+using CHAIR_UI.Interfaces;
+using CHAIR_UI.SignalR;
+using GalaSoft.MvvmLight.Command;
+using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +16,23 @@ namespace CHAIR_UI.ViewModels
     public class RegisterWindowViewModel : VMBase
     {
         #region Constructors
-        public RegisterWindowViewModel()
+        public RegisterWindowViewModel(IBasicActionsRegister view)
         {
             _usernameBorder = "#ABADB3";
             _passwordBorder = "#ABADB3";
+            _birthdateBorder = "#ABADB3";
             _errorsVisibility = "Hidden";
-            _birthdate = DateTime.Now;
-            this.closeCommand = new RelayCommand<Window>(this.CloseWindow);
-            this.minimizeCommand = new RelayCommand<Window>(this.MinimizeCommand);
+            _birthdate = new DateTime(1999, 8, 12);
+            _view = view;
+            _signalR = SignalRHubsConnection.loginHub;
+            maximumDate = DateTime.Now;
+
+            _signalR.proxy.On("registerSuccessful", registerSuccessful);
+            _signalR.proxy.On("registerUserTaken", registerUserTaken);
+            _signalR.proxy.On<BanResponse>("registerBanned", registerBanned);
         }
 
-        
+
         #endregion
 
         #region Private properties
@@ -35,12 +46,42 @@ namespace CHAIR_UI.ViewModels
         private string _birthdateBorder;
         private string _errors;
         private string _errorsVisibility;
+        private IBasicActionsRegister _view;
         private DelegateCommand _registerCommand;
+        private SignalRConnection _signalR;
+        private bool _loadingRegister;
         #endregion
 
         #region Public properties
-        public RelayCommand<Window> closeCommand { get; private set; }
-        public RelayCommand<Window> minimizeCommand { get; private set; }
+        public DateTime maximumDate { get; set; }
+        public bool loadingRegister
+        {
+            get
+            {
+                return _loadingRegister;
+            }
+
+            set
+            {
+                _loadingRegister = value;
+                NotifyPropertyChanged("loadingRegister");
+                _registerCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public DelegateCommand closeCommand
+        {
+            get
+            {
+                return new DelegateCommand(CloseCommand_Executed);
+            }
+        }
+        public DelegateCommand minimizeCommand
+        {
+            get
+            {
+                return new DelegateCommand(MinimizeCommand_Executed);
+            }
+        }
         public string username
         {
             get
@@ -195,29 +236,20 @@ namespace CHAIR_UI.ViewModels
         #endregion
 
         #region Commands
-        private void CloseWindow(Window window)
+        private void CloseCommand_Executed()
         {
-            if (window != null)
-            {
-                //Show the login window
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.Show();
+            //Show the login window
+            _view.OpenWindow("LoginWindow");
 
-                //Close this window
-                window.Close();
-            }
+            //Close this window
+            _view.Close();
 
         }
 
-        private void MinimizeCommand(Window window)
+        private void MinimizeCommand_Executed()
         {
-            if (window != null)
-            {
-                window.WindowState = WindowState.Minimized;
-            }
+            _view.Minimize();
         }
-
-
 
         private void RegisterCommand_Executed()
         {
@@ -225,9 +257,19 @@ namespace CHAIR_UI.ViewModels
 
             if(errorList.Count == 0)
             {
+                loadingRegister = true;
+
                 errorsVisibility = "Hidden";
 
-                //Call SignalR
+                //Make the user with all the information
+                User user = new User();
+                user.nickname = _username;
+                user.password = _password;
+                user.birthDate = _birthdate;
+                user.profileLocation = _location;
+                user.privateProfile = _privateProfile;
+
+                _signalR.proxy.Invoke("register", user);
             }
             else
             {
@@ -242,7 +284,7 @@ namespace CHAIR_UI.ViewModels
 
         private bool RegisterCommand_CanExecute()
         {
-            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password) || _username.Any(c => c == ' ') || _password.Any(c => c == ' '))
+            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password) || _username.Any(c => c == ' ') || _password.Any(c => c == ' ') || _loadingRegister)
                 return false;
 
             return true;
@@ -304,9 +346,44 @@ namespace CHAIR_UI.ViewModels
             if (wrongBirthdate)
                 birthdateBorder = "#FF495C";
             else
-                birthdateBorder = "Transparent";
+                birthdateBorder = "#ABADB3";
 
             return errorsList;
+        }
+        #endregion
+
+        #region SignalR Methods
+        private void registerSuccessful()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Show a pop up
+                _view.ShowPopUpAndLogin();
+
+                loadingRegister = false;
+            });
+        }
+
+        private void registerUserTaken()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                _view.ShowPopUp("That username is already taken!");
+
+                loadingRegister = false;
+            });
+        }
+
+        private void registerBanned(BanResponse ban)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                string str = "";
+
+                str += $"You are banned until {ban.bannedUntil}.\n";
+                str += $"Reason: {ban.banReason}";
+
+                _view.ShowPopUp(str);
+
+                loadingRegister = false;
+            });
         }
         #endregion
     }

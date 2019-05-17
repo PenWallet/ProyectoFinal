@@ -172,6 +172,51 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
+        /// Method used to update the IP of the user
+        /// </summary>
+        /// <param name="nickname">The user to be updated</param>
+        /// <param name="online">New IP</param>
+        /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
+        public static int updateUserIP(string nickname, string IP)
+        {
+            Connection connection = new Connection();
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand command = new SqlCommand();
+            int affectedRows = -1;
+
+            try
+            {
+                //Define parameters
+                command.CommandText = "UPDATE Users SET lastIP = @IP WHERE nickname = @nickname";
+
+                //Create parameters
+                command.Parameters.Add("@nickname", SqlDbType.VarChar).Value = nickname;
+                command.Parameters.Add("@IP", SqlDbType.VarChar).Value = IP;
+
+                //Get connection
+                sqlConnection = connection.getConnection();
+
+                //Give the connection to the command
+                command.Connection = sqlConnection;
+
+                //Execute query
+                affectedRows = command.ExecuteNonQuery();
+
+            }
+            catch (Exception e)
+            {
+                affectedRows = -1;
+            }
+            finally
+            {
+                //Close connection
+                connection.closeConnection(ref sqlConnection);
+            }
+
+            return affectedRows;
+        }
+
+        /// <summary>
         /// Method used to update the information of an user in order to ban 
         /// </summary>
         /// <param name="user">The user to be banned. Has to contain nickname, banReason and bannedUntil</param>

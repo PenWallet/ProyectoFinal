@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CHAIRSignalR_Entities.Complex;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

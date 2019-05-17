@@ -1,4 +1,9 @@
-﻿using System;
+﻿using CHAIR_Entities.Persistent;
+using CHAIR_UI.Interfaces;
+using CHAIR_UI.UserControls;
+using CHAIR_UI.ViewModels;
+using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +23,12 @@ namespace CHAIR_UI.Views
     /// <summary>
     /// Interaction logic for ChairWindow.xaml
     /// </summary>
-    public partial class ChairWindow : Window
+    public partial class ChairWindow : Window, IBasicActionsChair
     {
         public ChairWindow()
         {
             InitializeComponent();
+            this.DataContext = new ChairWindowViewModel(this);
         }
 
         /// <summary>
@@ -42,7 +48,6 @@ namespace CHAIR_UI.Views
                 else
                     this.DragMove();
             }
-                
 
         }
 
@@ -57,5 +62,58 @@ namespace CHAIR_UI.Views
         {
             (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2C0735"));
         }
+
+
+        #region IBasicActionsChair Implementation
+        public void Maximize()
+        {
+            if (this.WindowState == WindowState.Maximized)
+                this.WindowState = WindowState.Normal;
+            else
+                this.WindowState = WindowState.Maximized;
+        }
+
+        public void Minimize()
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        public void OpenWindow(string window)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async void ShowPopUp(string message)
+        {
+            TextBlock view = new TextBlock()
+            {
+                Text = message,
+                Margin = new Thickness(15, 10, 15, 10)
+            };
+
+            await DialogHost.Show(view, "ChairWindow");
+        }
+
+        public void ChangePage(string page, object viewmodel)
+        {
+            if (page == SharedInfo.loggedUser.nickname)
+                ContentCtrl.Content = new Profile(viewmodel);
+            else if (page == "Library")
+                ContentCtrl.Content = new Library(viewmodel);
+            else if (page == "Store")
+                ContentCtrl.Content = new Store(viewmodel);
+            else if (page == "Settings")
+                ContentCtrl.Content = new Settings(viewmodel);
+            else if (page == "Admin")
+                ContentCtrl.Content = new Admin(viewmodel);
+            else if (page == "Log out")
+            {
+                LoginWindow loginWindow = new LoginWindow();
+                loginWindow.Show();
+
+                this.Close();
+            }
+        }
+        #endregion
     }
 }

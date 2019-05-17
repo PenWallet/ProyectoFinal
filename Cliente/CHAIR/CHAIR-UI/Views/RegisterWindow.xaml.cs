@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CHAIR_UI.Interfaces;
+using CHAIR_UI.ViewModels;
+using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -19,11 +22,12 @@ namespace CHAIR_UI.Views
     /// <summary>
     /// Interaction logic for RegisterWindow.xaml
     /// </summary>
-    public partial class RegisterWindow : Window
+    public partial class RegisterWindow : Window, IBasicActionsRegister
     {
         public RegisterWindow()
         {
             InitializeComponent();
+            this.DataContext = new RegisterWindowViewModel(this);
         }
 
         /// <summary>
@@ -35,14 +39,72 @@ namespace CHAIR_UI.Views
             {
                 if (e.ClickCount == 2)
                 {
-                    if (this.WindowState == WindowState.Maximized)
-                        this.WindowState = WindowState.Normal;
-                    else
-                        this.WindowState = WindowState.Maximized;
+                    Maximize();
                 }
                 else
                     this.DragMove();
             }
         }
+
+        #region IBasicActions implementation
+        public void Maximize()
+        {
+            if (this.WindowState == WindowState.Maximized)
+                this.WindowState = WindowState.Normal;
+            else
+                this.WindowState = WindowState.Maximized;
+        }
+
+        public void Minimize()
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        public void OpenWindow(string window)
+        {
+            switch (window)
+            {
+                case "ChairWindow":
+                    ChairWindow chairWindow = new ChairWindow();
+                    chairWindow.Show();
+                    break;
+
+                case "LoginWindow":
+                    LoginWindow loginWindow = new LoginWindow();
+                    loginWindow.Show();
+                    break;
+            }
+        }
+
+        public async void ShowPopUp(string message)
+        {
+            TextBlock view = new TextBlock()
+            {
+                Text = message,
+                Margin = new Thickness(15, 10, 15, 10)
+            };
+
+            await DialogHost.Show(view, "RegisterDialog");
+        }
+
+        public async void ShowPopUpAndLogin()
+        {
+            TextBlock view = new TextBlock()
+            {
+                Text = "Registered succesfully!",
+                Margin = new Thickness(15, 10, 15, 10)
+            };
+
+            await DialogHost.Show(view, "RegisterDialog", closingEvent);
+        }
+
+        private void closingEvent(object sender, DialogClosingEventArgs eventArgs)
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+
+            this.Close();
+        }
+        #endregion
     }
 }

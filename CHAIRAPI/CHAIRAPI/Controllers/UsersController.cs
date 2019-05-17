@@ -80,6 +80,9 @@ namespace CHAIRAPI.Controllers
 
                 if (userWithSalt != null && Hash.Validate(user.password, userWithSalt.salt, userWithSalt.password)) //If the passwords coincide
                 {
+                    //Update the lastIP from the user
+                    UsersHandler.updateUserIP(user.nickname, user.lastIP);
+                    userWithSalt.lastIP = user.lastIP;
                     BanResponse banResponse = Utilities.isUserBanned(userWithSalt);
 
                     //If the user isn't banned, banResponse should be null
@@ -95,7 +98,7 @@ namespace CHAIRAPI.Controllers
                     return StatusCode(401); //Unauthorized
             }
             else
-                return StatusCode(400);
+                return StatusCode(400); //Bad Request
         }
 
         /// <summary>

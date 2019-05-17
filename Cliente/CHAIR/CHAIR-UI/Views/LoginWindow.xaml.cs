@@ -1,5 +1,7 @@
 ﻿using CHAIR_UI.Interfaces;
 using CHAIR_UI.ViewModels;
+using CHAIR_UI.Views;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,7 +25,7 @@ namespace CHAIR_UI
     /// Interaction logic for LoginWindow.xaml
     /// ICloseable allows to be able to close the window whenever we want without breaking MVVM standards (it's an interface)
     /// </summary>
-    public partial class LoginWindow : Window, ICloseableMinimizeable
+    public partial class LoginWindow : Window, IBasicActions
     {
         public LoginWindow()
         {
@@ -55,12 +57,50 @@ namespace CHAIR_UI
             }
         }
 
-        /// <summary>
-        /// Implementation of IMinimizeable
-        /// </summary>
+        #region IBasicActions implementation
+        public void Maximize()
+        {
+            //Do nothing because we don't want to be able to maximize this window
+            return;
+        }
+
         public void Minimize()
         {
             this.WindowState = WindowState.Minimized;
         }
+
+        public void OpenWindow(string window)
+        {
+            switch (window)
+            {
+                case "ChairWindow":
+                    ChairWindow chairWindow = new ChairWindow();
+                    chairWindow.Show();
+                    break;
+
+                case "RegisterWindow":
+                    RegisterWindow regWindow = new RegisterWindow();
+                    regWindow.Show();
+                    break;
+            }
+        }
+
+        public async void ShowPopUp(string message)
+        {
+            TextBlock view = new TextBlock()
+            {
+                Text = message,
+                Margin = new Thickness(15, 10, 15, 10)
+            };
+
+            await DialogHost.Show(view, "LoginDialog", closingHandler);
+        }
+
+        private void closingHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            
+        }
+        #endregion
+
     }
 }

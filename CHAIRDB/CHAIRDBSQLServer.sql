@@ -62,6 +62,7 @@ CREATE TABLE Games(
 	developer VARCHAR(MAX) NOT NULL DEFAULT '',
     minimumAge INT NULL,
     releaseDate DATE NULL,
+	frontPage BIT DEFAULT 0,
     instructions VARCHAR(MAX) NOT NULL DEFAULT '',
     downloadUrl VARCHAR(MAX) NOT NULL DEFAULT '',
     storeImageUrl VARCHAR(MAX) NOT NULL DEFAULT '',
@@ -108,11 +109,86 @@ BEGIN
 END
 GO
 
+/* TRIGGERS */
+GO
+CREATE TRIGGER trg_ensureOnlyOneFrontPageGame ON Games INSTEAD OF UPDATE 
+AS
+	BEGIN
+		IF(UPDATE(frontPage))
+		BEGIN
+			DECLARE @isFrontPage bit = (SELECT frontPage FROM inserted)
+			DECLARE @wasFrontPage bit = (SELECT frontPage FROM deleted)
+			IF(@isFrontPage = 1 AND @wasFrontPage = 0)
+			BEGIN
+				DECLARE @name varchar(50) = (SELECT name FROM inserted)
+				UPDATE Games SET frontPage = 0 WHERE name != @name
+				UPDATE Games SET frontPage = 1 WHERE name = @name
+			END
+		END
+	END
+GO
+
 /* SOME TEST DATA */
-INSERT INTO Users (nickname, password, salt, birthDate, lastIP) VALUES('Penny', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0')
+INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin]) 
+	VALUES	('Penny', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 1),
+			('Migue', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0),
+			('Test', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0)
 
 INSERT INTO Games (name, description, developer, minimumAge, releaseDate) VALUES
 ('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10'),
 ('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18'),
 ('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24'),
 ('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04')
+
+GO
+
+INSERT INTO UserGames ([user], game)
+	VALUES	('Penny', 'Portal'),('Penny', 'Overwatch'),('Penny', 'Crashex Legends'),
+			('Migue', 'Portal'),('Migue', 'Portal 2'),('Test', 'Crashex Legends'),
+			('Test', 'Portal'),('Test', 'Portal 2')
+
+INSERT INTO UserFriends(user1, user2)
+	VALUES	('Penny', 'Migue'), ('Migue', 'Test'), ('Test', 'Penny')
+
+/*
+GUARDAR COMO ORO EN PAÑO CAGO EN DIO
+WITH
+MyFriends_CTE (me, friend)as(
+
+    SELECT user1 AS me, user2 AS friend
+    FROM userFriends
+    WHERE user1 = 'Penny'
+
+    UNION
+
+    SELECT user2 AS me, user1 AS friend
+    FROM userFriends
+    WHERE user2 = 'Penny'
+),
+
+MyGames_CTE (myname, mygame) as  (
+	SELECT [user] AS myname, game as mygame FROM UserGames 
+		WHERE [user] = 'Penny'
+),
+
+MyFriendsGames_CTE (frname, frgame) as (
+
+ SELECT [user] AS frname, game as frgame
+	FROM myfriends_cte AS M
+		JOIN UserGames AS UG 
+			ON M.friend = UG.[user]
+),
+
+MyFriendsThatPlayMyGames_CTE as(
+
+SELECT *
+	FROM MyfriendsGames_CTE AS M
+		LEFT JOIN myGames_CTE AS M2
+			ON M.frgame = M2.mygame
+	WHERE M2.mygame is not null
+
+
+)
+
+select * from MyFriendsThatPlayMyGames_CTE
+*/

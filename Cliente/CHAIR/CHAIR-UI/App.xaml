@@ -1,7 +1,13 @@
 <Application x:Class="CHAIR_UI.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:CHAIR_UI" StartupUri="Views/LoginWindow.xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
-  <Application.Resources>
-    <ResourceDictionary>
-        <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:CHAIR_UI.ViewModel" />
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="MainColor">#858AE3</Color>
+            <Color x:Key="MainDarkColor">#613DC1</Color>
+            <Brush x:Key="FontColor">#2C0735</Brush>
+            <Brush x:Key="LocationFontColor">#7a0d5c</Brush>
+            <Brush x:Key="ProfPicBorderOnline">#77DD77</Brush>
+            <Brush x:Key="ProfPicBorderOffline">#CFCFC4</Brush>
+            <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:CHAIR_UI.ViewModel" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
