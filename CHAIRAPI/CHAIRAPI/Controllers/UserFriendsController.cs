@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CHAIRAPI.Utils;
 using CHAIRAPI_DAL.Handlers;
-using CHAIRAPI_Entidades.Persistent;
+using CHAIRAPI_Entities.Persistent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

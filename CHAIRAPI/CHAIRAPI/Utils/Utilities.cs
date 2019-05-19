@@ -1,6 +1,6 @@
 ﻿using CHAIRAPI.Responses;
 using CHAIRAPI_DAL.Handlers;
-using CHAIRAPI_Entidades.Persistent;
+using CHAIRAPI_Entities.Persistent;
 using IniParser;
 using IniParser.Model;
 using Microsoft.IdentityModel.Tokens;
@@ -206,9 +206,9 @@ namespace CHAIRAPI.Utils
         /// Small private method to check if the nickname in the URL is the same as the nickname
         /// stored in the "usr" claim of the token (basically, check for validity)
         /// </summary>
-        /// <param name="nickname">Send as many nicknames as you want (useful for double relationships like UserFriends)</param>
-        /// <returns></returns>
-        public static bool checkUsrClaimValidity(ClaimsPrincipal user, params string[] nickname)
+        /// <param name="nicknames">Send as many nicknames as you want (useful for double relationships like UserFriends)</param>
+        /// <returns>Returns true if one of the nicknames checks agains the token's username, false otherwise</returns>
+        public static bool checkUsrClaimValidity(ClaimsPrincipal user, params string[] nicknames)
         {
             //First check, just in case (it can blow up)
             if (user != null && user.Claims != null && user.Claims.Count() != 0)
@@ -217,7 +217,7 @@ namespace CHAIRAPI.Utils
                 Claim usrClaim = user.Claims.ToList().Single(x => x.Type == "usr");
                 if (usrClaim != null)
                 {
-                    foreach (string nick in nickname)
+                    foreach (string nick in nicknames)
                     {
                         if (nick == usrClaim.Value)
                             return true;

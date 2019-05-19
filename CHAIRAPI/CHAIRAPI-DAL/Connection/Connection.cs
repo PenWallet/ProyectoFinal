@@ -43,7 +43,7 @@ namespace DAL.Conexion
             try
             {
                 //connection.ConnectionString = string.Format("server={0};database={1};uid={2};pwd={3};", server, dataBase, user, pass);
-                connection.ConnectionString = $"server={server};database={dataBase};uid={user};pwd={pass}"; //Max Pool Size=300;MultipleActiveResultSets=true
+                connection.ConnectionString = $"server={server};database={dataBase};uid={user};pwd={pass};MultipleActiveResultSets=true"; //Max Pool Size=300;MultipleActiveResultSets=true
                 connection.Open();
             }
             catch (SqlException)

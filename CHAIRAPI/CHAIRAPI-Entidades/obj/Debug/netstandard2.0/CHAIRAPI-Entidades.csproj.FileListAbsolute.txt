@@ -1,9 +1,0 @@
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entidades.deps.json
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entidades.dll
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\bin\Debug\netstandard2.0\CHAIRAPI-Entidades.pdb
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.csproj.CoreCompileInputs.cache
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.AssemblyInfoInputs.cache
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.AssemblyInfo.cs
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.dll
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.pdb
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI-Entidades\obj\Debug\netstandard2.0\CHAIRAPI-Entidades.csprojAssemblyReference.cache

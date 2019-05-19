@@ -1,0 +1,91 @@
+﻿<Window x:Class="CHAIR_UI.Views.ChairWindow"
+        x:Name="ChaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CHAIR_UI.Views"
+        xmlns:vm="clr-namespace:CHAIR_UI.ViewModels"
+        xmlns:model="clr-namespace:CHAIR_Entities.Models"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="ChairWindow"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Height="600" 
+        Width="900"
+        MinHeight="600"
+        MinWidth="900"
+        WindowStyle="None"
+        Background="White"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <!-- Small border around the window (for aesthetics :D) -->
+    <Window.BorderBrush>#613DC1</Window.BorderBrush>
+    <Window.BorderThickness>1</Window.BorderThickness>
+
+    <materialDesign:DialogHost Identifier="ChairDialog">
+        <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+            <materialDesign:DrawerHost.LeftDrawerContent>
+                <DockPanel MinWidth="212">
+                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" 
+                                    DockPanel.Dock="Top"
+                                    HorizontalAlignment="Right" Margin="16"
+                                    IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" />
+                    <ListBox Margin="0 16 0 16" ItemsSource="{Binding optionsList}" SelectedItem="{Binding selectedOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="model:OptionItem">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Width="25" Height="25" Kind="{Binding iconKind}" Margin="16 0 0 0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding name}" FontSize="20" Margin="32 0 0 0" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </materialDesign:DrawerHost.LeftDrawerContent>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel MouseDown="TitleBar_MouseDown" x:Name="TitleBar" Grid.Row="0">
+                    <materialDesign:ColorZone Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="85"/>
+                                <!-- 0: Hamburger menu -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- 1: CHAIR Logo -->
+                                <ColumnDefinition Width="44"/>
+                                <!-- 2: Minimize button -->
+                                <ColumnDefinition Width="41"/>
+                                <!-- 3: Close button -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Hamburger button -->
+                            <ToggleButton x:Name="MenuToggleButton" Grid.Column="0" Style="{StaticResource MaterialDesignHamburgerToggleButton}" IsChecked="{Binding drawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
+                            
+                            <!-- CHAIR using the logo as the A -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="C  H" VerticalAlignment="Center" FontSize="30" Foreground="#E94141" Margin="0, 0, 15, 0"/>
+                                <Image Source="/Assets/chairlogo.png" Height="30" Width="30" />
+                                <TextBlock Text="I  R" VerticalAlignment="Center" FontSize="30" Foreground="#E94141" Margin="15, 0, 0, 0"/>
+                            </StackPanel>
+
+                            <!-- Minimizing button -->
+                            <Button x:Name="MinButton" Grid.Column="2" Height="30" Width="44" Content="___" Command="{Binding minimizeCommand}" MouseEnter="TopButtons_MouseEnter" MouseLeave="TopButtons_MouseLeave" DockPanel.Dock="Right" FontSize="15" Background="Transparent" BorderBrush="Transparent" Foreground="#2C0735"/>
+
+                            <!-- Closing button -->
+                            <Button x:Name="CloseButton" Grid.Column="3" Height="30" Width="41" Content="X" Command="{Binding closeCommand}" MouseEnter="TopButtons_MouseEnter" MouseLeave="TopButtons_MouseLeave" DockPanel.Dock="Right" FontSize="15" Background="Transparent" BorderBrush="Transparent" Foreground="#2C0735"/>
+
+                        </Grid>
+                    </materialDesign:ColorZone>
+                </DockPanel>
+
+                <!-- ScrollViewer with the ContentControl for dynamic page changing -->
+                <ContentControl Grid.Row="1" x:Name="ContentCtrl" />
+            </Grid>
+        </materialDesign:DrawerHost>
+    </materialDesign:DialogHost>
+</Window>

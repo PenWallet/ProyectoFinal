@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calls\GameCallback.cs" />
+    <Compile Include="Calls\GameStoreCallback.cs" />
+    <Compile Include="Calls\UserProfileCallback.cs" />
     <Compile Include="Connection\APIConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Calls\UserGamesCallback.cs" />

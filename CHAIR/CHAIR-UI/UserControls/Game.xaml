@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="CHAIR_UI.UserControls.Game"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CHAIR_UI.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:conv="clr-namespace:CHAIR_UI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <conv:BoolToVisibility x:Key="BTVConverter"/>
+        <conv:BoolToVisibilityInverse x:Key="BTVIConverter"/>
+        <conv:NullToVisibility x:Key="NTVConverter"/>
+        <conv:NullToVisibilityInverse x:Key="NTVIConverter"/>
+        <conv:DateToString x:Key="DTSConverter"/>
+    </UserControl.Resources>
+
+    <!-- StackPanel with the information about the game -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1">
+        <StackPanel>
+            <!-- Big image -->
+            <Image Source="{Binding Path=selectedStoreGame.game.storeImageUrl}" Stretch="Uniform" Height="500"/>
+
+            <!-- GET button (visible if not owned by the user) -->
+            <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="GET" FontSize="35" Visibility="{Binding Path=selectedStoreGame.relationship, Converter={StaticResource NTVIConverter}}"/>
+            <!-- GET button (visible if the game is owned and with tooltip indicating the acquisition date -->
+            <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="IN LIBRARY" FontSize="35" Visibility="{Binding Path=selectedStoreGame.relationship, Converter={StaticResource NTVConverter}}" IsEnabled="False" ToolTip="{Binding Path=selectedStoreGame.relationship.acquisitionDate, Converter={StaticResource DTSConverter}}" ToolTipService.ShowOnDisabled="True"/>
+
+            <!-- Game name -->
+            <TextBlock Text="{Binding Path=selectedStoreGame.game.name}" FontSize="50" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="10"/>
+            <TextBlock Text="{Binding Path=selectedStoreGame.game.developer}" FontSize="20" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="13 -15 0 10"/>
+            <Separator/>
+
+            <!-- Description -->
+            <TextBlock Text="{Binding Path=selectedStoreGame.game.description}" FontWeight="Light" TextWrapping="Wrap" FontSize="15" Margin="10 8 0 0"/>
+            <Separator Margin="0 8 0 0"/>
+
+            <Grid Grid.Column="1" Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Minimum age -->
+                <TextBlock Grid.Column="0" Grid.Row="0">
+                    <TextBlock Text="RELEASE DATE " Foreground="Blue" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedStoreGame.game.releaseDate, Converter={StaticResource DTSConverter}}"/>
+                </TextBlock>
+                
+                <!-- Minimum age -->
+                <TextBlock Grid.Column="0" Grid.Row="1">
+                    <TextBlock Text="MINIMUM AGE " Foreground="Blue" FontWeight="Bold" FontSize="20"/>
+                    <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedStoreGame.game.minimumAge}"/>
+                    <TextBlock FontSize="20" FontWeight="Medium" Text="years old"/>
+                </TextBlock>
+                
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,4 +1,4 @@
-﻿using CHAIRAPI_Entidades.Complex;
+﻿using CHAIRAPI_Entities.Complex;
 using DAL.Conexion;
 using System;
 using System.Collections.Generic;

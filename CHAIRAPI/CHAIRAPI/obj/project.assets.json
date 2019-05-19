@@ -12634,8 +12634,8 @@
     },
     "CHAIRAPI-Entities/1.0.0": {
       "type": "project",
-      "path": "../CHAIRAPI-Entidades/CHAIRAPI-Entities.csproj",
-      "msbuildProject": "../CHAIRAPI-Entidades/CHAIRAPI-Entities.csproj"
+      "path": "../CHAIRAPI-Entities/CHAIRAPI-Entities.csproj",
+      "msbuildProject": "../CHAIRAPI-Entities/CHAIRAPI-Entities.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -12682,8 +12682,8 @@
             "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-DAL\\CHAIRAPI-DAL.csproj": {
               "projectPath": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-DAL\\CHAIRAPI-DAL.csproj"
             },
-            "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj": {
-              "projectPath": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entidades\\CHAIRAPI-Entities.csproj"
+            "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entities\\CHAIRAPI-Entities.csproj": {
+              "projectPath": "C:\\Users\\Oscar\\Desktop\\Segundo DAM\\Proyecto Final\\CHAIRAPI\\CHAIRAPI-Entities\\CHAIRAPI-Entities.csproj"
             }
           }
         }

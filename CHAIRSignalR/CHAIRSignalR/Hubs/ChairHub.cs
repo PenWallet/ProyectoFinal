@@ -12,11 +12,16 @@ using CHAIRSignalR_Entities.Responses;
 using System.Threading;
 using CHAIRSignalR.Common;
 using CHAIRSignalR_DAL.Calls;
+using CHAIRSignalR_Entidades.Complex;
 
 namespace CHAIRSignalR.Hubs
 {
     public class ChairHub : Hub
     {
+        /// <summary>
+        /// Method used to retrieve all the games available in the store
+        /// </summary>
+        /// <param name="token"></param>
         public void getAllStoreGames(string token)
         {
             //Make the call to the API
@@ -26,8 +31,53 @@ namespace CHAIRSignalR.Hubs
             if (games != null)
                 Clients.Caller.getAllStoreGames(games);
             else
-                Clients.Caller.unexpectedError();
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch the store games. Please try again when it's fixed :D");
+        }
 
+        /// <summary>
+        /// Method used to retrieve all the games a user plays, along with the information about each game and which friends play them
+        /// </summary>
+        /// <param name="token">The user's token</param>
+        public void getAllMyGamesAndFriends(string token)
+        {
+            //Get the user's nickname
+            string nickname = ChairInfo.onlineUsers.Single(x => x.Value == Context.ConnectionId).Key;
+
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<UserGamesWithGameAndFriends> games = UserGamesCallback.getAllMyGames(nickname, token, out statusCode);
+
+            if (games != null)
+                Clients.Caller.getAllMyGames(games);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch your games. Please try again when it's fixed :D");
+        }
+
+        public void getUserProfile(string nickname, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserProfile games = UserProfileCallback.getUserProfile(nickname, token, out statusCode);
+
+            if (games != null)
+                Clients.Caller.getUserProfile(games);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch this user's profile. Please try again when it's fixed :D");
+        }
+
+        public void getGameInformation(string nickname, string game, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            GameStore gameStore = GameStoreCallback.getGameAndRelationship(nickname, game, token, out statusCode);
+
+            if (gameStore.relationship.game == null || gameStore.relationship.user == null)
+                gameStore.relationship = null;
+
+            if (gameStore != null)
+                Clients.Caller.getGameInformation(gameStore);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch this user's profile. Please try again when it's fixed :D");
         }
 
         public override Task OnDisconnected(bool stopCalled)

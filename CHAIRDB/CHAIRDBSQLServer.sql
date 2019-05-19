@@ -93,6 +93,7 @@ CREATE USER CHAIRMaster FOR LOGIN CHAIRMaster
 GO
 
 /* TRIGGERS */
+-- Trigger used to save when a user changes its nickname
 GO
 CREATE TRIGGER trg_SaveNicknameChange ON Users AFTER UPDATE
 AS
@@ -109,9 +110,10 @@ BEGIN
 END
 GO
 
-/* TRIGGERS */
+-- Trigger used to ensure that when an update is made to the frontPage field, all the others games have it set to 0
+-- (there can only be one game in the front page) 
 GO
-CREATE TRIGGER trg_ensureOnlyOneFrontPageGame ON Games INSTEAD OF UPDATE 
+CREATE TRIGGER trg_ensureOnlyOneFrontPageGame ON Games AFTER UPDATE
 AS
 	BEGIN
 		IF(UPDATE(frontPage))
@@ -122,10 +124,77 @@ AS
 			BEGIN
 				DECLARE @name varchar(50) = (SELECT name FROM inserted)
 				UPDATE Games SET frontPage = 0 WHERE name != @name
-				UPDATE Games SET frontPage = 1 WHERE name = @name
 			END
 		END
 	END
+GO
+
+GO
+CREATE TRIGGER trg_updateLastPlayedWhenPlaying ON UserGames AFTER UPDATE
+AS
+	BEGIN
+		IF(UPDATE(playing))
+		BEGIN
+			DECLARE @isPlaying bit = (SELECT playing FROM inserted)
+			DECLARE @wasPlaying bit = (SELECT playing FROM deleted)
+			IF((@isPlaying = 1 AND @wasPlaying = 0) OR (@isPlaying = 0 AND @wasPlaying = 1))
+			BEGIN
+				DECLARE @user varchar(20) = (SELECT [user] FROM inserted)
+				DECLARE @game varchar(50) = (SELECT game FROM inserted)
+				UPDATE UserGames SET lastPlayed = CURRENT_TIMESTAMP WHERE [user] = @user AND game = @game
+			END
+		END
+	END
+GO
+
+/* FUNCTIONS */
+-- Function that returns a table with all the friends that play my games for each game
+GO
+CREATE FUNCTION GetFriendsWhoPlayMyGames (@nickname varchar(20))
+RETURNS TABLE
+AS
+RETURN
+	WITH
+	MyFriends_CTE (me, friend) AS (
+
+		SELECT user1 AS me, user2 AS friend
+		FROM UserFriends
+		WHERE user1 = @nickname
+
+		UNION
+
+		SELECT user2 AS me, user1 AS friend
+		FROM UserFriends
+		WHERE user2 = @nickname
+	),
+
+	MyGames_CTE (myname, mygame) as  (
+		SELECT [user] AS myname, game as mygame FROM UserGames 
+			WHERE [user] = @nickname
+	),
+
+	MyFriendsGames_CTE (frname, frgame) as (
+
+	 SELECT [user] AS frname, game as frgame
+		FROM myfriends_cte AS M
+			JOIN UserGames AS UG 
+				ON M.friend = UG.[user]
+	),
+
+	MyFriendsThatPlayMyGames_CTE as(
+
+	SELECT *
+		FROM MyfriendsGames_CTE AS M
+			LEFT JOIN myGames_CTE AS M2
+				ON M.frgame = M2.mygame
+		WHERE M2.mygame IS NOT NULL
+
+
+	)
+
+	SELECT U.nickname, frgame, U.privateProfile, U.[online], U.[admin] FROM MyFriendsThatPlayMyGames_CTE AS M
+		INNER JOIN Users AS U
+			ON M.frname = U.nickname
 GO
 
 /* SOME TEST DATA */
@@ -134,11 +203,16 @@ INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin])
 			('Migue', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0),
 			('Test', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0)
 
-INSERT INTO Games (name, description, developer, minimumAge, releaseDate) VALUES
-('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10'),
-('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18'),
-('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24'),
-('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04')
+INSERT INTO Games (name, description, developer, minimumAge, releaseDate, storeImageUrl, libraryImageUrl, frontPage) VALUES
+('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10', '', 'https://i.imgur.com/6FpgZlV.gif', 0),
+('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18', '', 'https://i.imgur.com/8AJKwE9.png', 0),
+('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24', '', 'https://i.imgur.com/M4WcKHc.png', 0),
+('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04', '', 'https://i.imgur.com/WbBV5KU.png', 0),
+('Last Quest', 'Do you miss pixels? Then, remember good old times with Last Quest!
+
+Last Quest is a Zelda-like ARPG filled with enemies, puzzles, items and enemies
+
+Do you dare to face evil and bring peace back to the world?', 'jolsensei', 3, '2019-06-14', 'https://i.imgur.com/YvH79xF.png', 'https://i.imgur.com/cX6cVln.png', 0)
 
 GO
 

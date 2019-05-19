@@ -1,0 +1,125 @@
+﻿<UserControl x:Class="CHAIR_UI.UserControls.Library"
+             x:Name="LibraryUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CHAIR_UI.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:CHAIR_Entities.Complex"
+             xmlns:modelP="clr-namespace:CHAIR_Entities.Persistent"
+             xmlns:conv="clr-namespace:CHAIR_UI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <UserControl.Resources>
+        <conv:BooleanToProfilePicConverter x:Key="BTPPConverter"/>
+        <conv:OnlineBooleanToBorderBrush x:Key="OBTBConverter"/>
+        <conv:HoursPlayedToProfText x:Key="HPTPTConverter"/>
+        <conv:BoolToVisibility x:Key="BTVConverter"/>
+        <conv:BoolToVisibilityInverse x:Key="BTVIConverter"/>
+        <conv:LastPlayedToString x:Key="LPTSConverter"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Listbox with all the games the user owns -->
+        <ListBox Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="model:OptionItem">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Height="40" Width="40" Source="{Binding Path=game.libraryImageUrl}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Path=game.name}" FontSize="20" Margin="12 0 0 0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <!-- StackPanel with the information about the game -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Visibility="{Binding libraryGameVisible}">
+            <StackPanel>
+                <!-- Big image -->
+                <Image Source="{Binding Path=selectedLibraryGame.game.storeImageUrl}" Stretch="Uniform" Height="500"/>
+
+                <!-- Download or Play button TODO: Change depending on whether the game is installed or not -->
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="DOWNLOAD" FontSize="35"/>
+                
+                <!-- Game name -->
+                <TextBlock Text="{Binding Path=selectedLibraryGame.game.name}" FontSize="50" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="10"/>
+                <TextBlock Text="{Binding Path=selectedLibraryGame.game.developer}" FontSize="20" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="13 -15 0 10"/>
+                <Separator/>
+
+                <!-- Description -->
+                <TextBlock Text="{Binding Path=selectedLibraryGame.game.description}" FontWeight="Light" TextWrapping="Wrap" FontSize="15" Margin="10 8 0 0"/>
+                <Separator Margin="0 8 0 0"/>
+
+                <Grid Grid.Column="1" Visibility="{Binding libraryGameVisible}" Margin="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Hours played -->
+                    <TextBlock Grid.Column="0" Grid.Row="0">
+                        <TextBlock Text="YOU'VE PLAYED " Foreground="Blue" FontWeight="Bold" FontSize="20"/>
+                        <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedLibraryGame.relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
+                    </TextBlock>
+
+                    <!-- Last played or Currently In-Game, depending on if the user is playing currently or not -->
+                    <TextBlock FontSize="20" Grid.Column="1" Grid.Row="0" FontWeight="Bold" Text="Currently In-Game" Visibility="{Binding Path=selectedLibraryGame.relationship.playing, Converter={StaticResource BTVConverter}}" Foreground="{StaticResource PastelGreen}"/>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Visibility="{Binding Path=selectedLibraryGame.relationship.playing, Converter={StaticResource BTVIConverter}}">
+                        <TextBlock Text="LAST PLAYED " Foreground="Blue" FontWeight="Bold" FontSize="20"/>
+                        <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedLibraryGame.relationship.lastPlayed, Converter={StaticResource LPTSConverter}}" />
+                    </TextBlock>
+
+                    <!-- Friends who play this game text -->
+                    <TextBlock Text="Friends who play this game" FontSize="30" Grid.Column="0" Grid.Row="2" FontWeight="Bold" Margin="0 20 0 0"/>
+                    
+                    <!-- Friends who play this game -->
+                    <!-- The other games in the store -->
+                    <ItemsControl Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Path=selectedLibraryGame.friends}" Margin="0 10 0 0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="modelP:User">
+                                <Border BorderBrush="{Binding Path=online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Height="80" Width="80" Margin="20 0 0 0">
+                                    <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=LibraryUserControl, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
+                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}" ToolTip="{Binding Path=nickname}">
+                                            <!--
+                                            <Image.InputBindings>
+                                                <MouseBinding Gesture="LeftClick" />
+                                            </Image.InputBindings>-->
+                                        </Image>
+                                    </Button>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+        
+
+        <!-- Text to show in case there is no selected game -->
+        <TextBlock Visibility="{Binding libraryGameVisibleInverse}" Grid.Column="1" FontSize="40" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap">
+            Select a game or go get one at the store, you
+            <TextBlock Text="scrub" Foreground="Red" FontSize="50" FontWeight="ExtraBlack"/>
+        </TextBlock>
+    </Grid>
+</UserControl>

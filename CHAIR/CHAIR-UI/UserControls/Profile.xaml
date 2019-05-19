@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="CHAIR_UI.UserControls.Profile"
+             x:Name="ProfileUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CHAIR_UI.UserControls"
+             xmlns:conv="clr-namespace:CHAIR_UI.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:CHAIR_Entities.Complex"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <conv:BooleanToProfilePicConverter x:Key="BTPPConverter"/>
+        <conv:OnlineBooleanToBorderBrush x:Key="OBTBConverter"/>
+        <conv:DateToBirthDateAndAgeString x:Key="DTBDAAConverter"/>
+        <conv:AccCreatDateToString x:Key="ACDTSConverter"/>
+        <conv:ProfDescToVisibility x:Key="PDTVConverter"/>
+        <conv:HoursPlayedToProfText x:Key="HPTPTConverter"/>
+        <conv:AcqDateToString x:Key="ADTSConverter"/>
+        <conv:BoolToVisibility x:Key="BTVConverter"/>
+        <conv:BoolToVisibilityInverse x:Key="BTVIConverter"/>
+        <conv:LastPlayedToString x:Key="LPTSConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid HorizontalAlignment="Center" Width="800">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+            <!-- StackPanel for the top information -->
+            <StackPanel Orientation="Vertical">
+                <!-- StackPanel for profile picture, nickname, location and birthday -->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="16 8 16 8" >
+                    <!-- Profile picture (set depending on whether the user is admin or not) -->
+                    <Border BorderBrush="{Binding Path=profileUser.user.online, Converter={StaticResource OBTBConverter}}"  BorderThickness="3" Width="150" Height="150" >
+                        <Image Source="{Binding Path=profileUser.user.admin, Converter={StaticResource BTPPConverter}}"/>
+                    </Border>
+                    <Grid Margin="10 0 10 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Nickname -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Profile location -->
+                            <RowDefinition Height="*"/>
+                            <!-- Birthday -->
+                        </Grid.RowDefinitions>
+                        <!-- Nickname -->
+                        <TextBlock FontSize="40" Grid.Row="0" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}" />
+
+                        <!-- Profile location -->
+                        <TextBlock FontSize="15" Grid.Row="1" Text="{Binding Path=profileUser.user.profileLocation}" Foreground="{StaticResource LocationFontColor}" />
+
+                        <!-- Birthday -->
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Bottom">
+                            <materialDesign:PackIcon Kind="CakeVariant" Height="30" Width="30"/>
+                            <TextBlock FontSize="25" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" Foreground="{StaticResource FontColor}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <materialDesign:PackIcon Kind="Medal" Height="25" Width="25" Grid.Row="0" Grid.Column="0"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=profileUser.user.accountCreationDate, Converter={StaticResource ACDTSConverter}}" FontSize="20" Foreground="{StaticResource FontColor}" TextWrapping="Wrap"/>
+                </Grid>
+
+            </StackPanel>
+
+            <!-- If there is no description, then the separator and the textblock are hidden -->
+            <Separator Grid.Row="1" Visibility="{Binding Path=profileUser.user.profileDescription, Converter={StaticResource PDTVConverter}}"/>
+
+            <TextBlock Grid.Row="2" Visibility="{Binding Path=profileUser.user.profileDescription, Converter={StaticResource PDTVConverter}}" Text="{Binding Path=profileUser.user.profileDescription}" FontSize="20" Foreground="{StaticResource FontColor}" Margin="0 10 0 10" TextWrapping="Wrap"/>
+
+            <Separator Grid.Row="3" />
+
+            <!-- The user's last 3 played games -->
+            <ItemsControl Grid.Row="4" ItemsSource="{Binding Path=profileUser.games}" HorizontalAlignment="Center" Width="800">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="model:UserGamesWithGame">
+                        <materialDesign:Card Margin="0 15 0 0" Height="150" Width="800" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Image library picture -->
+                                <Image Source="{Binding Path=game.libraryImageUrl}" Grid.Column="0" x:Name="FrontPageImage" Stretch="Uniform" Margin="10"/>
+
+                                <!-- Game information -->
+                                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
+                                    <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="25" Text="{Binding Path=game.name}" />
+                                    <TextBlock Grid.Row="1" FontWeight="Medium" FontStyle="Italic" FontSize="15" Text="{Binding Path=game.developer}" />
+                                </StackPanel>
+
+                                <!-- Relationship information -->
+                                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 10">
+                                    <TextBlock FontSize="15" Text="{Binding Path=relationship.acquisitionDate, Converter={StaticResource ADTSConverter}}"/>
+                                    <TextBlock>
+                                    <TextBlock FontSize="15" Text="{Binding Path=relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
+                                    <TextBlock FontSize="15" Text=" on record"/>
+                                </TextBlock>
+                                    <TextBlock FontSize="15" FontWeight="Bold" Text="Currently In-Game" Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVConverter}}" Foreground="{StaticResource PastelGreen}"/>
+                                    <TextBlock Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVIConverter}}">
+                                    <TextBlock FontSize="15" Text="Last played:"/>
+                                    <TextBlock FontSize="15" Text="{Binding Path=relationship.lastPlayed, Converter={StaticResource LPTSConverter}}" />
+                                </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

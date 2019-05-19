@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CHAIRAPI-Entidades\CHAIRAPI-Entities.csproj" />
+    <ProjectReference Include="..\CHAIRAPI-Entities\CHAIRAPI-Entities.csproj" />
   </ItemGroup>
 
 </Project>
