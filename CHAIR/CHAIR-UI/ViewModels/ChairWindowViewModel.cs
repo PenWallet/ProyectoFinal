@@ -47,6 +47,7 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<UserProfile>("getUserProfile", getUserProfile);
             _signalR.proxy.On<List<UserGamesWithGameAndFriends>>("getAllMyGames", getAllMyGames);
             _signalR.proxy.On<GameStore>("getGameInformation", getGameInformation);
+            _signalR.proxy.On<List<UserSearch>>("searchForUsers", searchForUsers);
 
             //Thread.Sleep(100);
 
@@ -70,10 +71,38 @@ namespace CHAIR_UI.ViewModels
         private Visibility _libraryGameVisible { get; set; }
         private bool _openCommunity { get; set; } //Variable used to know whether to open Profile to see another user's information, or to open Community, the user searcher
         private GameStore _selectedStoreGame { get; set; }
+        private List<UserSearch> _searchList { get; set; }
         #endregion
 
 
         #region Public properties
+        public RelayCommand<string> addFriendCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(addFriendCommand_Executed);
+            }
+        }
+        public RelayCommand<string> searchUsersCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(searchUsersCommand_Executed);
+            }
+        }
+        public List<UserSearch> searchList
+        {
+            get
+            {
+                return _searchList;
+            }
+
+            set
+            {
+                _searchList = value;
+                NotifyPropertyChanged("searchList");
+            }
+        }
         public GameStore selectedStoreGame
         {
             get
@@ -285,42 +314,71 @@ namespace CHAIR_UI.ViewModels
             selectedOption = _optionsList.Single(x => x.name == "Community");
         }
 
+        private void searchUsersCommand_Executed(string search)
+        {
+            _signalR.proxy.Invoke("searchForUsers", search, SharedInfo.loggedUser.token);
+        }
+
         private void goToGamePageCommand_Executed(string game)
         {
             _signalR.proxy.Invoke("getGameInformation", SharedInfo.loggedUser.nickname, game, SharedInfo.loggedUser.token);
             _view.ChangePage("Game", this);
+        }
+
+        private void addFriendCommand_Executed(string user2)
+        {
+            _signalR.proxy.Invoke("addFriend", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
+            _searchList.Single(x => x.user.nickname == user2).relationshipExists = true;
+            NotifyPropertyChanged("searchList");
         }
         #endregion
 
         #region SignalR Methods
         private void getAllStoreGames(List<Game> games)
         {
-            if(games.Count != 0)
-            {
-                try
+            Application.Current.Dispatcher.Invoke(delegate {
+                if (games.Count != 0)
                 {
-                    frontPageGame = games.Single(x => x.frontPage);
-                    games.Remove(frontPageGame);
-                }
-                catch (Exception e) { frontPageGame = null; }
+                    try
+                    {
+                        frontPageGame = games.Single(x => x.frontPage);
+                        games.Remove(frontPageGame);
+                    }
+                    catch (Exception e) { frontPageGame = null; }
 
-                storeGames = games;
-            }
+                    storeGames = games;
+                }
+            });
+
+            
         }
 
         private void getUserProfile(UserProfile obj)
         {
-            profileUser = obj;
+            Application.Current.Dispatcher.Invoke(delegate {
+                profileUser = obj;
+            });
         }
 
         private void getAllMyGames(List<UserGamesWithGameAndFriends> obj)
         {
-            libraryGames = obj;
+            Application.Current.Dispatcher.Invoke(delegate {
+                libraryGames = obj;
+            });
         }
 
         private void getGameInformation(GameStore obj)
         {
-            selectedStoreGame = obj;
+            Application.Current.Dispatcher.Invoke(delegate {
+                selectedStoreGame = obj;
+            });
+        }
+
+        private void searchForUsers(List<UserSearch> obj)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                searchList = obj;
+            });
         }
 
         private void unexpectedError(string error)

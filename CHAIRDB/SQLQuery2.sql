@@ -43,3 +43,9 @@ UPDATE Users SET online = 1 WHERE nickname = 'Migue'
 
 SELECT * FROM IPBANS
 DELETE FROM IPBans
+
+DECLARE @algo INT
+EXEC InsertNewFriendship 'Penny3', 'Migue3', @status = @algo OUTPUT
+PRINT @algo
+
+SELECT nickname, profileDescription, admin, [online], bannedUntil, banReason FROM Users WHERE nickname LIKE '%e%' AND nickname != 'Penny'

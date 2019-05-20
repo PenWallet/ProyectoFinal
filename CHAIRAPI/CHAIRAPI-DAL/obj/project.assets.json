@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETStandard,Version=v2.0": {
+      "ini-parser/2.5.2": {
+        "type": "package",
+        "compile": {
+          "lib/net20/INIFileParser.dll": {}
+        },
+        "runtime": {
+          "lib/net20/INIFileParser.dll": {}
+        }
+      },
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
         "compile": {
@@ -218,6 +227,9 @@
       "CHAIRAPI-Entities/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "ini-parser": "2.5.2"
+        },
         "compile": {
           "bin/placeholder/CHAIRAPI-Entities.dll": {}
         },
@@ -228,6 +240,20 @@
     }
   },
   "libraries": {
+    "ini-parser/2.5.2": {
+      "sha512": "4tTkVV6xAPuit4vwHeLdcwmLO2kRtWRE7TXKga5QQOdt2DPdtq00ADeXHOzO7hkNtcZpT7GbsvBd6jOiwGz0JQ==",
+      "type": "package",
+      "path": "ini-parser/2.5.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ini-parser.2.5.2.nupkg.sha512",
+        "ini-parser.nuspec",
+        "lib/net20/INIFileParser.dll",
+        "lib/net20/INIFileParser.dll.mdb",
+        "lib/net20/INIFileParser.xml"
+      ]
+    },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "sha512": "a/iSwnRZb+LHFk49hQOyThh/ZNC3vsbZsF65XwQIb863qF6msmhdQtxGXFL28Ob2NsCz/drEj28BJd/YPpLRBg==",
       "type": "package",
@@ -833,7 +859,8 @@
     ".NETStandard,Version=v2.0": [
       "CHAIRAPI-Entities >= 1.0.0",
       "NETStandard.Library >= 2.0.3",
-      "System.Data.SqlClient >= 4.6.0"
+      "System.Data.SqlClient >= 4.6.0",
+      "ini-parser >= 2.5.2"
     ]
   },
   "packageFolders": {
@@ -890,6 +917,10 @@
           "System.Data.SqlClient": {
             "target": "Package",
             "version": "[4.6.0, )"
+          },
+          "ini-parser": {
+            "target": "Package",
+            "version": "[2.5.2, )"
           }
         },
         "imports": [
@@ -899,5 +930,17 @@
         "warn": true
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'ini-parser 2.5.2' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETStandard,Version=v2.0'. This package may not be fully compatible with your project.",
+      "libraryId": "ini-parser",
+      "targetGraphs": [
+        ".NETStandard,Version=v2.0"
+      ]
+    }
+  ]
 }

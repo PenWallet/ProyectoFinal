@@ -15,45 +15,35 @@ namespace CHAIRAPI_DAL.Handlers
         /// </summary>
         /// <param name="relationship">The relationship to be saved</param>
         /// <returns>1 if saved successfully; 0 if the relationship already exists; -1 other errors</returns>
-        public static int saveNewRelationship(UserFriends relationship)
+        public static int saveNewRelationship(string user1, string user2)
         {
             Connection connection = new Connection();
             SqlConnection sqlConnection = new SqlConnection();
-            SqlCommand command = new SqlCommand();
-            int affectedRows = -1;
+            SqlCommand command = null;
+            int returnStatus;
 
             try
             {
-                //Define parameters
-                command.CommandText = "INSERT INTO UserFriends(user1, user2) VALUES (@user1, @user2)";
-
-                //Create parameters
-                command.Parameters.Add("@user1", SqlDbType.VarChar).Value = relationship.user1;
-                command.Parameters.Add("@user2", SqlDbType.VarChar).Value = relationship.user2;
-
                 //Get connection
                 sqlConnection = connection.getConnection();
 
-                //Give the connection to the command
-                command.Connection = sqlConnection;
+                //Prepare command
+                command = new SqlCommand("InsertNewFriendship", sqlConnection);
+                command.CommandType = CommandType.StoredProcedure;
 
+                //Create parameters
+                command.Parameters.Add("@user1", SqlDbType.VarChar).Value = user1;
+                command.Parameters.Add("@user2", SqlDbType.VarChar).Value = user2;
+                command.Parameters.Add("@status", SqlDbType.Int).Direction = ParameterDirection.Output;
+                
                 //Execute query
-                affectedRows = command.ExecuteNonQuery();
+                command.ExecuteNonQuery();
 
+                returnStatus = (int)command.Parameters["@status"].Value;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-
-                if (ex.Number == 547) //FOREIGN KEY Exception (Can't find the specified user or game)
-                    affectedRows = 0;
-                else if (ex.Number == 2627) //Duplicate PRIMARY KEY Exception Number
-                    affectedRows = -1;
-                else
-                    affectedRows = -2; //Instead of throwing exception, change affectedRows to -2
-            }
-            catch (Exception)
-            {
-                affectedRows = -2; //Instead of throwing exception, change affectedRows to -2
+                returnStatus = -2; //Instead of throwing exception, change returnStatus to -2
             }
             finally
             {
@@ -61,7 +51,7 @@ namespace CHAIRAPI_DAL.Handlers
                 connection.closeConnection(ref sqlConnection);
             }
 
-            return affectedRows;
+            return returnStatus;
         }
 
         /// <summary>

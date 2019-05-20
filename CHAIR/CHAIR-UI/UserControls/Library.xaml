@@ -100,12 +100,7 @@
                             <DataTemplate DataType="modelP:User">
                                 <Border BorderBrush="{Binding Path=online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Height="80" Width="80" Margin="20 0 0 0">
                                     <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=LibraryUserControl, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
-                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}" ToolTip="{Binding Path=nickname}">
-                                            <!--
-                                            <Image.InputBindings>
-                                                <MouseBinding Gesture="LeftClick" />
-                                            </Image.InputBindings>-->
-                                        </Image>
+                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}" ToolTip="{Binding Path=nickname}"/>
                                     </Button>
                                 </Border>
                             </DataTemplate>

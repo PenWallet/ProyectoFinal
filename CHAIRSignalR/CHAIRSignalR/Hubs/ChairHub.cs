@@ -77,7 +77,30 @@ namespace CHAIRSignalR.Hubs
             if (gameStore != null)
                 Clients.Caller.getGameInformation(gameStore);
             else
-                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch this user's profile. Please try again when it's fixed :D");
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch the game information. Please try again when it's fixed :D");
+        }
+
+        public void searchForUsers(string search, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<UserSearch> users = UserSearchCallback.getSearchResults(search, token, out statusCode);
+
+            if (users != null)
+                Clients.Caller.searchForUsers(users);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to search for users. Please try again when it's fixed :D");
+
+        }
+
+        public void addFriend(string user1, string user2, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserFriendsCallback.saveNewRelationship(user1, user2, token, out statusCode);
+
+            if(statusCode != HttpStatusCode.Created)
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to add a friend. Please try again when it's fixed :D");
         }
 
         public override Task OnDisconnected(bool stopCalled)

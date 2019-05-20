@@ -4630,7 +4630,8 @@
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
           "CHAIRAPI-Entities": "1.0.0",
-          "System.Data.SqlClient": "4.6.0"
+          "System.Data.SqlClient": "4.6.0",
+          "ini-parser": "2.5.2"
         },
         "compile": {
           "bin/placeholder/CHAIRAPI-DAL.dll": {}
@@ -4642,6 +4643,9 @@
       "CHAIRAPI-Entities/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "ini-parser": "2.5.2"
+        },
         "compile": {
           "bin/placeholder/CHAIRAPI-Entities.dll": {}
         },

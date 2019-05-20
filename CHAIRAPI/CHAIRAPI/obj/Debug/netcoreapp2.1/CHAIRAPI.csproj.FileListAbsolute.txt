@@ -22,7 +22,6 @@ C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\ne
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csproj.CoreCompileInputs.cache
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.RazorAssemblyInfo.cache
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.RazorAssemblyInfo.cs
-C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.AssemblyInfoInputs.cache
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.AssemblyInfo.cs
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\bin\Debug\netcoreapp2.1\CHAIRAPI.deps.json
@@ -38,3 +37,4 @@ C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\ne
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.csproj.CopyComplete
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.dll
 C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\CHAIRAPI.pdb
+C:\Users\Oscar\Desktop\Segundo DAM\Proyecto Final\CHAIRAPI\CHAIRAPI\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

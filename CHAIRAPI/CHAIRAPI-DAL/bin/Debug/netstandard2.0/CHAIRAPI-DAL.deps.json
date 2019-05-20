@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "4abc2ae36c8cbfafd3319712844b2ab4436f8506"
+    "signature": "8b3775587e393bcc5a9835fecfa6d9d5ce546dc9"
   },
   "compilationOptions": {},
   "targets": {
@@ -11,10 +11,19 @@
         "dependencies": {
           "CHAIRAPI-Entities": "1.0.0",
           "NETStandard.Library": "2.0.3",
-          "System.Data.SqlClient": "4.6.0"
+          "System.Data.SqlClient": "4.6.0",
+          "ini-parser": "2.5.2"
         },
         "runtime": {
           "CHAIRAPI-DAL.dll": {}
+        }
+      },
+      "ini-parser/2.5.2": {
+        "runtime": {
+          "lib/net20/INIFileParser.dll": {
+            "assemblyVersion": "2.5.2.0",
+            "fileVersion": "2.5.2.0"
+          }
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
@@ -140,6 +149,9 @@
         }
       },
       "CHAIRAPI-Entities/1.0.0": {
+        "dependencies": {
+          "ini-parser": "2.5.2"
+        },
         "runtime": {
           "CHAIRAPI-Entities.dll": {}
         }
@@ -151,6 +163,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "ini-parser/2.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4tTkVV6xAPuit4vwHeLdcwmLO2kRtWRE7TXKga5QQOdt2DPdtq00ADeXHOzO7hkNtcZpT7GbsvBd6jOiwGz0JQ==",
+      "path": "ini-parser/2.5.2",
+      "hashPath": "ini-parser.2.5.2.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",

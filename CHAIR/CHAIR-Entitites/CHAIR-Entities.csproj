@@ -46,6 +46,7 @@
     <Compile Include="Complex\UserGamesWithGame.cs" />
     <Compile Include="Complex\UserGamesWithGameAndFriends.cs" />
     <Compile Include="Complex\UserProfile.cs" />
+    <Compile Include="Complex\UserSearch.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
     <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Persistent\Game.cs" />

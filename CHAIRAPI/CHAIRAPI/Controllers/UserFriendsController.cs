@@ -20,34 +20,26 @@ namespace CHAIRAPI.Controllers
         /// POST Method is used to create a new friendship between users and store it in the database
         /// </summary>
         /// <param name="relationship">The relationship that will be stored in the database</param>
-        [HttpPost]
-        public IActionResult Post([FromBody] UserFriends relationship)
+        [HttpPost("{user1}/befriends/{user2}")]
+        public IActionResult Post(string user1, string user2)
         {
-            string accept = Request.Headers["Content-Type"].ToString();
-            if (accept != "application/json" && accept != "*/*")
-                return StatusCode(415);
-            else if (Utilities.checkUserFriendsHasRequiredFieldsToPostOrPut(relationship))
+            if (Utilities.checkUsrClaimValidity(User, user1, user2))
             {
-                if (Utilities.checkUsrClaimValidity(User, relationship.user1, relationship.user2))
-                {
-                    //Save to the database and collect status message (specified in the handler)
-                    int saveStatus = UserFriendsHandler.saveNewRelationship(relationship);
+                //Save to the database and collect status message (specified in the handler)
+                int saveStatus = UserFriendsHandler.saveNewRelationship(user1, user2);
 
-                    //Return the status code depending on what happened when saving the user
-                    if (saveStatus == 1)
-                        return StatusCode(201); //Created
-                    else if (saveStatus == 0)
-                        return StatusCode(404); //Not Found
-                    else if (saveStatus == -1)
-                        return StatusCode(409); //Conflict
-                    else
-                        return StatusCode(500); //Internal Server Error
-                }
+                //Return the status code depending on what happened when saving the user
+                if (saveStatus == 1)
+                    return StatusCode(201); //Created
+                else if (saveStatus == 0)
+                    return StatusCode(404); //Not Found
+                else if (saveStatus == -1)
+                    return StatusCode(409); //Conflict
                 else
-                    return StatusCode(401); //Unauthorized
+                    return StatusCode(500); //Internal Server Error
             }
             else
-                return StatusCode(400); //Bad Request
+                return StatusCode(401); //Unauthorized
         }
 
         /// <summary>
@@ -83,7 +75,7 @@ namespace CHAIRAPI.Controllers
         /// </summary>
         /// <param name="user1">One of the users from the relationship</param>
         /// <param name="user2">One of the users from the relationship</param>
-        [HttpGet("{user1}/friend/{user2}")]
+        [HttpGet("{user1}/isfriends/{user2}")]
         public IActionResult Get(string user1, string user2)
         {
             string accept = Request.Headers["Accept"].ToString();

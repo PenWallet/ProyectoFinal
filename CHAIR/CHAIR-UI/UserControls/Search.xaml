@@ -1,0 +1,87 @@
+﻿<UserControl x:Class="CHAIR_UI.UserControls.Search"
+             x:Name="SearchUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CHAIR_UI.UserControls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:CHAIR_Entities.Complex"
+             xmlns:conv="clr-namespace:CHAIR_UI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <conv:AccReqDateToString x:Key="ARDTSConverter"/>
+        <conv:InverseBoolean x:Key="IBConverter"/>
+        <conv:BooleanToProfilePicConverter x:Key="BTPPConverter"/>
+        <conv:OnlineBooleanToBorderBrush x:Key="OBTBConverter"/>
+        <conv:DateToBirthDateAndAgeString x:Key="DTBDAAConverter"/>
+        <conv:AccCreatDateToString x:Key="ACDTSConverter"/>
+        <conv:ProfDescToVisibility x:Key="PDTVConverter"/>
+        <conv:HoursPlayedToProfText x:Key="HPTPTConverter"/>
+        <conv:AcqDateToString x:Key="ADTSConverter"/>
+        <conv:BoolToVisibility x:Key="BTVConverter"/>
+        <conv:BoolToVisibilityInverse x:Key="BTVIConverter"/>
+        <conv:LastPlayedToString x:Key="LPTSConverter"/>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Search box -->
+        <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" x:Name="SearchTextBox" Grid.Row="0" FontSize="20" AcceptsReturn="False" MaxLength="20" materialDesign:HintAssist.Hint="Type the nickname of the user" Margin="30 15 30 0">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding ElementName=SearchUserControl, Path=DataContext.searchUsersCommand}" CommandParameter="{Binding ElementName=SearchTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+        
+        <!-- Search results -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Margin="30 20 30 20">
+            <ItemsControl ItemsSource="{Binding searchList}" Margin="25" Height="Auto">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" CanVerticallyScroll="True"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="model:UserSearch">
+                        <materialDesign:Card Margin="0 0 0 15" Height="150" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="150" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Profile picture -->
+                                <Border BorderBrush="{Binding Path=user.online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Width="130" Height="130" >
+                                    <Image Source="{Binding Path=user.admin, Converter={StaticResource BTPPConverter}}"/>
+                                </Border>
+
+                                <!-- Game information -->
+                                <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10">
+                                    <TextBlock FontWeight="Bold" FontSize="40" Text="{Binding Path=user.nickname}" />
+                                    <TextBlock FontWeight="Light" FontStyle="Italic" FontSize="20" Text="{Binding Path=user.description}" Margin="0 5 0 0" />
+                                </StackPanel>
+
+                                <!-- Button to add friend. Is enabled only if the user isn't friends with that user and there is no pending friend request -->
+                                <!-- The ToolTip shows whether the friend request has been accepted, and if it has been, when was it -->
+                                <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding ElementName=SearchUserControl, Path=DataContext.addFriendCommand}" CommandParameter="{Binding Path=user.nickname}" Grid.Column="2" Margin="0 0 20 0" Height="70" IsEnabled="{Binding relationshipExists, Converter={StaticResource IBConverter}}" ToolTip="{Binding friendsSince, Converter={StaticResource ARDTSConverter}}" ToolTipService.ShowOnDisabled="True" ToolTipService.IsEnabled="{Binding relationshipExists}">
+                                    <StackPanel Orientation="Horizontal" Margin="10 0 10 0">
+                                        <materialDesign:PackIcon Kind="PersonAdd" Height="30" Width="30" Margin="0 0 10 0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Add Friend" FontSize="25"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </materialDesign:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+    </Grid>
+</UserControl>

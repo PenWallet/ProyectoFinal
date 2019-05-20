@@ -104,6 +104,8 @@ namespace CHAIR_UI.Views
                 ContentCtrl.Content = new Store(viewmodel);
             else if (page == "Settings")
                 ContentCtrl.Content = new Settings(viewmodel);
+            else if (page == "Community")
+                ContentCtrl.Content = new Search(viewmodel);
             else if(page == "Game")
                 ContentCtrl.Content = new UserControls.Game(viewmodel);
             else if (page == "Admin")

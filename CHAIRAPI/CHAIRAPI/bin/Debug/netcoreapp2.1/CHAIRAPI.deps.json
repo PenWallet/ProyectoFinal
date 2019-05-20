@@ -616,7 +616,8 @@
       "CHAIRAPI-DAL/1.0.0": {
         "dependencies": {
           "CHAIRAPI-Entities": "1.0.0",
-          "System.Data.SqlClient": "4.6.0"
+          "System.Data.SqlClient": "4.6.0",
+          "ini-parser": "2.5.2"
         },
         "runtime": {
           "CHAIRAPI-DAL.dll": {}
@@ -626,6 +627,9 @@
         }
       },
       "CHAIRAPI-Entities/1.0.0": {
+        "dependencies": {
+          "ini-parser": "2.5.2"
+        },
         "runtime": {
           "CHAIRAPI-Entities.dll": {}
         },

@@ -197,6 +197,33 @@ RETURN
 			ON M.frname = U.nickname
 GO
 
+/* PROCEDURES */
+-- Procedure used to insert a new friendship between two users
+-- Returns 1 if inserted, 0 if one of the users doesn't exists, -1 if a friendship already exists
+GO
+CREATE PROCEDURE InsertNewFriendship (@user1 VARCHAR(20), @user2 VARCHAR(20), @status INT OUTPUT)
+AS
+BEGIN
+	IF(EXISTS(SELECT 1 FROM UserFriends WHERE user1 = @user1 AND user2 = @user2 OR user1 = @user2 AND user2 = @user1))
+		BEGIN
+			SET @status = -1;
+		END
+	ELSE
+		BEGIN
+			IF(EXISTS(SELECT 1 FROM Users WHERE nickname = @user1) AND EXISTS(SELECT 1 FROM Users WHERE nickname = @user2))
+				BEGIN
+					INSERT INTO UserFriends (user1, user2) VALUES (@user1, @user2)
+					SET @status = 1
+				END
+			ELSE
+				BEGIN
+					SET @status = 0;
+				END
+		END
+		
+END
+GO
+
 /* SOME TEST DATA */
 INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin]) 
 	VALUES	('Penny', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 1),
