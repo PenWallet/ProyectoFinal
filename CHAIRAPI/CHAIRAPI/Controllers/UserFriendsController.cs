@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CHAIRAPI.Utils;
 using CHAIRAPI_DAL.Handlers;
+using CHAIRAPI_Entidades.Complex;
 using CHAIRAPI_Entities.Persistent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -107,7 +108,7 @@ namespace CHAIRAPI.Controllers
                 return StatusCode(406); //Not Acceptable
             else if (Utilities.checkUsrClaimValidity(User, nickname))
             {
-                List<UserFriends> list = UserFriendsHandler.searchRelationshipsByUser(nickname);
+                List<UserForFriendList> list = UserForFriendListHandler.searchFriends(nickname);
 
                 if (list != null)
                     return Ok(list);

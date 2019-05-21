@@ -43,12 +43,14 @@
   <ItemGroup>
     <Compile Include="Complex\GameBeingPlayed.cs" />
     <Compile Include="Complex\GameStore.cs" />
+    <Compile Include="Complex\UserForFriendList.cs" />
     <Compile Include="Complex\UserGamesWithGame.cs" />
     <Compile Include="Complex\UserGamesWithGameAndFriends.cs" />
     <Compile Include="Complex\UserProfile.cs" />
     <Compile Include="Complex\UserSearch.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
     <Compile Include="Models\OptionItem.cs" />
+    <Compile Include="Models\VMBase.cs" />
     <Compile Include="Persistent\Game.cs" />
     <Compile Include="Persistent\IPBan.cs" />
     <Compile Include="Persistent\Message.cs" />

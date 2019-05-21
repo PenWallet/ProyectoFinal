@@ -25,10 +25,14 @@ namespace CHAIR_UI.Views
     /// </summary>
     public partial class ChairWindow : Window, IBasicActionsChair
     {
+        private FriendListWindow _friendListWindow;
+
         public ChairWindow()
         {
             InitializeComponent();
             this.DataContext = new ChairWindowViewModel(this);
+            _friendListWindow = new FriendListWindow();
+            _friendListWindow.Show();
         }
 
         /// <summary>

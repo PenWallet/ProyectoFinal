@@ -1,4 +1,5 @@
-﻿using CHAIR_Entities.Persistent;
+﻿using CHAIR_Entities.Models;
+using CHAIR_Entities.Persistent;
 using CHAIR_Entities.Responses;
 using CHAIR_UI.Interfaces;
 using CHAIR_UI.SignalR;
@@ -244,6 +245,9 @@ namespace CHAIR_UI.ViewModels
             //Close this window
             _view.Close();
 
+            //Dispose of everything
+            dispose();
+
         }
 
         private void MinimizeCommand_Executed()
@@ -292,6 +296,21 @@ namespace CHAIR_UI.ViewModels
         #endregion
 
         #region Functions
+        private void dispose()
+        {
+            _username = null;
+            _password = null;
+            _location = null;
+            _usernameBorder = null;
+            _passwordBorder = null;
+            _birthdateBorder = null;
+            _errors = null;
+            _errorsVisibility = null;
+            _view = null;
+            _registerCommand = null;
+            _signalR = null;
+        }
+
         private List<string> getFieldsErrors()
         {
             List<string> errorsList = new List<string>();

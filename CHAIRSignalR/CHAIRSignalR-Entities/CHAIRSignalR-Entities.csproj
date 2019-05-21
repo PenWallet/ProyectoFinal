@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Complex\GameStore.cs" />
+    <Compile Include="Complex\UserForFriendList.cs" />
     <Compile Include="Complex\UserGamesWithGame.cs" />
     <Compile Include="Complex\UserGamesWithGameAndFriends.cs" />
     <Compile Include="Complex\UserProfile.cs" />

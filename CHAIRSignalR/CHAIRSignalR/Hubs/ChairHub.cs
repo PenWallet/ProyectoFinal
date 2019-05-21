@@ -103,6 +103,18 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to add a friend. Please try again when it's fixed :D");
         }
 
+        public void getFriends(string nickname, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<UserForFriendList> list = UserForFriendListCallback.getFriends(nickname, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.getFriends(list);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to get your friends. Please try again when it's fixed :D");
+        }
+
         public override Task OnDisconnected(bool stopCalled)
         {
             //Remove the user from the online list

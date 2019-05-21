@@ -21,6 +21,7 @@ namespace CHAIR_UI.ViewModels
         #region Constructors
         public ChairWindowViewModel(IBasicActionsChair view)
         {
+            loggedUser = SharedInfo.loggedUser;
             _view = view;
             _drawerOpen = false;
             _libraryGameVisible = Visibility.Hidden;
@@ -61,7 +62,7 @@ namespace CHAIR_UI.ViewModels
         private UserProfile _profileUser { get; set; } //This is the user to be displayed in the Profile UserControl
         private IBasicActionsChair _view { get; set; }
         private OptionItem _selectedOption { get; set; }
-        private List<OptionItem> _optionsList { get; }
+        private List<OptionItem> _optionsList { get; set; }
         private bool _drawerOpen { get; set; }
         private SignalRConnection _signalR { get; set; }
         private List<Game> _storeGames { get; set; } //List of all the games available in the store minus the frontpage game
@@ -76,6 +77,7 @@ namespace CHAIR_UI.ViewModels
 
 
         #region Public properties
+        public UserWithToken loggedUser { get; set; }
         public RelayCommand<string> addFriendCommand
         {
             get
@@ -265,14 +267,19 @@ namespace CHAIR_UI.ViewModels
                     _signalR.proxy.Invoke("getAllStoreGames", SharedInfo.loggedUser.token);
                 else if(_selectedOption.name == "Library") //If the user selected the Library, we must retrieve all the games he plays and all their information
                     _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
-                else if(_selectedOption.name == "Log out") //If the user wants to log out, we close the connection with the server
-                    SignalRHubsConnection.closeChairHub();
+                    
 
                 //Close the drawer
                 drawerOpen = false;
 
                 //Call through the interface to the view to change to whatever view the user asked for
                 _view.ChangePage(_selectedOption.name, this);
+
+                if (_selectedOption.name == "Log out") //If the user wants to log out, we close the connection with the server
+                {
+                    dispose();
+                    SignalRHubsConnection.closeChairHub();
+                }
             }
         }
         public DelegateCommand closeCommand
@@ -297,6 +304,7 @@ namespace CHAIR_UI.ViewModels
         {
             SignalRHubsConnection.closeChairHub();
             _view.Close();
+            dispose();
         }
 
         private void MinimizeCommand_Executed()
@@ -329,9 +337,9 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR.proxy.Invoke("addFriend", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
             _searchList.Single(x => x.user.nickname == user2).relationshipExists = true;
-            NotifyPropertyChanged("searchList");
         }
         #endregion
+
 
         #region SignalR Methods
         private void getAllStoreGames(List<Game> games)
@@ -349,8 +357,6 @@ namespace CHAIR_UI.ViewModels
                     storeGames = games;
                 }
             });
-
-            
         }
 
         private void getUserProfile(UserProfile obj)
@@ -383,7 +389,28 @@ namespace CHAIR_UI.ViewModels
 
         private void unexpectedError(string error)
         {
-            MessageBox.Show(error);
+            Application.Current.Dispatcher.Invoke(delegate {
+                MessageBox.Show(error);
+            });
+        }
+        #endregion
+
+
+        #region Functions
+        private void dispose()
+        {
+            _profileUser = null;
+            _view = null;
+            _selectedOption = null;
+            _optionsList = null;
+            _signalR = null;
+            _storeGames = null;
+            _frontPageGame = null;
+            _libraryGames = null;
+            _selectedLibraryGame = null;
+            _selectedStoreGame = null;
+            _searchList = null;
+            loggedUser = null;
         }
         #endregion
     }

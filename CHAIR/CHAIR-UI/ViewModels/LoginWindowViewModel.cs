@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using CHAIR_Entities.Models;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -208,8 +209,6 @@ namespace CHAIR_UI.ViewModels
 
                 //Close this one
                 _view.Close();
-
-                loadingLogin = false;
             });
         }
 

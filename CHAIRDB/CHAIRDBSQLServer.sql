@@ -197,6 +197,22 @@ RETURN
 			ON M.frname = U.nickname
 GO
 
+-- Function that returns all friendships from an user, along with their nicknames, online and admin status
+-- and the name of the game they're playing in case they are playing a game, otherwise it's null
+GO
+CREATE FUNCTION GetFriends (@nickname varchar(20))
+RETURNS TABLE
+AS
+RETURN
+	SELECT UF.user1, UF.user2, UF.acceptedRequestDate, U.nickname, U.[online], U.admin, UG.game
+		FROM UserFriends AS UF
+			INNER JOIN Users AS U
+				ON (UF.user1 = U.nickname AND UF.user1 != @nickname) OR (UF.user2 = U.nickname AND UF.user2 != @nickname)
+			LEFT JOIN UserGames AS UG
+				ON UG.[user] = U.nickname AND UG.playing != 0
+		WHERE user1 = @nickname OR user2 = @nickname
+GO
+
 /* PROCEDURES */
 -- Procedure used to insert a new friendship between two users
 -- Returns 1 if inserted, 0 if one of the users doesn't exists, -1 if a friendship already exists

@@ -131,6 +131,7 @@
     <Compile Include="Utils\DialogCloser.cs" />
     <Compile Include="Interfaces\ICloseable.cs" />
     <Compile Include="Utils\Utilities.cs" />
+    <Compile Include="ViewModels\FriendListWindowViewModel.cs" />
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />
@@ -139,6 +140,9 @@
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\ChairWindow.xaml.cs">
       <DependentUpon>ChairWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FriendListWindow.xaml.cs">
+      <DependentUpon>FriendListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
@@ -175,6 +179,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FriendListWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -185,7 +193,6 @@
     </Compile>
     <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ViewModels\LoginWindowViewModel.cs" />
-    <Compile Include="ViewModels\VMBase.cs" />
     <Compile Include="Views\LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

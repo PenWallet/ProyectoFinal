@@ -74,13 +74,19 @@ namespace CHAIR_UI
             switch (window)
             {
                 case "ChairWindow":
-                    ChairWindow chairWindow = new ChairWindow();
-                    chairWindow.Show();
+                    if (!Application.Current.Windows.OfType<ChairWindow>().Any())
+                    {
+                        ChairWindow chairWindow = new ChairWindow();
+                        chairWindow.Show();
+                    }
                     break;
 
                 case "RegisterWindow":
-                    RegisterWindow regWindow = new RegisterWindow();
-                    regWindow.Show();
+                    if (!Application.Current.Windows.OfType<RegisterWindow>().Any())
+                    {
+                        RegisterWindow regWindow = new RegisterWindow();
+                        regWindow.Show();
+                    }
                     break;
             }
         }

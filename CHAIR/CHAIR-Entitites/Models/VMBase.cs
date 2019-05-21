@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHAIR_UI.ViewModels
+namespace CHAIR_Entities.Models
 {
     public abstract class VMBase : INotifyPropertyChanged
     {

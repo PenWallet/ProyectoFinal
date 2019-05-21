@@ -49,3 +49,11 @@ EXEC InsertNewFriendship 'Penny3', 'Migue3', @status = @algo OUTPUT
 PRINT @algo
 
 SELECT nickname, profileDescription, admin, [online], bannedUntil, banReason FROM Users WHERE nickname LIKE '%e%' AND nickname != 'Penny'
+
+SELECT *
+	FROM UserFriends AS UF
+		INNER JOIN Users AS U
+			ON (UF.user1 = U.nickname AND UF.user1 != 'Penny') OR (UF.user2 = U.nickname AND UF.user2 != 'Penny')
+	WHERE user1 = 'Penny' OR user2 = 'Penny'
+
+SELECT * FROM GetFriends('Penny')
