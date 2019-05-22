@@ -20,10 +20,10 @@ namespace CHAIR_UI.Views
     /// </summary>
     public partial class FriendListWindow : Window
     {
-        public FriendListWindow()
+        public FriendListWindow(object viewmodel)
         {
             InitializeComponent();
-            this.DataContext = new FriendListWindowViewModel();
+            this.DataContext = (ChairWindowViewModel)viewmodel;
         }
 
         /// <summary>
@@ -31,9 +31,17 @@ namespace CHAIR_UI.Views
         /// </summary>
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
+            if (e.ChangedButton == MouseButton.Left)
             {
-                this.DragMove();
+                if (e.ClickCount == 2)
+                {
+                    if (this.WindowState == WindowState.Maximized)
+                        this.WindowState = WindowState.Normal;
+                    else
+                        this.WindowState = WindowState.Maximized;
+                }
+                else
+                    this.DragMove();
             }
         }
 

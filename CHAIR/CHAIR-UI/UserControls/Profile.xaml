@@ -119,14 +119,14 @@
                                 <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 0 10 10">
                                     <TextBlock FontSize="15" Text="{Binding Path=relationship.acquisitionDate, Converter={StaticResource ADTSConverter}}"/>
                                     <TextBlock>
-                                    <TextBlock FontSize="15" Text="{Binding Path=relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
-                                    <TextBlock FontSize="15" Text=" on record"/>
-                                </TextBlock>
+                                        <TextBlock FontSize="15" Text="{Binding Path=relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
+                                        <TextBlock FontSize="15" Text=" on record"/>
+                                    </TextBlock>
                                     <TextBlock FontSize="15" FontWeight="Bold" Text="Currently In-Game" Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVConverter}}" Foreground="{StaticResource PastelGreen}"/>
                                     <TextBlock Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVIConverter}}">
-                                    <TextBlock FontSize="15" Text="Last played:"/>
-                                    <TextBlock FontSize="15" Text="{Binding Path=relationship.lastPlayed, Converter={StaticResource LPTSConverter}}" />
-                                </TextBlock>
+                                        <TextBlock FontSize="15" Text="Last played:"/>
+                                        <TextBlock FontSize="15" Text="{Binding Path=relationship.lastPlayed, Converter={StaticResource LPTSConverter}}" />
+                                    </TextBlock>
                                 </StackPanel>
                             </Grid>
                         </materialDesign:Card>

@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Threading;
+using CHAIR_Entities.Responses;
+using System.ComponentModel;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -49,10 +51,17 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<List<UserGamesWithGameAndFriends>>("getAllMyGames", getAllMyGames);
             _signalR.proxy.On<GameStore>("getGameInformation", getGameInformation);
             _signalR.proxy.On<List<UserSearch>>("searchForUsers", searchForUsers);
+            _signalR.proxy.On<List<UserForFriendList>>("getFriends", getFriends);
+            _signalR.proxy.On<string>("notifyUserConnected", notifyUserConnected);
+            _signalR.proxy.On<BanResponse>("youHaveBeenBanned", youHaveBeenBanned);
+            _signalR.proxy.On("onlineSuccessful", onlineSuccessful);
+            _signalR.proxy.On("acceptFriendship", acceptFriendship);
+            _signalR.proxy.On<string>("userAcceptedFriendship", userAcceptedFriendship); //Used for when another user accepts our friend request
+            _signalR.proxy.On("userEndedFriendship", userEndedFriendship); //Used for when another user accepts our friend request
 
-            //Thread.Sleep(100);
-
-            selectedOption = _optionsList[0]; //Navigate to your profile
+            //As soon as the user opens the application, we need to retrieve all the information regarding the user 
+            _initializing = true; //We set this flag to true so that when getFriends gets called from SignalR, we update our status to true
+            _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
         }
 
         #endregion
@@ -73,11 +82,63 @@ namespace CHAIR_UI.ViewModels
         private bool _openCommunity { get; set; } //Variable used to know whether to open Profile to see another user's information, or to open Community, the user searcher
         private GameStore _selectedStoreGame { get; set; }
         private List<UserSearch> _searchList { get; set; }
+        private bool _initializing { get; set; }
+
+        //Friend list variables
+        private List<UserForFriendList> _friendsList { get; set; }
         #endregion
 
 
         #region Public properties
         public UserWithToken loggedUser { get; set; }
+        public RelayCommand<string> rejectFriendshipCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(rejectFriendshipCommand_Executed);
+            }
+        }
+
+        public RelayCommand<string> acceptFriendshipCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(acceptFriendshipCommand_Executed);
+            }
+        }
+        public List<UserForFriendList> friendsListOnline
+        {
+            get
+            {
+                return _friendsList.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList();
+            }
+        }
+        public List<UserForFriendList> friendsListOffline
+        {
+            get
+            {
+                return _friendsList.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList();
+            }
+        }
+        public List<UserForFriendList> friendsListPending
+        {
+            get
+            {
+                //Return all the friends from whom we haven't accepted the request this user sent them (where the user1 (the friend request sender) is not us)
+                return _friendsList.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList();
+            }
+        }
+        public List<UserForFriendList> friendsList
+        {
+            set
+            {
+                //We set the new value and notify changes to all lists which depend on friendList
+                _friendsList = value;
+                NotifyPropertyChanged("friendsListOnline");
+                NotifyPropertyChanged("friendsListOffline");
+                NotifyPropertyChanged("friendsListPending");
+            }
+        }
         public RelayCommand<string> addFriendCommand
         {
             get
@@ -267,7 +328,11 @@ namespace CHAIR_UI.ViewModels
                     _signalR.proxy.Invoke("getAllStoreGames", SharedInfo.loggedUser.token);
                 else if(_selectedOption.name == "Library") //If the user selected the Library, we must retrieve all the games he plays and all their information
                     _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
-                    
+                else if (_selectedOption.name == "Log out") //If the user wants to log out, we close the CHAIR window
+                {
+                    _view.Close();
+                    return;
+                }
 
                 //Close the drawer
                 drawerOpen = false;
@@ -275,11 +340,7 @@ namespace CHAIR_UI.ViewModels
                 //Call through the interface to the view to change to whatever view the user asked for
                 _view.ChangePage(_selectedOption.name, this);
 
-                if (_selectedOption.name == "Log out") //If the user wants to log out, we close the connection with the server
-                {
-                    dispose();
-                    SignalRHubsConnection.closeChairHub();
-                }
+                
             }
         }
         public DelegateCommand closeCommand
@@ -302,9 +363,7 @@ namespace CHAIR_UI.ViewModels
         #region Commands
         private void CloseCommand_Executed()
         {
-            SignalRHubsConnection.closeChairHub();
             _view.Close();
-            dispose();
         }
 
         private void MinimizeCommand_Executed()
@@ -337,6 +396,18 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR.proxy.Invoke("addFriend", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
             _searchList.Single(x => x.user.nickname == user2).relationshipExists = true;
+        }
+
+        private void rejectFriendshipCommand_Executed(string user2)
+        {
+            _signalR.proxy.Invoke("endFriendship", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
+            _friendsList.Remove(_friendsList.Single(x => x.nickname == user2));
+            NotifyPropertyChanged("friendsListPending");
+        }
+
+        private void acceptFriendshipCommand_Executed(string user2)
+        {
+            _signalR.proxy.Invoke("acceptFriendship", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
         }
         #endregion
 
@@ -387,6 +458,93 @@ namespace CHAIR_UI.ViewModels
             });
         }
 
+        private void getFriends(List<UserForFriendList> obj)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                friendsList = obj;
+
+                if(_initializing)
+                {
+                    //Set this back to false so all of this doesn't get called when we update our friends while using the application
+                    _initializing = false;
+
+                    //We get all friends who are connected
+                    List<string> usersNicknameList = new List<string>();
+                    foreach(UserForFriendList user in friendsListOnline)
+                        usersNicknameList.Add(user.nickname);
+
+                    //Go online!!!
+                    _signalR.proxy.Invoke("goOnline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
+                }
+            });
+        }
+
+        private void onlineSuccessful()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Navigate to your profile
+                selectedOption = _optionsList[0];
+            });
+        }
+
+        private void acceptFriendship()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            });
+        }
+
+        private void userAcceptedFriendship(string obj)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //TODO: Show notification
+
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            });
+        }
+
+        private void userEndedFriendship()
+        {
+            //Someone deleted us :(
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            });
+        }
+
+        private void notifyUserConnected(string connectedUser)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //TODO: Show notification
+
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            });
+        }
+
+        private void notifyUserDisconnected(string connectedUser)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //TODO: Show notification
+
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            });
+        }
+
+        private void youHaveBeenBanned(BanResponse ban)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                MessageBox.Show($"You have been banned for {ban.banReason} until {ban.bannedUntil.ToLongDateString()}");
+
+                //TODO: Disconnect and close game if he's playing, close friendlist and close the application
+
+                Environment.Exit(0);
+            });
+        }
+
         private void unexpectedError(string error)
         {
             Application.Current.Dispatcher.Invoke(delegate {
@@ -397,8 +555,10 @@ namespace CHAIR_UI.ViewModels
 
 
         #region Functions
-        private void dispose()
+        public void dispose()
         {
+            //TODO: Update with all variables when project is finished
+
             _profileUser = null;
             _view = null;
             _selectedOption = null;
@@ -411,6 +571,18 @@ namespace CHAIR_UI.ViewModels
             _selectedStoreGame = null;
             _searchList = null;
             loggedUser = null;
+        }
+
+        public void disconnectFromSignalR()
+        {
+            //We get all friends who are connected to notify them we're going offline
+            List<string> usersNicknameList = new List<string>();
+            foreach (UserForFriendList user in friendsListOnline)
+                usersNicknameList.Add(user.nickname);
+
+            _signalR.proxy.Invoke("goOffline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
+
+            SignalRHubsConnection.closeChairHub();
         }
         #endregion
     }

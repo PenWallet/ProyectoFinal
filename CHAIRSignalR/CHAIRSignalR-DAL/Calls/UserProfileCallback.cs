@@ -10,7 +10,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using CHAIRSignalR_Entidades.Complex;
 
 namespace CHAIRSignalR_DAL.Calls
 {

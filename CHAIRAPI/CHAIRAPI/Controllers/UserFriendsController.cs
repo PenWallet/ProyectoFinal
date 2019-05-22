@@ -49,19 +49,16 @@ namespace CHAIRAPI.Controllers
         /// <param name="user1">One of the users who accepts the relationship</param>
         /// <param name="user2">One of the users who accepts the relationship</param>
         [HttpPatch("{user1}/accept/{user2}")]
-        public IActionResult Patch(string user1, string user2)
+        public IActionResult AcceptFriendship(string user1, string user2)
         {
-            string accept = Request.Headers["Content-Type"].ToString();
-            if (accept != "application/json" && accept != "*/*")
-                return StatusCode(415);
-            else if (Utilities.checkUsrClaimValidity(User, user1, user2))
+            if (Utilities.checkUsrClaimValidity(User, user1, user2))
             {
                 //Save to the database and collect status message (specified in the handler)
                 int updateStatus = UserFriendsHandler.acceptRelationship(user1, user2);
 
                 //Return the status code depending on what happened when saving the user
                 if (updateStatus == 1)
-                    return StatusCode(204); //Created
+                    return StatusCode(204); //No Content
                 else if (updateStatus == 0)
                     return StatusCode(404); //Not Found
                 else
@@ -79,10 +76,7 @@ namespace CHAIRAPI.Controllers
         [HttpGet("{user1}/isfriends/{user2}")]
         public IActionResult Get(string user1, string user2)
         {
-            string accept = Request.Headers["Accept"].ToString();
-            if (accept != "application/json" && accept != "*/*")
-                return StatusCode(406); //Not Acceptable
-            else if (Utilities.checkUsrClaimValidity(User, user1, user2))
+            if (Utilities.checkUsrClaimValidity(User, user1, user2))
             {
                 UserFriends relationship = UserFriendsHandler.searchRelationshipByUsers(user1, user2);
 
@@ -103,10 +97,7 @@ namespace CHAIRAPI.Controllers
         [HttpGet("{nickname}")]
         public IActionResult Get(string nickname)
         {
-            string accept = Request.Headers["Accept"].ToString();
-            if (accept != "application/json" && accept != "*/*")
-                return StatusCode(406); //Not Acceptable
-            else if (Utilities.checkUsrClaimValidity(User, nickname))
+            if (Utilities.checkUsrClaimValidity(User, nickname))
             {
                 List<UserForFriendList> list = UserForFriendListHandler.searchFriends(nickname);
 

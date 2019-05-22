@@ -35,7 +35,7 @@ namespace CHAIRAPI_DAL.Handlers
                 sqlConnection = connection.getConnection();
 
                 //Define the command
-                command.CommandText = "SELECT nickname, profileDescription, profileLocation, birthDate, privateProfile, accountCreationDate, admin, bannedUntil, banReason FROM Users WHERE nickname = @nickname";
+                command.CommandText = "SELECT nickname, profileDescription, profileLocation, birthDate, privateProfile, accountCreationDate, [online], admin, bannedUntil, banReason FROM Users WHERE nickname = @nickname";
 
                 //Set the parameter
                 command.Parameters.Add("@nickname", SqlDbType.VarChar).Value = nickname;
@@ -63,6 +63,7 @@ namespace CHAIRAPI_DAL.Handlers
                     user.user.birthDate = (DateTime)reader["birthDate"];
                     user.user.privateProfile = (bool)reader["privateProfile"];
                     user.user.accountCreationDate = (DateTime)reader["accountCreationDate"];
+                    user.user.online = (bool)reader["online"];
                     user.user.admin = (bool)reader["admin"];
                     user.user.bannedUntil = reader["bannedUntil"] is DBNull ? null : (DateTime?)reader["bannedUntil"];
                     user.user.banReason = reader["banReason"] is DBNull ? "" : (string)reader["banReason"];

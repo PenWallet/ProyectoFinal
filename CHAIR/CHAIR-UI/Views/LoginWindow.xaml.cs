@@ -99,12 +99,7 @@ namespace CHAIR_UI
                 Margin = new Thickness(15, 10, 15, 10)
             };
 
-            await DialogHost.Show(view, "LoginDialog", closingHandler);
-        }
-
-        private void closingHandler(object sender, DialogClosingEventArgs eventArgs)
-        {
-            
+            await DialogHost.Show(view, "LoginDialog");
         }
         #endregion
 

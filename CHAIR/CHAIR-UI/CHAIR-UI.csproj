@@ -85,6 +85,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\GamePlayingToBorderBrush.cs" />
     <Compile Include="Converters\AccReqDateToString.cs" />
     <Compile Include="Converters\InverseBoolean.cs" />
     <Compile Include="Converters\DateToString.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="Utils\DialogCloser.cs" />
     <Compile Include="Interfaces\ICloseable.cs" />
     <Compile Include="Utils\Utilities.cs" />
-    <Compile Include="ViewModels\FriendListWindowViewModel.cs" />
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />
@@ -241,6 +241,11 @@
   <ItemGroup>
     <Resource Include="Assets\profpicadmin.png" />
     <Resource Include="Assets\profpicuser.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\offlineicon.png" />
+    <Resource Include="Assets\onlineicon.png" />
+    <Resource Include="Assets\pendingicon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

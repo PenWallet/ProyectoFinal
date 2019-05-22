@@ -12,7 +12,6 @@ using CHAIRSignalR_Entities.Responses;
 using System.Threading;
 using CHAIRSignalR.Common;
 using CHAIRSignalR_DAL.Calls;
-using CHAIRSignalR_Entidades.Complex;
 
 namespace CHAIRSignalR.Hubs
 {
@@ -103,6 +102,41 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to add a friend. Please try again when it's fixed :D");
         }
 
+        public void acceptFriendship(string myself, string friend, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserFriendsCallback.acceptFriendship(myself, friend, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
+                    Clients.Client(conId).userAcceptedFriendship(myself); //Tell our new online friend we accepted their request
+
+                Clients.Caller.acceptFriendship();
+
+            }
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to accept a friendship. Please try again when it's fixed :D");
+        }
+
+        public void endFriendship(string myself, string friend, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserFriendsCallback.endFriendship(myself, friend, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
+                    Clients.Client(conId).userEndedFriendship(); //We don't tell them who deleted them, we just want them to update their friend list
+            }
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to end a friendship. Please try again when it's fixed :D");
+        }
+
         public void getFriends(string nickname, string token)
         {
             //Make the call to the API
@@ -114,6 +148,92 @@ namespace CHAIRSignalR.Hubs
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get your friends. Please try again when it's fixed :D");
         }
+
+        public void goOnline(string nickname, string token, List<string> usersToNotify)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserCallback.online(nickname, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he connected
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                foreach(string user in usersToNotify)
+                {
+                    if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
+                        Clients.Client(conId).notifyUserConnected(nickname);
+                }
+
+                Clients.Caller.onlineSuccessful();
+            }
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to set you online. Please try again when it's fixed :D");
+        }
+
+        public void goOffline(string nickname, string token, List<string> usersToNotify)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserCallback.offline(nickname, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                foreach(string user in usersToNotify)
+                {
+                    if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
+                        Clients.Client(conId).notifyUserDisconnected(nickname);
+                }
+            }
+        }
+
+        #region Admin
+        public void adminGetOnlineUsers()
+        {
+            //Get all the nicknames of the online users
+            List<string> onlineUsersNicknames = new List<string>();
+            foreach(string user in ChairInfo.onlineUsers.Keys)
+                onlineUsersNicknames.Add(user);
+            
+            //Return all the nicknames of the online users to the caller
+            Clients.Caller.adminGetOnlineUsers(onlineUsersNicknames);
+        }
+
+        public void adminBanUser(string nickname, string reason, string token, DateTime until)
+        {
+            User user = new User();
+            user.nickname = nickname;
+            user.banReason = reason;
+            user.bannedUntil = until;
+
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.ban(user, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                if(ChairInfo.onlineUsers.TryGetValue(nickname, out conId))
+                    Clients.Client(conId).youHaveBeenBanned(new BanResponse(BannedByEnum.USER, reason, until));
+            }
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D");
+        }
+
+        public void adminPardonBan(string nickname, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.pardon(nickname, token, out statusCode);
+
+            if (statusCode != HttpStatusCode.NoContent)
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon {nickname}. Please try again when it's fixed :D");
+        }
+
+
+        #endregion
 
         public override Task OnDisconnected(bool stopCalled)
         {

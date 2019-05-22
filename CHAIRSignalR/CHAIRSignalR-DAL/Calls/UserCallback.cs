@@ -66,5 +66,33 @@ namespace CHAIRSignalR_DAL.Calls
 
             return null;
         }
+
+        public static void online(string nickname, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("users/{nickname}/online", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("nickname", nickname);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
+
+        public static void offline(string nickname, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("users/{nickname}/offline", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("nickname", nickname);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

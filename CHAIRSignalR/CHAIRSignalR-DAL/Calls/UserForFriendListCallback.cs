@@ -1,5 +1,5 @@
 ﻿using CHAIRSignalR_DAL.Connection;
-using CHAIRSignalR_Entidades.Complex;
+using CHAIRSignalR_Entities.Complex;
 using CHAIRSignalR_Entities.Persistent;
 using Newtonsoft.Json;
 using RestSharp;

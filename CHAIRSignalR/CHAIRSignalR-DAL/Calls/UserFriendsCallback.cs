@@ -27,5 +27,35 @@ namespace CHAIRSignalR_DAL.Calls
             //Profit
             status = response.StatusCode;
         }
+
+        public static void acceptFriendship(string user1, string user2, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("userfriends/{user1}/accept/{user2}", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("user1", user1);
+            request.AddUrlSegment("user2", user2);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
+        
+        public static void endFriendship(string user1, string user2, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("userfriends/{user1}/breakwith/{user2}", Method.DELETE);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("user1", user1);
+            request.AddUrlSegment("user2", user2);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

@@ -5,6 +5,7 @@ using CHAIR_UI.ViewModels;
 using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,8 +32,9 @@ namespace CHAIR_UI.Views
         {
             InitializeComponent();
             this.DataContext = new ChairWindowViewModel(this);
-            _friendListWindow = new FriendListWindow();
-            _friendListWindow.Show();
+            _friendListWindow = new FriendListWindow(this.DataContext);
+
+            Closing += OnWindowClosing;
         }
 
         /// <summary>
@@ -118,10 +120,24 @@ namespace CHAIR_UI.Views
             {
                 LoginWindow loginWindow = new LoginWindow();
                 loginWindow.Show();
-
-                this.Close();
             }
         }
         #endregion
+
+        private void OpenFriendList_Click(object sender, RoutedEventArgs e)
+        {
+            _friendListWindow.Show();
+        }
+
+        private void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            ((ChairWindowViewModel)DataContext).disconnectFromSignalR();
+            ((ChairWindowViewModel)DataContext).dispose();
+
+            _friendListWindow.Close();
+
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
+        }
     }
 }

@@ -210,7 +210,7 @@ RETURN
 				ON (UF.user1 = U.nickname AND UF.user1 != @nickname) OR (UF.user2 = U.nickname AND UF.user2 != @nickname)
 			LEFT JOIN UserGames AS UG
 				ON UG.[user] = U.nickname AND UG.playing != 0
-		WHERE user1 = @nickname OR user2 = @nickname
+		WHERE (user1 = @nickname AND acceptedRequestDate IS NOT NULL) OR (user2 = @nickname AND acceptedRequestDate IS NOT NULL) OR (user2 = @nickname AND acceptedRequestDate IS NULL)
 GO
 
 /* PROCEDURES */

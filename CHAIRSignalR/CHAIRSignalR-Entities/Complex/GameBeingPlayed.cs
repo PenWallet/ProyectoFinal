@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CHAIRSignalR_Entidades.Complex
+namespace CHAIRSignalR_Entities.Complex
 {
     public class GameBeingPlayed
     {
