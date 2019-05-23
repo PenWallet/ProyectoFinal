@@ -72,7 +72,7 @@ namespace CHAIRAPI_DAL.Handlers
             SqlCommand command = new SqlCommand();
             Connection connection = new Connection();
             Message message = null;
-            List<Message> list = null;
+            List<Message> list = new List<Message>();
 
             try
             {
@@ -95,8 +95,6 @@ namespace CHAIRAPI_DAL.Handlers
                 //Check if the user exists
                 if (reader.HasRows)
                 {
-                    list = new List<Message>();
-
                     while (reader.Read())
                     {
                         //Read the result and assign values

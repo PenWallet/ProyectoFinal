@@ -15,6 +15,7 @@ using System.Windows;
 using System.Threading;
 using CHAIR_Entities.Responses;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -28,6 +29,7 @@ namespace CHAIR_UI.ViewModels
             _drawerOpen = false;
             _libraryGameVisible = Visibility.Hidden;
             _openCommunity = true;
+            _conversations = new ObservableCollection<UserForFriendList>();
             _optionsList = new List<OptionItem>()
             {
                 //First the itemKind (from material design), then the visible text
@@ -52,16 +54,17 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<GameStore>("getGameInformation", getGameInformation);
             _signalR.proxy.On<List<UserSearch>>("searchForUsers", searchForUsers);
             _signalR.proxy.On<List<UserForFriendList>>("getFriends", getFriends);
-            _signalR.proxy.On<string>("notifyUserConnected", notifyUserConnected);
             _signalR.proxy.On<BanResponse>("youHaveBeenBanned", youHaveBeenBanned);
             _signalR.proxy.On("onlineSuccessful", onlineSuccessful);
-            _signalR.proxy.On("acceptFriendship", acceptFriendship);
-            _signalR.proxy.On<string>("userAcceptedFriendship", userAcceptedFriendship); //Used for when another user accepts our friend request
-            _signalR.proxy.On("userEndedFriendship", userEndedFriendship); //Used for when another user accepts our friend request
+            _signalR.proxy.On<string>("updateFriendListWithNotification", updateFriendListWithNotification);
+            _signalR.proxy.On<string, ObservableCollection<Message>>("getConversation", getConversation);
 
             //As soon as the user opens the application, we need to retrieve all the information regarding the user 
             _initializing = true; //We set this flag to true so that when getFriends gets called from SignalR, we update our status to true
             _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+
+            //We also need to pre-load all of games
+            _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
         }
 
         #endregion
@@ -86,11 +89,62 @@ namespace CHAIR_UI.ViewModels
 
         //Friend list variables
         private List<UserForFriendList> _friendsList { get; set; }
+
+        //ConversationWindow
+        private ObservableCollection<UserForFriendList> _conversations { get; set; }
+        private UserForFriendList _selectedConversation { get; set; }
         #endregion
 
 
         #region Public properties
         public UserWithToken loggedUser { get; set; }
+        public UserForFriendList selectedConversation
+        {
+            get
+            {
+                return _selectedConversation;
+            }
+
+            set
+            {
+                _selectedConversation = value;
+                NotifyPropertyChanged("selectedConversation");
+            }
+        }
+        public ObservableCollection<UserForFriendList> conversations
+        {
+            get
+            {
+                return _conversations;
+            }
+
+            set
+            {
+                _conversations = value;
+                NotifyPropertyChanged("conversations");
+            }
+        }
+        public RelayCommand<string> sendMessageCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(sendMessageCommand_Executed);
+            }
+        }
+        public RelayCommand<string> openConversationCommand
+        {
+            get
+            {
+                return new RelayCommand<string>(openConversationCommand_Executed);
+            }
+        }
+        public RelayCommand<UserGamesWithGameAndFriends> startPlayingGameCommand
+        {
+            get
+            {
+                return new RelayCommand<UserGamesWithGameAndFriends>(startPlayingGameCommand_Executed);
+            }
+        }
         public RelayCommand<string> rejectFriendshipCommand
         {
             get
@@ -98,7 +152,6 @@ namespace CHAIR_UI.ViewModels
                 return new RelayCommand<string>(rejectFriendshipCommand_Executed);
             }
         }
-
         public RelayCommand<string> acceptFriendshipCommand
         {
             get
@@ -409,6 +462,43 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR.proxy.Invoke("acceptFriendship", SharedInfo.loggedUser.nickname, user2, SharedInfo.loggedUser.token);
         }
+
+        private void startPlayingGameCommand_Executed(UserGamesWithGameAndFriends game)
+        {
+            _signalR.proxy.Invoke("startPlayingGame", SharedInfo.loggedUser.nickname, game.game.name, SharedInfo.loggedUser.token);
+        }
+
+        private void openConversationCommand_Executed(string friend)
+        {
+            UserForFriendList user = null;
+
+            try
+            {
+                user = conversations.Single(x => x.nickname == friend);
+            }catch(InvalidOperationException ex) { }
+
+            //Add the reference of the friendsList object to the conversations list
+            if (user == null)
+                conversations.Add(_friendsList.Single(x => x.nickname == friend));
+
+            _signalR.proxy.Invoke("getConversation", SharedInfo.loggedUser.nickname, friend, SharedInfo.loggedUser.token);
+        }
+
+        private void sendMessageCommand_Executed(string text)
+        {
+            if(!string.IsNullOrEmpty(text))
+            {
+                Message message = new Message();
+                message.sender = SharedInfo.loggedUser.nickname;
+                message.receiver = _selectedConversation.nickname;
+                message.text = text;
+                message.date = DateTime.Now;
+
+                _signalR.proxy.Invoke("sendMessage", message, SharedInfo.loggedUser.token);
+
+                selectedConversation.messages.Add(message);
+            }
+        }
         #endregion
 
 
@@ -487,51 +577,14 @@ namespace CHAIR_UI.ViewModels
             });
         }
 
-        private void acceptFriendship()
+        private void updateFriendListWithNotification(string notificationMessage)
         {
-            Application.Current.Dispatcher.Invoke(delegate {
-                //Update our friend list
-                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            });
-        }
-
-        private void userAcceptedFriendship(string obj)
-        {
-            Application.Current.Dispatcher.Invoke(delegate {
-                //TODO: Show notification
-
-                //Update our friend list
-                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            });
-        }
-
-        private void userEndedFriendship()
-        {
-            //Someone deleted us :(
-            Application.Current.Dispatcher.Invoke(delegate {
-                //Update our friend list
-                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            });
-        }
-
-        private void notifyUserConnected(string connectedUser)
-        {
-            Application.Current.Dispatcher.Invoke(delegate {
-                //TODO: Show notification
-
-                //Update our friend list
-                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            });
-        }
-
-        private void notifyUserDisconnected(string connectedUser)
-        {
-            Application.Current.Dispatcher.Invoke(delegate {
-                //TODO: Show notification
-
-                //Update our friend list
-                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            });
+            //TODO: Show nice notification
+            MessageBox.Show(notificationMessage);
+            
+            //Update our friend list
+            _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+            
         }
 
         private void youHaveBeenBanned(BanResponse ban)
@@ -550,6 +603,14 @@ namespace CHAIR_UI.ViewModels
             Application.Current.Dispatcher.Invoke(delegate {
                 MessageBox.Show(error);
             });
+        }
+
+        private void getConversation(string friendName, ObservableCollection<Message> obj)
+        {
+            //Update the UserForFriendList object with the messages
+            conversations.Single(x => x.nickname == friendName).messages = obj;
+
+            NotifyPropertyChanged("conversations");
         }
         #endregion
 

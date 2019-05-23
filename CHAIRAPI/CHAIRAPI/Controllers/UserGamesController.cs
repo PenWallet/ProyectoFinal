@@ -155,15 +155,16 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to change the playing status to playing given a name and a game
+        /// PATCH Method is used here to change the playing status to playing given a name and a game and to add to the total
+        /// of time the user has played that game
         /// </summary>
         /// <param name="nickname">The user's nickname</param>
         [HttpPatch("{user}/notplaying/{game}")]
-        public IActionResult NotPlaying(string user, string game)
+        public IActionResult NotPlaying(string user, string game, [FromQuery(Name = "s")] int secondsToAdd)
         {
             if (Utilities.checkUsrClaimValidity(User, user))
             {
-                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, false);
+                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, false, secondsToAdd);
                 if (updateStatus == 1)
                     return StatusCode(204); //No Content
                 else if (updateStatus == 0)
@@ -175,7 +176,6 @@ namespace CHAIRAPI.Controllers
                 return StatusCode(401); //Unauthorized
 
         }
-
 
     }
 }

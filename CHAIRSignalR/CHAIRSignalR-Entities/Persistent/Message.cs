@@ -10,9 +10,9 @@ namespace CHAIRSignalR_Entities.Persistent
         public string text { get; set; }
         public string sender { get; set; }
         public string receiver { get; set; }
-        public DateTime? date { get; set; }
+        public DateTime date { get; set; }
 
-        public Message(long ID, string text, string sender, string receiver, DateTime? date)
+        public Message(long ID, string text, string sender, string receiver, DateTime date)
         {
             this.ID = ID;
             this.text = text;

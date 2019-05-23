@@ -97,7 +97,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="model:UserForFriendList">
-                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20 20 20 10">
+                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20 20 20 10" MouseDoubleClick="DoubleClickFriend">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="120" />
@@ -116,6 +116,10 @@
                                         </TextBlock>
                                     </StackPanel>
                                 </Grid>
+                                
+                                <materialDesign:Card.InputBindings>
+                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
+                                </materialDesign:Card.InputBindings>
                             </materialDesign:Card>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -151,7 +155,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="model:UserForFriendList">
-                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20">
+                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20" MouseDoubleClick="DoubleClickFriend">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="120" />
@@ -159,14 +163,17 @@
                                     </Grid.ColumnDefinitions>
                                     <!-- Profile picture (set depending on whether the user is admin or not) -->
                                     <Border BorderBrush="{StaticResource ProfPicBorderOffline}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
-                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                        <Image Source="{Binding admin, Converter={StaticResource BTPPConverter}}"/>
                                     </Border>
 
                                     <!-- User information -->
                                     <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
-                                        <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
+                                        <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding nickname}" />
                                     </StackPanel>
                                 </Grid>
+                                <materialDesign:Card.InputBindings>
+                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
+                                </materialDesign:Card.InputBindings>
                             </materialDesign:Card>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

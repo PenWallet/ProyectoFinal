@@ -42,5 +42,36 @@ namespace CHAIRSignalR_DAL.Calls
 
             return null;
         }
+
+        public static void setPlayingTrue(string user, string game, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("usergames/{user}/playing/{game}", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("user", user);
+            request.AddUrlSegment("game", game);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+            
+            //Profit
+            status = response.StatusCode;
+        }
+
+        public static void setPlayingFalse(string user, string game, int secondsToAdd, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("usergames/{user}/notplaying/{game}", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddUrlSegment("user", user);
+            request.AddUrlSegment("game", game);
+            request.AddUrlSegment("s", secondsToAdd);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+            
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

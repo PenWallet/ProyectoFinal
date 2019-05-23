@@ -8,6 +8,7 @@
             <Brush x:Key="PastelGreen">#77DD77</Brush>
             <Brush x:Key="ProfPicBorderOffline">#CFCFC4</Brush>
             <Brush x:Key="PastelRed">#FF6961</Brush>
+            <Brush x:Key="PastelBlue">#779ECB</Brush>
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:CHAIR_UI.ViewModel" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />

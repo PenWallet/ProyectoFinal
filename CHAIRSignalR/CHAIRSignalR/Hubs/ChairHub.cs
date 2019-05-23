@@ -112,9 +112,9 @@ namespace CHAIRSignalR.Hubs
             {
                 string conId;
                 if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
-                    Clients.Client(conId).userAcceptedFriendship(myself); //Tell our new online friend we accepted their request
+                    Clients.Client(conId).updateFriendListWithNotification($"{myself} and {friend} are now friends!"); //Tell our new online friend we accepted their request
 
-                Clients.Caller.acceptFriendship();
+                Clients.Caller.updateFriendListWithNotification($"{myself} and {friend} are now friends!"); //Update our friendlist and show notification
 
             }
             else
@@ -131,7 +131,7 @@ namespace CHAIRSignalR.Hubs
             {
                 string conId;
                 if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
-                    Clients.Client(conId).userEndedFriendship(); //We don't tell them who deleted them, we just want them to update their friend list
+                    Clients.Client(conId).updateFriendListWithNotification(""); //We don't tell them who deleted them, we just want them to update their friend list
             }
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to end a friendship. Please try again when it's fixed :D");
@@ -162,7 +162,7 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).notifyUserConnected(nickname);
+                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} just got online!");
                 }
 
                 Clients.Caller.onlineSuccessful();
@@ -184,9 +184,90 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).notifyUserDisconnected(nickname);
+                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} had enough for today");
                 }
             }
+        }
+
+        public void startPlayingGame(string nickname, string game, string token, List<string> usersToNotify)
+        {
+            //We add the user to the usersPlaying liist 
+            ChairInfo.usersPlaying.AddOrUpdate(nickname, new KeyValuePair<string, DateTime>(game, DateTime.Now), (key, value) => value);
+            
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserGamesCallback.setPlayingTrue(nickname, game, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                foreach(string user in usersToNotify)
+                {
+                    if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
+                        Clients.Client(conId).updateFriendListWithNotification($"{user} is now playing {game}");
+                }
+            }
+        }
+
+        public void stopPlayingGame(string nickname, string game, string token, List<string> usersToNotify)
+        {
+            //We add the user to the usersPlaying liist 
+            KeyValuePair<string, DateTime> gameToDelete;
+            ChairInfo.usersPlaying.TryRemove(nickname, out gameToDelete);
+            
+            //Calculate how many seconds the user has played
+            int secondsToAdd = DateTime.Now.Subtract(gameToDelete.Value).Seconds;
+
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserGamesCallback.setPlayingFalse(nickname, game, secondsToAdd, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                string conId;
+                foreach(string user in usersToNotify)
+                {
+                    if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
+                        Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}");
+                }
+
+                Clients.Caller.closedGameSuccessfully();
+            }
+        }
+
+        public void getConversation(string me, string friend, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<Message> messages = MessageCallback.getConversation(me, friend, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.getConversation(friend, messages);
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to fetch your messages with {friend}. Please try again when it's fixed :D");
+
+        }
+
+        public void sendMessage(Message message, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            MessageCallback.postMessage(message, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.Created)
+            {
+                string conId;
+                bool receiverIsOnline = ChairInfo.onlineUsers.TryGetValue(message.receiver, out conId);
+
+                if (receiverIsOnline)
+                    Clients.Client(conId).receiveMessage(message);
+            }
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to send a message to {message.receiver}. Please try again when it's fixed :D");
         }
 
         #region Admin
@@ -232,7 +313,25 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon {nickname}. Please try again when it's fixed :D");
         }
 
+        public void adminChangeFrontPageGame(string gameName, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.changeFrontPageGame(gameName, token, out statusCode);
 
+            if (statusCode != HttpStatusCode.NoContent)
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to change the front page game to {gameName}. Please try again when it's fixed :D");
+        }
+
+        public void addGameToStore(Game game, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.addNewGame(game, token, out statusCode);
+
+            if (statusCode != HttpStatusCode.NoContent)
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to add the new game {game.name}. Please try again when it's fixed :D");
+        }
         #endregion
 
         public override Task OnDisconnected(bool stopCalled)

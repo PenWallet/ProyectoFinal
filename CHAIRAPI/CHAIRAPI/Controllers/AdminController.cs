@@ -63,7 +63,7 @@ namespace CHAIRAPI.Controllers
         /// </summary>
         /// <param name="game">The game to be stored in the database</param>
         [HttpPost("games")]
-        public IActionResult Post([FromBody] Game game)
+        public IActionResult AddNewGame([FromBody] Game game)
         {
             string accept = Request.Headers["Content-Type"].ToString();
             if (accept != "application/json" && accept != "*/*")
@@ -118,6 +118,23 @@ namespace CHAIRAPI.Controllers
                 else
                     return StatusCode(500);
             }
+        }
+
+        /// <summary>
+        /// PUT Method is used to update a game
+        /// </summary>
+        /// <param name="game">The game to update</param>
+        [HttpPatch("frontpage/{game}")]
+        public IActionResult ChangeFrontPageGame(string game)
+        {
+            int updateStatus = AdminHandler.updateFrontPageGame(game);
+
+            if (updateStatus == 1)
+                return StatusCode(204); //No Content
+            else if (updateStatus == 0)
+                return StatusCode(404); //Not Found
+            else
+                return StatusCode(500); //Internal Server Error
         }
     }
 }

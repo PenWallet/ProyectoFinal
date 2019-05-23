@@ -2,6 +2,7 @@
 using DAL.Conexion;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -61,6 +62,53 @@ namespace CHAIRAPI_DAL.Handlers
             }
 
             return list;
+        }
+
+        /// <summary>
+        /// Method which will change the game that is displayed in the front page
+        /// </summary>
+        /// <param name="name">Name of the game to be set to front page</param>
+        /// <returns>1 if updated successfully; 0 if no game was found; -1 otherwise</returns>
+        public static int updateFrontPageGame(string name)
+        {
+            Connection connection = new Connection();
+            SqlConnection sqlConnection = new SqlConnection();
+            SqlCommand command = new SqlCommand();
+            int affectedRows = -1;
+
+            try
+            {
+                //Define parameters
+                command.CommandText = "UPDATE Games SET frontPage = @frontPage WHERE name = @name";
+
+                //Create parameters
+                command.Parameters.Add("@name", SqlDbType.VarChar).Value = name;
+
+                //Get connection
+                sqlConnection = connection.getConnection();
+
+                //Give the connection to the command
+                command.Connection = sqlConnection;
+
+                //Execute query
+                affectedRows = command.ExecuteNonQuery();
+
+            }
+            catch (SqlException)
+            {
+                affectedRows = -1; //Instead of throwing exception, change affectedRows to -1
+            }
+            catch (Exception)
+            {
+                affectedRows = -1; //Instead of throwing exception, change affectedRows to -1
+            }
+            finally
+            {
+                //Close connection
+                connection.closeConnection(ref sqlConnection);
+            }
+
+            return affectedRows;
         }
     }
 }

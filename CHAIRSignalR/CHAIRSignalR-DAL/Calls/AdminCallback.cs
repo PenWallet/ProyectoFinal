@@ -47,5 +47,34 @@ namespace CHAIRSignalR_DAL.Calls
             //Profit
             status = response.StatusCode;
         }
+
+        public static void changeFrontPageGame(string game, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/frontpage/{game}", Method.PATCH);
+            request.AddUrlSegment("game", game);
+            request.AddHeader("Authorization", $"Bearer {token}");
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
+
+        public static void addNewGame(Game game, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/games", Method.POST);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddJsonBody(game);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

@@ -32,11 +32,9 @@
         <ListBox Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="model:OptionItem">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Height="40" Width="40" Source="{Binding Path=game.libraryImageUrl}" VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding Path=game.name}" FontSize="20" Margin="12 0 0 0" VerticalAlignment="Center"/>
-                        </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="40" Width="40" Source="{Binding Path=game.libraryImageUrl}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Path=game.name}" FontSize="20" Margin="12 0 0 0" VerticalAlignment="Center"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

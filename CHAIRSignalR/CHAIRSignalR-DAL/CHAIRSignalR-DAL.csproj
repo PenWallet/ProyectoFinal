@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Calls\AdminCallback.cs" />
     <Compile Include="Calls\UserForFriendListCallback.cs" />
+    <Compile Include="Calls\MessageCallback.cs" />
     <Compile Include="Calls\UserFriendsCallback.cs" />
     <Compile Include="Calls\GameCallback.cs" />
     <Compile Include="Calls\GameStoreCallback.cs" />

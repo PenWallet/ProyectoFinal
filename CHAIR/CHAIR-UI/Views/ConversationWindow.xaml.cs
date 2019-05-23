@@ -1,7 +1,6 @@
 ﻿using CHAIR_UI.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,24 +16,14 @@ using System.Windows.Shapes;
 namespace CHAIR_UI.Views
 {
     /// <summary>
-    /// Interaction logic for FriendListWindow.xaml
+    /// Interaction logic for ConversationWindow.xaml
     /// </summary>
-    public partial class FriendListWindow : Window
+    public partial class ConversationWindow : Window
     {
-        private ConversationWindow _convWindow;
-
-        public FriendListWindow(object viewmodel)
+        public ConversationWindow(object viewmodel)
         {
             InitializeComponent();
             this.DataContext = (ChairWindowViewModel)viewmodel;
-            _convWindow = new ConversationWindow((ChairWindowViewModel)viewmodel);
-
-            Closing += OnWindowClosing;
-        }
-
-        private void OnWindowClosing(object sender, CancelEventArgs e)
-        {
-            _convWindow.Close();
         }
 
         /// <summary>
@@ -76,12 +65,6 @@ namespace CHAIR_UI.Views
         private void TopButtons_MouseLeave(object sender, MouseEventArgs e)
         {
             (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2C0735"));
-        }
-
-        private void DoubleClickFriend(object sender, MouseButtonEventArgs e)
-        {
-            if(_convWindow.Visibility == Visibility.Hidden || _convWindow.Visibility == Visibility.Collapsed)
-                _convWindow.Show();
         }
     }
 }

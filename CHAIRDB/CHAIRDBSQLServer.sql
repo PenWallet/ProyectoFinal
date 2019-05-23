@@ -73,7 +73,7 @@ CREATE TABLE Games(
 CREATE TABLE UserGames(
     [user] VARCHAR(20) NOT NULL,
     game VARCHAR(50) NOT NULL,
-    hoursPlayed DECIMAL(10, 2) DEFAULT 0 NOT NULL ,
+    hoursPlayed DECIMAL(10, 3) DEFAULT 0 NOT NULL ,
     acquisitionDate DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
     lastPlayed DATETIME NULL,
 	playing BIT DEFAULT 0,
@@ -264,11 +264,16 @@ INSERT INTO UserGames ([user], game)
 			('Migue', 'Portal'),('Migue', 'Portal 2'),('Test', 'Crashex Legends'),
 			('Test', 'Portal'),('Test', 'Portal 2')
 
-INSERT INTO UserFriends(user1, user2)
-	VALUES	('Penny', 'Migue'), ('Migue', 'Test'), ('Test', 'Penny')
+INSERT INTO UserFriends(user1, user2, acceptedRequestDate)
+	VALUES	('Penny', 'Migue', '2019-05-23T21:14:00'), ('Migue', 'Test', NULL), ('Test', 'Penny', NULL)
+
+INSERT INTO [Messages](sender, receiver, text, date)
+	VALUES  ('Penny', 'Migue', 'Illo', '2019-05-23T21:15:16'), ('Penny', 'Migue', 'K ase', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Pos na, programacion', '2019-05-23T21:15:16'), 
+			('Penny', 'Migue', 'Deja ya eso que es casi verano, cabrÃ³oooooooooooooooooon', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Tus muerto', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Gilipollas', '2019-05-23T21:15:16'), 
+			('Penny', 'Migue', 'Ira e', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Que', '2019-05-23T21:15:16'), ('Penny', 'Migue', 'Retrasao', '2019-05-23T21:15:16')
 
 /*
-GUARDAR COMO ORO EN PAÑO CAGO EN DIO
+GUARDAR COMO ORO EN PAï¿½O CAGO EN DIO
 WITH
 MyFriends_CTE (me, friend)as(
 
