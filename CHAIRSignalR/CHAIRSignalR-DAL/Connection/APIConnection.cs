@@ -9,6 +9,6 @@ namespace CHAIRSignalR_DAL.Connection
 {
     public static class APIConnection
     {
-        public static RestClient Client = new RestClient("https://localhost:44391/");
+        public static RestClient Client = new RestClient("https://pennychairapi.azurewebsites.net/");
     }
 }

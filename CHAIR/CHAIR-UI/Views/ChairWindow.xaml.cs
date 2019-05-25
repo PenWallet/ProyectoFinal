@@ -122,6 +122,11 @@ namespace CHAIR_UI.Views
                 loginWindow.Show();
             }
         }
+
+        public void OpenConversation()
+        {
+            _friendListWindow.OpenConversation();
+        }
         #endregion
 
         private void OpenFriendList_Click(object sender, RoutedEventArgs e)

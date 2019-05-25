@@ -9,5 +9,6 @@ namespace CHAIR_UI.Interfaces
     public interface IBasicActionsChair : IBasicActions
     {
         void ChangePage(string page, object viewmodel);
+        void OpenConversation();
     }
 }

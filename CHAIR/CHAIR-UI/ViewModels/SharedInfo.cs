@@ -13,6 +13,8 @@ namespace CHAIR_UI.ViewModels
     /// </summary>
     public static class SharedInfo
     {
-        public static UserWithToken loggedUser { get; set; }
+        public static UserWithToken loggedUser { get; set; } = new UserWithToken();
+        public static string gameBeingDownloaded { get; set; }
+        public static string gameBeingUnzipped { get; set; }
     }
 }

@@ -86,7 +86,7 @@ namespace CHAIRAPI_DAL.Handlers
                         relationship.relationship.game = (string)reader["game"];
                         relationship.relationship.hoursPlayed = (decimal)reader["hoursPlayed"];
                         relationship.relationship.acquisitionDate = (DateTime)reader["acquisitionDate"];
-                        relationship.relationship.lastPlayed = (DateTime)reader["lastPlayed"];
+                        relationship.relationship.lastPlayed = reader["lastPlayed"] is DBNull ? null : (DateTime?)reader["lastPlayed"];
                         relationship.relationship.playing = (bool)reader["playing"];
 
                         //Read the game info

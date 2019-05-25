@@ -24,7 +24,7 @@ namespace CHAIRAPI_DAL.Handlers
             SqlDataReader reader = null;
             SqlCommand command = new SqlCommand();
             Connection connection = new Connection();
-            List<UserForFriendList> list = null;
+            List<UserForFriendList> list = new List<UserForFriendList>();
             UserForFriendList tempUser = null;
 
             try
@@ -47,8 +47,6 @@ namespace CHAIRAPI_DAL.Handlers
                 //Check if the user exists
                 if (reader.HasRows)
                 {
-                    list = new List<UserForFriendList>();
-
                     //Read the result and assign values
                     while (reader.Read())
                     {
@@ -59,7 +57,7 @@ namespace CHAIRAPI_DAL.Handlers
 
                         tempUser.nickname = (string)reader["nickname"];
                         tempUser.online = (bool)reader["online"];
-                        tempUser.admin = (bool)reader["online"];
+                        tempUser.admin = (bool)reader["admin"];
                         tempUser.gamePlaying = reader["game"] is DBNull ? null : (string)reader["game"];
 
                         list.Add(tempUser);

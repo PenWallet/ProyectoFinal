@@ -24,7 +24,7 @@
             <Image Source="{Binding Path=selectedStoreGame.game.storeImageUrl}" Stretch="Uniform" Height="500"/>
 
             <!-- GET button (visible if not owned by the user) -->
-            <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="GET" FontSize="35" Visibility="{Binding Path=selectedStoreGame.relationship, Converter={StaticResource NTVIConverter}}"/>
+            <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="GET" FontSize="35" Visibility="{Binding Path=selectedStoreGame.relationship, Converter={StaticResource NTVIConverter}}" Command="{Binding buyStoreGameCommand}" CommandParameter="{Binding Path=selectedStoreGame.game.name}"/>
             <!-- GET button (visible if the game is owned and with tooltip indicating the acquisition date -->
             <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="IN LIBRARY" FontSize="35" Visibility="{Binding Path=selectedStoreGame.relationship, Converter={StaticResource NTVConverter}}" IsEnabled="False" ToolTip="{Binding Path=selectedStoreGame.relationship.acquisitionDate, Converter={StaticResource DTSConverter}}" ToolTipService.ShowOnDisabled="True"/>
 

@@ -8,6 +8,8 @@
         xmlns:conv="clr-namespace:CHAIR_UI.Converters"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:model="clr-namespace:CHAIR_Entities.Persistent"
+        xmlns:behaviors="clr-namespace:CHAIR_UI.Behaviors"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Title="ConversationWindow"
         Height="800"
@@ -85,10 +87,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Listbox with all the users we are having conversations with -->
-                <ListBox Grid.Column="0" Grid.RowSpan="2" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox Grid.Column="0" Grid.RowSpan="3" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="model:UserForFriendList">
                             <StackPanel Orientation="Horizontal">
@@ -115,8 +118,8 @@
                 </ListBox>
 
                 <!-- Messages -->
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="0">
-                    <ItemsControl ItemsSource="{Binding Path=selectedConversation.messages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="0" x:Name="ScrVie">
+                    <ItemsControl ItemsSource="{Binding Path=selectedConversation.messages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="Auto" SizeChanged="ItemsControl_SizeChanged">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Vertical">
@@ -126,7 +129,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="model:Message">
-                                <StackPanel Orientation="Vertical" HorizontalAlignment="{Binding sender, Converter={StaticResource MSTDConverter}}" Margin="10 0 10 0">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="{Binding sender, Converter={StaticResource MSTDConverter}}" Margin="10 8 10 0">
                                     <Border CornerRadius="15" Height="Auto" Background="{Binding sender, Converter={StaticResource MSTCBConverter}}" Padding="15 5 15 5">
                                         <TextBlock Text="{Binding text}" FontSize="20" TextWrapping="Wrap"/>
                                     </Border>
@@ -137,9 +140,13 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <TextBox x:Name="MessageTextBox" Grid.Row="1" Grid.Column="1" Height="60" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" Margin="15 20 15 20" FontSize="15" AcceptsReturn="False" Padding="0" materialDesign:HintAssist.IsFloating="False">
+                <TextBlock Foreground="Gray" FontSize="13" FontWeight="Light" Grid.Row="1" Grid.Column="1" Margin="15 10 0 5" Visibility="{Binding selectedConversation, Converter={StaticResource NTVConverter}}">
+                    Write your message to
+                    <TextBlock Text="{Binding Path=selectedConversation.nickname}" FontWeight="Bold"/>
+                </TextBlock>
+                <TextBox x:Name="MessageTextBox" Grid.Row="2" Grid.Column="1" Height="60" Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" Text="{Binding conversationTextToSend, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15 0 15 20" FontSize="15" AcceptsReturn="False" Padding="0" materialDesign:HintAssist.IsFloating="False" Visibility="{Binding selectedConversation, Converter={StaticResource NTVConverter}}">
                     <TextBox.InputBindings>
-                        <KeyBinding Key="Enter" Command="{Binding ElementName=ConvWindow, Path=DataContext.sendMessageCommand}" CommandParameter="{Binding ElementName=MessageTextBox, Path=Text}" />
+                        <KeyBinding Key="Enter" Command="{Binding ElementName=ConvWindow, Path=DataContext.sendMessageCommand}" />
                     </TextBox.InputBindings>
                 </TextBox>
             </Grid>

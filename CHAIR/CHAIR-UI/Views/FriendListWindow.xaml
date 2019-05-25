@@ -89,7 +89,7 @@
                     </Grid>
                 </Expander.Header>
                 <!-- Online users -->
-                <ItemsControl ItemsSource="{Binding friendsListOnline}" HorizontalAlignment="Center" Width="Auto">
+                <ItemsControl ItemsSource="{Binding friendsListOnline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" />
@@ -147,7 +147,7 @@
                 </Expander.Header>
                 
                 <!-- Offline users -->
-                <ItemsControl ItemsSource="{Binding friendsListOffline}" HorizontalAlignment="Center" Width="Auto">
+                <ItemsControl ItemsSource="{Binding friendsListOffline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" />
@@ -199,7 +199,7 @@
                     </Grid>
                 </Expander.Header>
                 <!-- Pending request users -->
-                <ItemsControl ItemsSource="{Binding friendsListPending}" HorizontalAlignment="Center" Width="Auto">
+                <ItemsControl ItemsSource="{Binding friendsListPending, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" />

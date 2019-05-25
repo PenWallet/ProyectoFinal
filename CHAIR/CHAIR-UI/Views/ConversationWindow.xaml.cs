@@ -66,5 +66,10 @@ namespace CHAIR_UI.Views
         {
             (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2C0735"));
         }
+
+        private void ItemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ScrVie.ScrollToEnd();
+        }
     }
 }

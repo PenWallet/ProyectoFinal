@@ -1,4 +1,5 @@
-﻿using CHAIR_UI.ViewModels;
+﻿using CHAIR_UI.Interfaces;
+using CHAIR_UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace CHAIR_UI.Views
     /// <summary>
     /// Interaction logic for FriendListWindow.xaml
     /// </summary>
-    public partial class FriendListWindow : Window
+    public partial class FriendListWindow : Window, IBasicActionsFriendList
     {
         private ConversationWindow _convWindow;
 
@@ -83,5 +84,13 @@ namespace CHAIR_UI.Views
             if(_convWindow.Visibility == Visibility.Hidden || _convWindow.Visibility == Visibility.Collapsed)
                 _convWindow.Show();
         }
+
+        #region IBasicActionsFriendList Implementation
+        public void OpenConversation()
+        {
+            if (_convWindow.Visibility == Visibility.Hidden || _convWindow.Visibility == Visibility.Collapsed)
+                _convWindow.Show();
+        }
+        #endregion
     }
 }

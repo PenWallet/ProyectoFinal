@@ -13,8 +13,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using IniParser;
-using IniParser.Model;
 using System.Text;
 
 namespace CHAIRAPI
@@ -30,12 +28,12 @@ namespace CHAIRAPI
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        { 
-            //Added a Nuget Package to be able to read config files. I stored there the key
+        {
+            /*Added a Nuget Package to be able to read config files. I stored there the key
             var parser = new FileIniDataParser();
-            IniData config = parser.ReadFile("Config/config.ini");
-            string signingKeyString = config["JWTSettings"]["JWTSigningKey"];
-            string issuer = config["JWTSettings"]["Issuer"];
+            IniData config = parser.ReadFile("Config/config.ini");*/
+            string signingKeyString = "sTiGe40l7vEfQGBoXbJhFp64r7ana5ZjsDUrkotz0Q3xULGN8t9nRw0U0c9wMABP";
+            string issuer = "PennyCHAIRAPI";
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKeyString));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

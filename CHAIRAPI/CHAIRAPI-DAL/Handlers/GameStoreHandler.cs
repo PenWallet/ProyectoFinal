@@ -61,7 +61,9 @@ namespace CHAIRAPI_DAL.Handlers
                     gameStore.game.storeImageUrl = reader["storeImageUrl"] is DBNull ? "" : (string)reader["storeImageUrl"];
                     gameStore.game.libraryImageUrl = reader["libraryImageUrl"] is DBNull ? "" : (string)reader["libraryImageUrl"];
 
-                    //Prepare the statement for the relationship of the user with this game
+                    gameStore.relationship = null;
+
+                    /*//Prepare the statement for the relationship of the user with this game
                     commandRel.CommandText = "SELECT [user], game, acquisitionDate FROM UserGames WHERE [user] = @nickname AND game = @game";
                     commandRel.Parameters.Add("@game", SqlDbType.VarChar).Value = game;
                     commandRel.Parameters.Add("@nickname", SqlDbType.VarChar).Value = nickname;
@@ -76,7 +78,7 @@ namespace CHAIRAPI_DAL.Handlers
                         gameStore.relationship.acquisitionDate = (DateTime)readerRel["acquisitionDate"];
                     }
                     else
-                        gameStore.relationship = null;
+                        gameStore.relationship = null;*/
                 }
 
             }
@@ -86,6 +88,7 @@ namespace CHAIRAPI_DAL.Handlers
             {
                 connection.closeConnection(ref sqlConnection);
                 reader?.Close();
+                readerRel?.Close();
             }
 
             return gameStore;

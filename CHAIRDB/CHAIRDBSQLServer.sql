@@ -1,11 +1,11 @@
-USE master
+/*USE master
 GO
 DROP DATABASE CHAIRDB
 GO
 CREATE DATABASE CHAIRDB
 GO
 USE CHAIRDB
-GO
+GO*/
 
 /* TABLES */
 CREATE TABLE Users(
@@ -89,10 +89,10 @@ CREATE TABLE NicknameChanges(
 )
 
 -- Create user
-CREATE USER CHAIRMaster FOR LOGIN CHAIRMaster  
-GO
+/*CREATE USER CHAIRMaster FOR LOGIN CHAIRMaster  
+GO*/
 
-/* TRIGGERS */
+/* TRIGGERS 
 -- Trigger used to save when a user changes its nickname
 GO
 CREATE TRIGGER trg_SaveNicknameChange ON Users AFTER UPDATE
@@ -108,7 +108,7 @@ BEGIN
 		COMMIT
 	END
 END
-GO
+GO*/
 
 -- Trigger used to ensure that when an update is made to the frontPage field, all the others games have it set to 0
 -- (there can only be one game in the front page) 
@@ -246,18 +246,18 @@ INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin])
 			('Migue', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0),
 			('Test', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0)
 
-INSERT INTO Games (name, description, developer, minimumAge, releaseDate, storeImageUrl, libraryImageUrl, frontPage) VALUES
-('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10', '', 'https://i.imgur.com/6FpgZlV.gif', 0),
-('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18', '', 'https://i.imgur.com/8AJKwE9.png', 0),
-('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24', '', 'https://i.imgur.com/M4WcKHc.png', 0),
-('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04', '', 'https://i.imgur.com/WbBV5KU.png', 0),
+INSERT INTO Games (name, description, developer, minimumAge, releaseDate, storeImageUrl, libraryImageUrl, frontPage, downloadUrl) VALUES
+('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10', 'https://i.imgur.com/1X60875.jpg', 'https://i.imgur.com/6FpgZlV.gif', 0, ''),
+('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18', 'https://i.imgur.com/KRAuJqV.jpg', 'https://i.imgur.com/8AJKwE9.png', 0, ''),
+('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24', 'https://i.imgur.com/hNBUyoc.jpg', 'https://i.imgur.com/M4WcKHc.png', 0, ''),
+('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04', 'https://i.imgur.com/kG4nQo7.jpg', 'https://i.imgur.com/WbBV5KU.png', 0, ''),
 ('Last Quest', 'Do you miss pixels? Then, remember good old times with Last Quest!
 
 Last Quest is a Zelda-like ARPG filled with enemies, puzzles, items and enemies
 
-Do you dare to face evil and bring peace back to the world?', 'jolsensei', 3, '2019-06-14', 'https://i.imgur.com/YvH79xF.png', 'https://i.imgur.com/cX6cVln.png', 0)
+Do you dare to face evil and bring peace back to the world?', 'jolsensei', 3, '2019-06-14', 'https://i.imgur.com/YvH79xF.png', 'https://i.imgur.com/cX6cVln.png', 1, 'http://8music.ddns.net/ODeloitte/Last%20Quest.zip')
 
-GO
+/*GO
 
 INSERT INTO UserGames ([user], game)
 	VALUES	('Penny', 'Portal'),('Penny', 'Overwatch'),('Penny', 'Crashex Legends'),
@@ -270,7 +270,7 @@ INSERT INTO UserFriends(user1, user2, acceptedRequestDate)
 INSERT INTO [Messages](sender, receiver, text, date)
 	VALUES  ('Penny', 'Migue', 'Illo', '2019-05-23T21:15:16'), ('Penny', 'Migue', 'K ase', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Pos na, programacion', '2019-05-23T21:15:16'), 
 			('Penny', 'Migue', 'Deja ya eso que es casi verano, cabróoooooooooooooooooon', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Tus muerto', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Gilipollas', '2019-05-23T21:15:16'), 
-			('Penny', 'Migue', 'Ira e', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Que', '2019-05-23T21:15:16'), ('Penny', 'Migue', 'Retrasao', '2019-05-23T21:15:16')
+			('Penny', 'Migue', 'Ira e', '2019-05-23T21:15:16'), ('Migue', 'Penny', 'Que', '2019-05-23T21:15:16'), ('Penny', 'Migue', 'Retrasao', '2019-05-23T21:15:16')*/
 
 /*
 GUARDAR COMO ORO EN PA�O CAGO EN DIO

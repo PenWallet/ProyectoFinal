@@ -16,6 +16,11 @@ using System.Threading;
 using CHAIR_Entities.Responses;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using MaterialDesignThemes.Wpf;
+using System.Media;
+using System.IO;
+using System.Net;
+using Ionic.Zip;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -24,12 +29,20 @@ namespace CHAIR_UI.ViewModels
         #region Constructors
         public ChairWindowViewModel(IBasicActionsChair view)
         {
+            //Necessary for Unzipping 🤷🤷🤷
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             loggedUser = SharedInfo.loggedUser;
             _view = view;
             _drawerOpen = false;
             _libraryGameVisible = Visibility.Hidden;
             _openCommunity = true;
             _conversations = new ObservableCollection<UserForFriendList>();
+            notificationsQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(8000)); //We create a new snackbar with a time duration for each notification of 3 seconds
+            _installedGames = new List<string>();
+            _goToGamePage = false;
+            _gameBeingDownloaded = null;
+            _gameBeingUnzipped = null;
             _optionsList = new List<OptionItem>()
             {
                 //First the itemKind (from material design), then the visible text
@@ -58,13 +71,18 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On("onlineSuccessful", onlineSuccessful);
             _signalR.proxy.On<string>("updateFriendListWithNotification", updateFriendListWithNotification);
             _signalR.proxy.On<string, ObservableCollection<Message>>("getConversation", getConversation);
+            _signalR.proxy.On<string>("gameBought", gameBought);
+            _signalR.proxy.On<Message>("receiveMessage", receiveMessage);
 
             //As soon as the user opens the application, we need to retrieve all the information regarding the user 
             _initializing = true; //We set this flag to true so that when getFriends gets called from SignalR, we update our status to true
             _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
 
-            //We also need to pre-load all of games
+            //We also need to pre-load all of our games
             _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
+
+            //Look up which games are installed (if the folder exists, I take the game is installed, I ain't searching each folder and each file, screw it)
+            installedGames = SettingUtils.scanInstallingFolder();
         }
 
         #endregion
@@ -81,11 +99,21 @@ namespace CHAIR_UI.ViewModels
         private Game _frontPageGame { get; set; } //Game with frontPage set to true
         private List<UserGamesWithGameAndFriends> _libraryGames { get; set; }
         private UserGamesWithGameAndFriends _selectedLibraryGame { get; set; }
-        private Visibility _libraryGameVisible { get; set; }
+        private Visibility _libraryGameVisible { get; set; } //TODO: Change this for a boolean
         private bool _openCommunity { get; set; } //Variable used to know whether to open Profile to see another user's information, or to open Community, the user searcher
         private GameStore _selectedStoreGame { get; set; }
         private List<UserSearch> _searchList { get; set; }
         private bool _initializing { get; set; }
+        private bool _canClickOnBuyGame { get; set; }
+        private List<string> _installedGames { get; set; }
+        private string _playingGame { get; set; }
+        private bool _goToGamePage { get; set; } //Variable used to know whether to travel to the game store page after receiving the SignalR call "getGameInformation"
+        private RelayCommand<string> _buyStoreGameCommand { get; set; }
+        private RelayCommand<string> _downloadGameCommand { get; set; }
+        private string _conversationTextToSend { get; set; }
+        private string _gameBeingDownloaded { get; set; }
+        private string _gameBeingUnzipped { get; set; }
+        private int _downloadUnzipProgress { get; set; }
 
         //Friend list variables
         private List<UserForFriendList> _friendsList { get; set; }
@@ -98,6 +126,80 @@ namespace CHAIR_UI.ViewModels
 
         #region Public properties
         public UserWithToken loggedUser { get; set; }
+        public SnackbarMessageQueue notificationsQueue { get; set; }
+        public bool isDownloadButtonVisible
+        {
+            get
+            {
+                if(_selectedLibraryGame != null)
+                {
+                    return !_installedGames.Contains(_selectedLibraryGame.game.name);
+                }
+
+                return true;
+            }
+        }
+        public int downloadUnzipProgress
+        {
+            get
+            {
+                return _downloadUnzipProgress;
+            }
+            set
+            {
+                _downloadUnzipProgress = value;
+                NotifyPropertyChanged("downloadUnzipProgress");
+            }
+        }
+        public string gameBeingUnzipped
+        {
+            get
+            {
+                return _gameBeingUnzipped;
+            }
+            set
+            {
+                _gameBeingUnzipped = value;
+                NotifyPropertyChanged("gameBeingUnzipped");
+            }
+        }
+        public string gameBeingDownloaded
+        {
+            get
+            {
+                return _gameBeingDownloaded;
+            }
+            set
+            {
+                _gameBeingDownloaded = value;
+                NotifyPropertyChanged("gameBeingDownloaded");
+            }
+        }
+        public string conversationTextToSend
+        {
+            get
+            {
+                return _conversationTextToSend;
+            }
+            set
+            {
+                _conversationTextToSend = value;
+                NotifyPropertyChanged("conversationTextToSend");
+            }
+        }
+        public List<string> installedGames
+        {
+            get
+            {
+                return _installedGames;
+            }
+
+            set
+            {
+                _installedGames = value;
+                NotifyPropertyChanged("installedGames");
+            }
+        }
         public UserForFriendList selectedConversation
         {
             get
@@ -124,11 +226,27 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("conversations");
             }
         }
-        public RelayCommand<string> sendMessageCommand
+        public RelayCommand<string> downloadGameCommand
         {
             get
             {
-                return new RelayCommand<string>(sendMessageCommand_Executed);
+                _downloadGameCommand = new RelayCommand<string>(downloadGameCommand_Executed, downloadGameCommand_CanExecute);
+                return _downloadGameCommand;
+            }
+        }
+        public RelayCommand<string> buyStoreGameCommand
+        {
+            get
+            {
+                _buyStoreGameCommand = new RelayCommand<string>(buyStoreGameCommand_Executed, buyStoreGameCommand_CanExecute);
+                return _buyStoreGameCommand;
+            }
+        }
+        public DelegateCommand sendMessageCommand
+        {
+            get
+            {
+                return new DelegateCommand(sendMessageCommand_Executed);
             }
         }
         public RelayCommand<string> openConversationCommand
@@ -163,14 +281,14 @@ namespace CHAIR_UI.ViewModels
         {
             get
             {
-                return _friendsList.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList();
+                return _friendsList?.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList();
             }
         }
         public List<UserForFriendList> friendsListOffline
         {
             get
             {
-                return _friendsList.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList();
+                return _friendsList?.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList();
             }
         }
         public List<UserForFriendList> friendsListPending
@@ -178,7 +296,7 @@ namespace CHAIR_UI.ViewModels
             get
             {
                 //Return all the friends from whom we haven't accepted the request this user sent them (where the user1 (the friend request sender) is not us)
-                return _friendsList.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList();
+                return _friendsList?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList();
             }
         }
         public List<UserForFriendList> friendsList
@@ -190,6 +308,8 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("friendsListOnline");
                 NotifyPropertyChanged("friendsListOffline");
                 NotifyPropertyChanged("friendsListPending");
+
+                NotifyPropertyChanged("conversations");
             }
         }
         public RelayCommand<string> addFriendCommand
@@ -229,6 +349,17 @@ namespace CHAIR_UI.ViewModels
             set
             {
                 _selectedStoreGame = value;
+                _canClickOnBuyGame = true;
+
+                //We try to get the information about an user's relationship with a game and link it to the selectedStoreGame
+                UserGames relationship = null;
+                try
+                {
+                    relationship = _libraryGames.Single(x => x.game.name == _selectedStoreGame.game.name).relationship;
+                    _canClickOnBuyGame = false; //If the user doesn't own the game, Single() will throw an exception and won't set _canClickOnBuyGame to false
+                }catch(InvalidOperationException ex) { }
+
+                _selectedStoreGame.relationship = relationship;
                 NotifyPropertyChanged("selectedStoreGame");
             }
         }
@@ -267,7 +398,8 @@ namespace CHAIR_UI.ViewModels
             {
                 _selectedLibraryGame = value;
                 NotifyPropertyChanged("selectedLibraryGame");
-                
+                NotifyPropertyChanged("isDownloadButtonVisible");
+
                 //Because we selected a library game, we change the visibility of the list
                 if(value == null)
                     libraryGameVisible = Visibility.Hidden;
@@ -379,8 +511,6 @@ namespace CHAIR_UI.ViewModels
                     _signalR.proxy.Invoke("getUserProfile", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
                 else if (_selectedOption.name == "Store") //If the user selected the Store, we must retrieve the store games
                     _signalR.proxy.Invoke("getAllStoreGames", SharedInfo.loggedUser.token);
-                else if(_selectedOption.name == "Library") //If the user selected the Library, we must retrieve all the games he plays and all their information
-                    _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
                 else if (_selectedOption.name == "Log out") //If the user wants to log out, we close the CHAIR window
                 {
                     _view.Close();
@@ -393,7 +523,6 @@ namespace CHAIR_UI.ViewModels
                 //Call through the interface to the view to change to whatever view the user asked for
                 _view.ChangePage(_selectedOption.name, this);
 
-                
             }
         }
         public DelegateCommand closeCommand
@@ -428,10 +557,10 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR.proxy.Invoke("getUserProfile", nickname, SharedInfo.loggedUser.token);
 
-            //We change the page to "Profile" to display the user's information
-            _view.ChangePage("Profile", this);
             //But we mark "Community" on the list, because it isn't our profile and there is no "Profile" option
             selectedOption = _optionsList.Single(x => x.name == "Community");
+            //We change the page to "Profile" to display the user's information
+            _view.ChangePage("Profile", this);
         }
 
         private void searchUsersCommand_Executed(string search)
@@ -442,7 +571,7 @@ namespace CHAIR_UI.ViewModels
         private void goToGamePageCommand_Executed(string game)
         {
             _signalR.proxy.Invoke("getGameInformation", SharedInfo.loggedUser.nickname, game, SharedInfo.loggedUser.token);
-            _view.ChangePage("Game", this);
+            _goToGamePage = true;
         }
 
         private void addFriendCommand_Executed(string user2)
@@ -470,34 +599,60 @@ namespace CHAIR_UI.ViewModels
 
         private void openConversationCommand_Executed(string friend)
         {
-            UserForFriendList user = null;
-
-            try
-            {
-                user = conversations.Single(x => x.nickname == friend);
-            }catch(InvalidOperationException ex) { }
-
-            //Add the reference of the friendsList object to the conversations list
-            if (user == null)
-                conversations.Add(_friendsList.Single(x => x.nickname == friend));
-
-            _signalR.proxy.Invoke("getConversation", SharedInfo.loggedUser.nickname, friend, SharedInfo.loggedUser.token);
+            openNewConversation(friend);
         }
 
-        private void sendMessageCommand_Executed(string text)
+        private void sendMessageCommand_Executed()
         {
-            if(!string.IsNullOrEmpty(text))
+            if(!string.IsNullOrEmpty(_conversationTextToSend))
             {
                 Message message = new Message();
                 message.sender = SharedInfo.loggedUser.nickname;
                 message.receiver = _selectedConversation.nickname;
-                message.text = text;
+                message.text = _conversationTextToSend;
                 message.date = DateTime.Now;
 
                 _signalR.proxy.Invoke("sendMessage", message, SharedInfo.loggedUser.token);
 
                 selectedConversation.messages.Add(message);
+
+                conversationTextToSend = "";
             }
+        }
+
+        private void buyStoreGameCommand_Executed(string gameName)
+        {
+            _canClickOnBuyGame = false;
+            _buyStoreGameCommand.RaiseCanExecuteChanged();
+
+            UserGames newRelationship = new UserGames { user = SharedInfo.loggedUser.nickname, game = gameName };
+            _signalR.proxy.Invoke("buyGame", newRelationship, SharedInfo.loggedUser.token);
+        }
+
+        private bool buyStoreGameCommand_CanExecute(string game)
+        {
+            return _canClickOnBuyGame;
+        }
+
+        private void downloadGameCommand_Executed(string gameName)
+        {
+            gameBeingDownloaded = gameName;
+            _downloadGameCommand.RaiseCanExecuteChanged();
+
+            string tempFilePath = SettingUtils.getTempDownloadFolder();
+            tempFilePath += $"\\{gameName}.zip";
+            string downloadUrl = _libraryGames.Single(x => x.game.name == gameName).game.downloadUrl;
+            Uri downloadUri = new Uri(downloadUrl);
+
+            WebClient webClient = new WebClient();
+            webClient.DownloadFileCompleted += DownloadCompleted;
+            webClient.DownloadProgressChanged += DownloadProgressChanged;
+            webClient.DownloadFileAsync(downloadUri, tempFilePath);
+        }
+
+        private bool downloadGameCommand_CanExecute(string game)
+        {
+            return _gameBeingDownloaded == null && _gameBeingUnzipped == null;
         }
         #endregion
 
@@ -538,6 +693,10 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 selectedStoreGame = obj;
+                if(_goToGamePage)
+                    _view.ChangePage("Game", this);
+
+                _goToGamePage = false;
             });
         }
 
@@ -579,20 +738,24 @@ namespace CHAIR_UI.ViewModels
 
         private void updateFriendListWithNotification(string notificationMessage)
         {
-            //TODO: Show nice notification
-            MessageBox.Show(notificationMessage);
-            
-            //Update our friend list
-            _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
-            
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Update our friend list
+                _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
+
+                //Show notification
+                showNotification(notificationMessage);
+            });
         }
 
         private void youHaveBeenBanned(BanResponse ban)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                MessageBox.Show($"You have been banned for {ban.banReason} until {ban.bannedUntil.ToLongDateString()}");
+                MessageBox.Show($"You have been banned for {ban.banReason} until {ban.bannedUntil.ToLongDateString()}. Pick up your things and get out.");
 
                 //TODO: Disconnect and close game if he's playing, close friendlist and close the application
+
+                disconnectFromSignalR();
+                dispose();
 
                 Environment.Exit(0);
             });
@@ -607,10 +770,42 @@ namespace CHAIR_UI.ViewModels
 
         private void getConversation(string friendName, ObservableCollection<Message> obj)
         {
-            //Update the UserForFriendList object with the messages
-            conversations.Single(x => x.nickname == friendName).messages = obj;
+            Application.Current.Dispatcher.Invoke(delegate {
+                //Update the UserForFriendList object with the messages
+                conversations.Single(x => x.nickname == friendName).messages = obj;
+                
+                //We change the selected conversation to the one we just opened
+                selectedConversation = conversations.Single(x => x.nickname == friendName);
+            });
+        }
 
-            NotifyPropertyChanged("conversations");
+        private void gameBought(string game)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //We refresh our games
+                _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
+
+                notificationsQueue.Enqueue($"{game} was succesfully added to your library");
+            });
+        }
+
+        private void receiveMessage(Message message)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                string friend = message.sender;
+
+                try
+                {
+                    //Basically, a Contains check
+                    conversations.Single(x => x.nickname == friend).messages.Add(message);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //If it throws this exception, it means that the conversations doesn't contain our conversation with that user
+                    openNewConversation(friend);
+                    _view.OpenConversation();
+                }
+            });
         }
         #endregion
 
@@ -634,6 +829,18 @@ namespace CHAIR_UI.ViewModels
             loggedUser = null;
         }
 
+        public void closeOpenGame()
+        {
+            //We get all friends who are connected to notify them we're going offline
+            List<string> usersNicknameList = new List<string>();
+            foreach (UserForFriendList user in friendsListOnline)
+                usersNicknameList.Add(user.nickname);
+
+            _signalR.proxy.Invoke("stopPlayingGame", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
+
+            
+        }
+
         public void disconnectFromSignalR()
         {
             //We get all friends who are connected to notify them we're going offline
@@ -644,6 +851,69 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.Invoke("goOffline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
 
             SignalRHubsConnection.closeChairHub();
+        }
+
+        private void showNotification(string message)
+        {
+            notificationsQueue.Enqueue(message);
+        }
+
+        private void openNewConversation(string friend)
+        {
+            UserForFriendList user = null;
+
+            try
+            {
+                user = conversations.Single(x => x.nickname == friend);
+            }
+            catch (InvalidOperationException ex) { }
+
+            //Add the reference of the friendsList object to the conversations list
+            if (user == null)
+                conversations.Add(_friendsList.Single(x => x.nickname == friend));
+            
+            _signalR.proxy.Invoke("getConversation", SharedInfo.loggedUser.nickname, friend, SharedInfo.loggedUser.token);
+        }
+        #endregion
+
+        #region Download Events
+        private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            downloadUnzipProgress = e.ProgressPercentage;
+        }
+
+        private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            gameBeingUnzipped = gameBeingDownloaded;
+            downloadUnzipProgress = 0;
+            gameBeingDownloaded = null;
+
+            using (ZipFile zip = ZipFile.Read(SettingUtils.getTempDownloadFolder()+$"\\{gameBeingUnzipped}.zip"))
+            {
+                zip.ExtractProgress += new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
+                zip.ExtractAll(SettingUtils.getInstallingFolder(), ExtractExistingFileAction.OverwriteSilently);
+            }
+        }
+
+        private void zip_ExtractProgress(object sender, ExtractProgressEventArgs e)
+        {
+            if (e.TotalBytesToTransfer > 0)
+            {
+                downloadUnzipProgress = Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer);
+
+                if (e.BytesTransferred == e.TotalBytesToTransfer && gameBeingUnzipped != null)
+                {
+                    notificationsQueue.Enqueue($"{gameBeingUnzipped} is now playable");
+                    //File.Delete(SettingUtils.getTempDownloadFolder() + $"\\{gameBeingUnzipped}.zip");
+                    gameBeingUnzipped = null;
+                    downloadUnzipProgress = 0;
+                    installedGames = SettingUtils.scanInstallingFolder();
+
+                    _downloadGameCommand.RaiseCanExecuteChanged();
+                    
+                    NotifyPropertyChanged("isDownloadButtonVisible");
+                }
+            }
         }
         #endregion
     }

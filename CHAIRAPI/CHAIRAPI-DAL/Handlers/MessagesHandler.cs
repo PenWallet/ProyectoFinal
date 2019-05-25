@@ -80,7 +80,7 @@ namespace CHAIRAPI_DAL.Handlers
                 sqlConnection = connection.getConnection();
 
                 //Define the command
-                command.CommandText = "SELECT TOP 100 ID, [text], sender, receiver, [date] FROM Messages WHERE sender = @user1 AND receiver = @user2 OR sender = @user2 AND receiver = @user1 ORDER BY ID desc";
+                command.CommandText = "SELECT TOP 100 [text], sender, receiver, [date] FROM Messages WHERE sender = @user1 AND receiver = @user2 OR sender = @user2 AND receiver = @user1 ORDER BY ID";
 
                 //Set the parameter
                 command.Parameters.Add("@user1", SqlDbType.VarChar).Value = user1;
@@ -99,7 +99,6 @@ namespace CHAIRAPI_DAL.Handlers
                     {
                         //Read the result and assign values
                         message = new Message();
-                        message.ID = (long)reader["ID"];
                         message.text = (string)reader["text"];
                         message.sender = (string)reader["sender"];
                         message.receiver = (string)reader["receiver"];

@@ -21,6 +21,7 @@
         Background="White"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
+        <conv:NullToVisibility x:Key="NTVConverter"/>
         <conv:BooleanToProfilePicConverter x:Key="BTPPConverter"/>
         <conv:OnlineBooleanToBorderBrush x:Key="OBTBConverter"/>
     </Window.Resources>
@@ -92,13 +93,15 @@
                 <ContentControl Grid.Row="1" x:Name="ContentCtrl" />
 
                 <!-- Bottom bar -->
-                <materialDesign:ColorZone MouseDown="TitleBar_MouseDown" Grid.Row="2" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" Height="70">
+                <materialDesign:ColorZone Grid.Row="2" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid" Height="70">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
+                        <!-- Profile picture and nickname -->
                         <StackPanel Orientation="Horizontal">
                             <!-- Profile picture (set depending on whether the user is admin or not) -->
                             <Border BorderBrush="{StaticResource PastelGreen}"  BorderThickness="3" Width="55" Height="55" Margin="10 0 0 0" >
@@ -109,13 +112,33 @@
                             <TextBlock FontSize="25" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}"  Margin="10 10 0 0"/>
                         </StackPanel>
 
-
-                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Click="OpenFriendList_Click" Grid.Column="1" Margin="0 5 20 5" Height="45">
+                        <!-- Open Friends List button -->
+                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Click="OpenFriendList_Click" Grid.Column="2" Margin="0 5 20 5" Height="45" Width="200">
                             <StackPanel Orientation="Horizontal" Margin="5 0 5 0">
                                 <materialDesign:PackIcon Kind="Users" Height="30" Width="30" Margin="0 0 10 0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Friend List" FontSize="25"/>
                             </StackPanel>
                         </Button>
+
+                        <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center" Visibility="{Binding gameBeingDownloaded, Converter={StaticResource NTVConverter}}">
+                            <TextBlock HorizontalAlignment="Center" Foreground="LightGray" FontSize="15" Margin="0 0 0 5">
+                                Downloading
+                                <TextBlock Foreground="LightGray" FontSize="15" Text="{Binding gameBeingDownloaded}" FontWeight="ExtraBold"/>
+                            </TextBlock>
+                            <ProgressBar Value="{Binding downloadUnzipProgress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="10" Margin="50 0 50 0" Foreground="{StaticResource PastelGreen}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center" Visibility="{Binding gameBeingUnzipped, Converter={StaticResource NTVConverter}}">
+                            <TextBlock HorizontalAlignment="Center" Foreground="LightGray" FontSize="15" Margin="0 0 0 5">
+                                Installing
+                                <TextBlock Foreground="LightGray" FontSize="15" Text="{Binding gameBeingUnzipped}" FontWeight="ExtraBold"/>
+                            </TextBlock>
+                            <ProgressBar Value="{Binding downloadUnzipProgress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="10" Margin="50 0 50 0" Foreground="{StaticResource PastelBlue}"/>
+                        </StackPanel>
+
+                        <!-- Notifications -->
+                        <materialDesign:Snackbar MessageQueue="{Binding notificationsQueue}" x:Name="MainSnackbar" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+
                     </Grid>
                 </materialDesign:ColorZone>
             </Grid>

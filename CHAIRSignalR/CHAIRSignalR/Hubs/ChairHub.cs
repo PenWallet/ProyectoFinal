@@ -210,31 +210,39 @@ namespace CHAIRSignalR.Hubs
             }
         }
 
-        public void stopPlayingGame(string nickname, string game, string token, List<string> usersToNotify)
+        public void stopPlayingGame(string nickname, string token, List<string> usersToNotify)
         {
             //We add the user to the usersPlaying liist 
-            KeyValuePair<string, DateTime> gameToDelete;
-            ChairInfo.usersPlaying.TryRemove(nickname, out gameToDelete);
+            KeyValuePair<string, DateTime> game;
+            ChairInfo.usersPlaying.TryRemove(nickname, out game);
             
-            //Calculate how many seconds the user has played
-            int secondsToAdd = DateTime.Now.Subtract(gameToDelete.Value).Seconds;
-
-            //Make the call to the API
-            HttpStatusCode statusCode;
-            UserGamesCallback.setPlayingFalse(nickname, game, secondsToAdd, token, out statusCode);
-
-            //If it all went well, then we notify the online user's friends that he disconnected
-            if (statusCode == HttpStatusCode.NoContent)
+            if(!game.Equals(default(KeyValuePair<string, DateTime>)))
             {
-                string conId;
-                foreach(string user in usersToNotify)
-                {
-                    if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}");
-                }
+                //Calculate how many seconds the user has played
+                int secondsToAdd = DateTime.Now.Subtract(game.Value).Seconds;
 
-                Clients.Caller.closedGameSuccessfully();
+                //Make the call to the API
+                HttpStatusCode statusCode;
+                UserGamesCallback.setPlayingFalse(nickname, game.Key, secondsToAdd, token, out statusCode);
+
+                //If it all went well, then we notify the online user's friends that he disconnected
+                if (statusCode == HttpStatusCode.NoContent)
+                {
+                    string conId;
+                    foreach(string user in usersToNotify)
+                    {
+                        if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
+                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}");
+                    }
+
+                    Clients.Caller.closedGameSuccessfully();
+                }
+                else
+                    Clients.Caller.unexpectedError($"An unexpected error occurred when trying to stop you from playing that game. Please try again when it's fixed :D");
+
             }
+            else
+                Clients.Caller.unexpectedError($"An unexpected error ocurred trying to find which game you were playing. Please try again when it's fixed :D");
         }
 
         public void getConversation(string me, string friend, string token)
@@ -268,6 +276,19 @@ namespace CHAIRSignalR.Hubs
             }
             else
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to send a message to {message.receiver}. Please try again when it's fixed :D");
+        }
+
+        public void buyGame(UserGames relationship, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserGamesCallback.buyGame(relationship, token, out statusCode);
+
+            //If it all went well, then we notify the online user's friends that he disconnected
+            if (statusCode == HttpStatusCode.Created)
+                Clients.Caller.gameBought(relationship.game);
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to buy {relationship.game}. Please try again when it's fixed :D");
         }
 
         #region Admin

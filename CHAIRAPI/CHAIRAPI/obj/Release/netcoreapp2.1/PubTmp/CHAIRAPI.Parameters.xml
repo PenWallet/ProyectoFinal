@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="IIS Web Application Name" description="" value="chairapi" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\ofunes\\Desktop\\GitHub\\ProyectoFinal\\CHAIRAPI\\CHAIRAPI\\obj\\Release\\netcoreapp2\.1\\PubTmp\\Out\\$" />
+  <parameter name="IIS Web Application Name" description="" value="PennyCHAIRAPI" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\Oscar\\Desktop\\Segundo\ DAM\\Proyecto\ Final\\CHAIRAPI\\CHAIRAPI\\obj\\Release\\netcoreapp2\.1\\PubTmp\\Out\\$" />
   </parameter>
 </parameters>

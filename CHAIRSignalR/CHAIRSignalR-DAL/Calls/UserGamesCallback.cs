@@ -73,5 +73,20 @@ namespace CHAIRSignalR_DAL.Calls
             //Profit
             status = response.StatusCode;
         }
+
+        public static void buyGame(UserGames relationship, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("usergames", Method.POST);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddJsonBody(relationship);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+            
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

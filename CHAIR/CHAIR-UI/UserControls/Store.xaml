@@ -85,7 +85,7 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="25" Text="{Binding name}" />
                                     <TextBlock Grid.Row="1" FontWeight="Medium" FontStyle="Italic" Margin="0 -5 0 5" FontSize="15" Text="{Binding developer}" />
-                                    <TextBlock Grid.Row="2" FontWeight="Light" TextWrapping="WrapWithOverflow" Text="{Binding description}" VerticalAlignment="Center" FontSize="15" MaxWidth="{Binding ElementName=FrontPageCard, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Grid.Row="2" FontWeight="Light" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="{Binding description}" VerticalAlignment="Center" FontSize="15" MaxWidth="{Binding ElementName=FrontPageCard, Path=ActualWidth, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Grid>
                             </Grid>
                         </materialDesign:Card>

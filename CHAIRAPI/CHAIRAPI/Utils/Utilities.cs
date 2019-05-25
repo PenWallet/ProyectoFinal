@@ -135,11 +135,11 @@ namespace CHAIRAPI.Utils
         /// <returns></returns>
         public static string generateToken(UserWithSalt user)
         {
-            //Added a Nuget Package to be able to read config files. I stored there the key
+            /*//Added a Nuget Package to be able to read config files. I stored there the key
             var parser = new FileIniDataParser();
-            IniData config = parser.ReadFile("Config/config.ini");
-            string signingKeyString = config["JWTSettings"]["JWTSigningKey"];
-            string issuer = config["JWTSettings"]["Issuer"];
+            IniData config = parser.ReadFile("Config/config.ini");*/
+            string signingKeyString = "sTiGe40l7vEfQGBoXbJhFp64r7ana5ZjsDUrkotz0Q3xULGN8t9nRw0U0c9wMABP";
+            string issuer = "PennyCHAIRAPI";
 
             //Symmetric Security Key
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKeyString));

@@ -29,7 +29,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Listbox with all the games the user owns -->
-        <ListBox Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ListBox Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="model:OptionItem">
                     <StackPanel Orientation="Horizontal">
@@ -46,8 +46,11 @@
                 <!-- Big image -->
                 <Image Source="{Binding Path=selectedLibraryGame.game.storeImageUrl}" Stretch="Uniform" Height="500"/>
 
-                <!-- Download or Play button TODO: Change depending on whether the game is installed or not -->
-                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="DOWNLOAD" FontSize="35"/>
+                <!-- Download button -->
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="DOWNLOAD" FontSize="35" Visibility="{Binding isDownloadButtonVisible, Converter={StaticResource BTVConverter}, UpdateSourceTrigger=PropertyChanged}" Command="{Binding downloadGameCommand}" CommandParameter="{Binding Path=selectedLibraryGame.game.name}"/>
+                
+                <!-- Play button -->
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="PLAY" FontSize="35" Visibility="{Binding isDownloadButtonVisible, Converter={StaticResource BTVIConverter}, UpdateSourceTrigger=PropertyChanged}"/>
                 
                 <!-- Game name -->
                 <TextBlock Text="{Binding Path=selectedLibraryGame.game.name}" FontSize="50" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="10"/>

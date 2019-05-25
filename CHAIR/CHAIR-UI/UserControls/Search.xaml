@@ -49,7 +49,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="model:UserSearch">
-                        <materialDesign:Card Margin="0 0 0 15" Height="150" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All">
+                        <materialDesign:Card Margin="0 0 0 15" Height="150" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" MaxWidth="1000">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="150" />

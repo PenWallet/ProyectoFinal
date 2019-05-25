@@ -15,10 +15,10 @@ namespace DAL.Conexion
         
         public Connection()
         {
-            this.server = "localhost";
-            this.dataBase = "CHAIRDB";
+            this.server = "chair.database.windows.net";
+            this.dataBase = "CHAIR";
             this.user = "CHAIRMaster";
-            this.pass = "chairisbetterthansteam";
+            this.pass = "chairisbetterthansteam#123";
          }
         
         public Connection(String server, String database, String user, String pass)
