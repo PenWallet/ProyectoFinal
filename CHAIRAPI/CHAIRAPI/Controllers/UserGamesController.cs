@@ -141,7 +141,7 @@ namespace CHAIRAPI.Controllers
         {
             if (Utilities.checkUsrClaimValidity(User, user))
             {
-                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, true);
+                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, true, 0);
                 if (updateStatus == 1)
                     return StatusCode(204); //No Content
                 else if (updateStatus == 0)
@@ -160,12 +160,14 @@ namespace CHAIRAPI.Controllers
         /// </summary>
         /// <param name="nickname">The user's nickname</param>
         [HttpPatch("{user}/notplaying/{game}")]
-        public IActionResult NotPlaying(string user, string game, [FromQuery(Name = "s")] int secondsToAdd)
+        public IActionResult NotPlaying(string user, string game, [FromQuery(Name = "s")] string secondsToAdd)
         {
             if (Utilities.checkUsrClaimValidity(User, user))
             {
-                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, false, secondsToAdd);
-                if (updateStatus == 1)
+                int.TryParse(secondsToAdd, out int secondsToAddInt);
+
+                int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, false, secondsToAddInt);
+                if (updateStatus >= 1)
                     return StatusCode(204); //No Content
                 else if (updateStatus == 0)
                     return StatusCode(404); //Not Found

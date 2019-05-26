@@ -245,7 +245,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// <param name="user">The updated info of the user</param>
         /// <param name="nickname">The nickname of the user (in case the user is changing his nickname)</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
-        public static int updatePlayingStatus(string user, string game, bool playing, int secondsToAdd = 0)
+        public static int updatePlayingStatus(string user, string game, bool playing, int secondsToAdd)
         {
             Connection connection = new Connection();
             SqlConnection sqlConnection = new SqlConnection();
@@ -264,7 +264,7 @@ namespace CHAIRAPI_DAL.Handlers
                 command.Parameters.Add("@user", SqlDbType.VarChar).Value = user;
                 command.Parameters.Add("@game", SqlDbType.VarChar).Value = game;
                 command.Parameters.Add("@playing", SqlDbType.Bit).Value = playing ? 1 : 0;
-                if(!playing) command.Parameters.Add("@hoursPlayed", SqlDbType.Decimal).Value = Decimal.Divide(secondsToAdd, 3600);
+                if(!playing) command.Parameters.Add("@hoursPlayed", SqlDbType.Decimal).Value = decimal.Divide(secondsToAdd, 3600);
 
                 //Get connection
                 sqlConnection = connection.getConnection();

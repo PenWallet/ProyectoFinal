@@ -219,7 +219,7 @@ namespace CHAIRSignalR.Hubs
             if(!game.Equals(default(KeyValuePair<string, DateTime>)))
             {
                 //Calculate how many seconds the user has played
-                int secondsToAdd = DateTime.Now.Subtract(game.Value).Seconds;
+                int secondsToAdd = (int)(DateTime.Now - game.Value).TotalSeconds;
 
                 //Make the call to the API
                 HttpStatusCode statusCode;

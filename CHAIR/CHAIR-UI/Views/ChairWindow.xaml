@@ -21,6 +21,7 @@
         Background="White"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Resources>
+        <conv:GamePlayingToBorderBrush x:Key="GPTBBConverter"/>
         <conv:NullToVisibility x:Key="NTVConverter"/>
         <conv:BooleanToProfilePicConverter x:Key="BTPPConverter"/>
         <conv:OnlineBooleanToBorderBrush x:Key="OBTBConverter"/>
@@ -104,12 +105,17 @@
                         <!-- Profile picture and nickname -->
                         <StackPanel Orientation="Horizontal">
                             <!-- Profile picture (set depending on whether the user is admin or not) -->
-                            <Border BorderBrush="{StaticResource PastelGreen}"  BorderThickness="3" Width="55" Height="55" Margin="10 0 0 0" >
+                            <Border BorderBrush="{Binding gameBeingPlayed, Converter={StaticResource GPTBBConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  BorderThickness="3" Width="55" Height="55" Margin="10 0 0 0" >
                                 <Image Source="{Binding Path=loggedUser.admin, Converter={StaticResource BTPPConverter}}"/>
                             </Border>
 
                             <!-- Nickname -->
-                            <TextBlock FontSize="25" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}"  Margin="10 10 0 0"/>
+                            <StackPanel Orientation="Vertical"  Margin="10 10 0 0">
+                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}"/>
+                                <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding gameBeingPlayed, Converter={StaticResource NTVConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    Playing <TextBlock FontWeight="ExtraBold" Text="{Binding gameBeingPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </TextBlock>
+                            </StackPanel>
                         </StackPanel>
 
                         <!-- Open Friends List button -->

@@ -50,7 +50,7 @@
                 <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="DOWNLOAD" FontSize="35" Visibility="{Binding isDownloadButtonVisible, Converter={StaticResource BTVConverter}, UpdateSourceTrigger=PropertyChanged}" Command="{Binding downloadGameCommand}" CommandParameter="{Binding Path=selectedLibraryGame.game.name}"/>
                 
                 <!-- Play button -->
-                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="PLAY" FontSize="35" Visibility="{Binding isDownloadButtonVisible, Converter={StaticResource BTVIConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Height="50" FontStretch="Expanded" Content="PLAY" FontSize="35" Visibility="{Binding isDownloadButtonVisible, Converter={StaticResource BTVIConverter}, UpdateSourceTrigger=PropertyChanged}" Command="{Binding openGameCommand}" CommandParameter="{Binding Path=selectedLibraryGame.game.name}"/>
                 
                 <!-- Game name -->
                 <TextBlock Text="{Binding Path=selectedLibraryGame.game.name}" FontSize="50" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="10"/>
@@ -76,7 +76,7 @@
                     <!-- Hours played -->
                     <TextBlock Grid.Column="0" Grid.Row="0">
                         <TextBlock Text="YOU'VE PLAYED " Foreground="Blue" FontWeight="Bold" FontSize="20"/>
-                        <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedLibraryGame.relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
+                        <TextBlock FontSize="20" FontWeight="Medium" Text="{Binding Path=selectedLibraryGame.relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </TextBlock>
 
                     <!-- Last played or Currently In-Game, depending on if the user is playing currently or not -->

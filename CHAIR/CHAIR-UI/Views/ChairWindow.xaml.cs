@@ -141,6 +141,9 @@ namespace CHAIR_UI.Views
 
             _friendListWindow.Close();
 
+            if(SharedInfo.gameBeingPlayed != null)
+                ((ChairWindowViewModel)DataContext).closeOpenGame();
+
             LoginWindow loginWindow = new LoginWindow();
             loginWindow.Show();
         }

@@ -16,5 +16,6 @@ namespace CHAIR_UI.ViewModels
         public static UserWithToken loggedUser { get; set; } = new UserWithToken();
         public static string gameBeingDownloaded { get; set; }
         public static string gameBeingUnzipped { get; set; }
+        public static string gameBeingPlayed { get; set; }
     }
 }

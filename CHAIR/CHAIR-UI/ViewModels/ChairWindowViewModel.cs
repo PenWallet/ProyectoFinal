@@ -21,6 +21,7 @@ using System.Media;
 using System.IO;
 using System.Net;
 using Ionic.Zip;
+using System.Diagnostics;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -63,7 +64,7 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<List<Game>>("getAllStoreGames", getAllStoreGames);
             _signalR.proxy.On<string>("unexpectedError", unexpectedError);
             _signalR.proxy.On<UserProfile>("getUserProfile", getUserProfile);
-            _signalR.proxy.On<List<UserGamesWithGameAndFriends>>("getAllMyGames", getAllMyGames);
+            _signalR.proxy.On<ObservableCollection<UserGamesWithGameAndFriends>>("getAllMyGames", getAllMyGames);
             _signalR.proxy.On<GameStore>("getGameInformation", getGameInformation);
             _signalR.proxy.On<List<UserSearch>>("searchForUsers", searchForUsers);
             _signalR.proxy.On<List<UserForFriendList>>("getFriends", getFriends);
@@ -73,6 +74,7 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<string, ObservableCollection<Message>>("getConversation", getConversation);
             _signalR.proxy.On<string>("gameBought", gameBought);
             _signalR.proxy.On<Message>("receiveMessage", receiveMessage);
+            _signalR.proxy.On("closedGameSuccessfully", closedGameSuccessfully);
 
             //As soon as the user opens the application, we need to retrieve all the information regarding the user 
             _initializing = true; //We set this flag to true so that when getFriends gets called from SignalR, we update our status to true
@@ -97,7 +99,7 @@ namespace CHAIR_UI.ViewModels
         private SignalRConnection _signalR { get; set; }
         private List<Game> _storeGames { get; set; } //List of all the games available in the store minus the frontpage game
         private Game _frontPageGame { get; set; } //Game with frontPage set to true
-        private List<UserGamesWithGameAndFriends> _libraryGames { get; set; }
+        private ObservableCollection<UserGamesWithGameAndFriends> _libraryGames { get; set; }
         private UserGamesWithGameAndFriends _selectedLibraryGame { get; set; }
         private Visibility _libraryGameVisible { get; set; } //TODO: Change this for a boolean
         private bool _openCommunity { get; set; } //Variable used to know whether to open Profile to see another user's information, or to open Community, the user searcher
@@ -106,14 +108,16 @@ namespace CHAIR_UI.ViewModels
         private bool _initializing { get; set; }
         private bool _canClickOnBuyGame { get; set; }
         private List<string> _installedGames { get; set; }
-        private string _playingGame { get; set; }
         private bool _goToGamePage { get; set; } //Variable used to know whether to travel to the game store page after receiving the SignalR call "getGameInformation"
         private RelayCommand<string> _buyStoreGameCommand { get; set; }
         private RelayCommand<string> _downloadGameCommand { get; set; }
+        private RelayCommand<string> _openGameCommand { get; set; }
         private string _conversationTextToSend { get; set; }
         private string _gameBeingDownloaded { get; set; }
         private string _gameBeingUnzipped { get; set; }
+        private string _gameBeingPlayed { get; set; }
         private int _downloadUnzipProgress { get; set; }
+        private Process _gameProcess { get; set; }
 
         //Friend list variables
         private List<UserForFriendList> _friendsList { get; set; }
@@ -149,6 +153,19 @@ namespace CHAIR_UI.ViewModels
             {
                 _downloadUnzipProgress = value;
                 NotifyPropertyChanged("downloadUnzipProgress");
+            }
+        }
+        public string gameBeingPlayed
+        {
+            get
+            {
+                return _gameBeingPlayed;
+            }
+            set
+            {
+                _gameBeingPlayed = value;
+                SharedInfo.gameBeingPlayed = value;
+                NotifyPropertyChanged("gameBeingPlayed");
             }
         }
         public string gameBeingUnzipped
@@ -224,6 +241,14 @@ namespace CHAIR_UI.ViewModels
             {
                 _conversations = value;
                 NotifyPropertyChanged("conversations");
+            }
+        }
+        public RelayCommand<string> openGameCommand
+        {
+            get
+            {
+                _openGameCommand = new RelayCommand<string>(openGameCommand_Executed, openGameCommand_CanExecute);
+                return _openGameCommand;
             }
         }
         public RelayCommand<string> downloadGameCommand
@@ -407,7 +432,7 @@ namespace CHAIR_UI.ViewModels
                     libraryGameVisible = Visibility.Visible;
             }
         }
-        public List<UserGamesWithGameAndFriends> libraryGames
+        public ObservableCollection<UserGamesWithGameAndFriends> libraryGames
         {
             get
             {
@@ -545,7 +570,9 @@ namespace CHAIR_UI.ViewModels
         #region Commands
         private void CloseCommand_Executed()
         {
-            _view.Close();
+            Application.Current.Dispatcher.Invoke(delegate {
+                _view.Close();
+            });
         }
 
         private void MinimizeCommand_Executed()
@@ -650,9 +677,42 @@ namespace CHAIR_UI.ViewModels
             webClient.DownloadFileAsync(downloadUri, tempFilePath);
         }
 
-        private bool downloadGameCommand_CanExecute(string game)
+        private bool downloadGameCommand_CanExecute(string gameName)
         {
             return _gameBeingDownloaded == null && _gameBeingUnzipped == null;
+        }
+
+        private void openGameCommand_Executed(string gameName)
+        {
+            //We change the game we're playing now
+            gameBeingPlayed = gameName;
+
+            //And raise the can execute changed event
+            _openGameCommand.RaiseCanExecuteChanged();
+
+            //We get the file that we need to open
+            string exeFile = _libraryGames.Single(x => x.game.name == gameName).game.instructions;
+            string whatToOpen = SettingUtils.getInstallingFolder() + $"\\{gameName}\\{exeFile}";
+
+            //We get all friends who are connected to notify them we're going offline
+            List<string> usersNicknameList = new List<string>();
+            foreach (UserForFriendList user in friendsListOnline)
+                usersNicknameList.Add(user.nickname);
+
+            //Call to the server to inform that we're now playing
+            _signalR.proxy.Invoke("startPlayingGame", SharedInfo.loggedUser.nickname, gameName, SharedInfo.loggedUser.token, usersNicknameList);
+
+            //Actually open the game :D
+            _gameProcess = new Process();
+            _gameProcess.Exited += new EventHandler(FinishedPlaying);
+            _gameProcess.StartInfo.FileName = whatToOpen;
+            _gameProcess.EnableRaisingEvents = true;
+            _gameProcess.Start();
+        }
+
+        private bool openGameCommand_CanExecute(string gameName)
+        {
+            return _gameBeingPlayed == null;
         }
         #endregion
 
@@ -682,7 +742,7 @@ namespace CHAIR_UI.ViewModels
             });
         }
 
-        private void getAllMyGames(List<UserGamesWithGameAndFriends> obj)
+        private void getAllMyGames(ObservableCollection<UserGamesWithGameAndFriends> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 libraryGames = obj;
@@ -807,6 +867,14 @@ namespace CHAIR_UI.ViewModels
                 }
             });
         }
+
+        private void closedGameSuccessfully()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                //We refresh our games
+                _signalR.proxy.Invoke("getAllMyGamesAndFriends", SharedInfo.loggedUser.token);
+            });
+        }
         #endregion
 
 
@@ -831,14 +899,20 @@ namespace CHAIR_UI.ViewModels
 
         public void closeOpenGame()
         {
+            //We set back to null the variable where we hold the game we're playing
+            gameBeingPlayed = null;
+            _openGameCommand.RaiseCanExecuteChanged();
+
+            if (_gameBeingPlayed != null)
+                _gameProcess.Close();
+
             //We get all friends who are connected to notify them we're going offline
             List<string> usersNicknameList = new List<string>();
             foreach (UserForFriendList user in friendsListOnline)
                 usersNicknameList.Add(user.nickname);
 
+            //Call to the server to inform that we're no longer playing
             _signalR.proxy.Invoke("stopPlayingGame", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
-
-            
         }
 
         public void disconnectFromSignalR()
@@ -914,6 +988,15 @@ namespace CHAIR_UI.ViewModels
                     NotifyPropertyChanged("isDownloadButtonVisible");
                 }
             }
+        }
+        #endregion
+
+        #region Playing Events
+        private void FinishedPlaying(object sender, EventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                closeOpenGame();
+            });
         }
         #endregion
     }

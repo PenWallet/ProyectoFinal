@@ -65,7 +65,7 @@ namespace CHAIRSignalR_DAL.Calls
             request.AddHeader("Authorization", $"Bearer {token}");
             request.AddUrlSegment("user", user);
             request.AddUrlSegment("game", game);
-            request.AddUrlSegment("s", secondsToAdd);
+            request.AddQueryParameter("s", secondsToAdd.ToString());
 
             //Make the request
             var response = APIConnection.Client.Execute(request);

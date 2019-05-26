@@ -1,14 +1,28 @@
-﻿using System;
+﻿using CHAIR_Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CHAIR_Entities.Persistent
 {
-    public class UserGames
+    public class UserGames : VMBase
     {
+        private decimal _hoursPlayed { get; set; }
+
         public string user { get; set; }
         public string game { get; set; }
-        public decimal hoursPlayed { get; set; }
+        public decimal hoursPlayed
+        {
+            get
+            {
+                return _hoursPlayed;
+            }
+            set
+            {
+                _hoursPlayed = value;
+                NotifyPropertyChanged("hoursPlayed");
+            }
+        }
         public DateTime acquisitionDate { get; set; }
         public DateTime? lastPlayed { get; set; }
         public bool playing { get; set; }
