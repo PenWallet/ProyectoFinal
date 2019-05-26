@@ -1,6 +1,7 @@
 ﻿using CHAIR_Entities.Persistent;
 using CHAIR_UI.Interfaces;
 using CHAIR_UI.UserControls;
+using CHAIR_UI.Utils;
 using CHAIR_UI.ViewModels;
 using MaterialDesignThemes.Wpf;
 using System;
@@ -42,7 +43,7 @@ namespace CHAIR_UI.Views
         /// </summary>
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
             {
                 if (e.ClickCount == 2)
                 {

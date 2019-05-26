@@ -14,7 +14,7 @@ namespace CHAIR_UI.Utils
             string tempFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             tempFolder += "\\CHAIR\\Temp";
             
-            //This creates the directory if it doesn't exist. If it does, it doesn't do anyt
+            //This creates the directory if it doesn't exist. If it does, it doesn't do anything
             Directory.CreateDirectory(tempFolder);
 
             return tempFolder;

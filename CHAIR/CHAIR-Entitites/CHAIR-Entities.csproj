@@ -30,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>chairlogo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,6 +52,7 @@
     <Compile Include="Complex\UserProfile.cs" />
     <Compile Include="Complex\UserSearch.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
+    <Compile Include="Enums\NotificationType.cs" />
     <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Models\VMBase.cs" />
     <Compile Include="Persistent\Game.cs" />
@@ -59,9 +63,11 @@
     <Compile Include="Persistent\UserGames.cs" />
     <Compile Include="Persistent\UserWithSalt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Responses\BannedByEnum.cs" />
+    <Compile Include="Enums\BannedByEnum.cs" />
     <Compile Include="Responses\BanResponse.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="chairlogo.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

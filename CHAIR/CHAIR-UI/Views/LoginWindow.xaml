@@ -72,11 +72,19 @@
 
                 <!-- Username -->
                 <TextBlock Text="Username" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735"/>
-                <TextBox Text="{Binding username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="0" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="20"/>
+                <TextBox Text="{Binding username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="0" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="20">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding loginCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
 
                 <!-- Password -->
                 <TextBlock Text="Password" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735" Margin="0, 0, 0, 0"/>
-                <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="50"/>
+                <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="50">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding loginCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
 
                 <!-- Remember me -->
                 <CheckBox Content="Remember me" IsChecked="{Binding rememberMe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="5, 10, 0, 0" Foreground="#2C0735" FontSize="15"/>

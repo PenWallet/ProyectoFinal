@@ -50,7 +50,7 @@ namespace CHAIRAPI_DAL.Handlers
                 //Check if the user exists
                 if (reader.HasRows)
                 {
-                    commandGames.CommandText = "SELECT TOP 3 UG.game, UG.hoursPlayed, UG.acquisitionDate, UG.lastPlayed, UG.playing, G.developer, G.libraryImageUrl FROM UserGames AS UG INNER JOIN Games AS G ON UG.game = G.name WHERE UG.[user] = @nickname AND lastPlayed IS NOT NULL ORDER BY UG.playing desc, UG.lastPlayed, UG.game";
+                    commandGames.CommandText = "SELECT TOP 3 UG.game, UG.hoursPlayed, UG.acquisitionDate, UG.lastPlayed, UG.playing, G.developer, G.libraryImageUrl FROM UserGames AS UG INNER JOIN Games AS G ON UG.game = G.name WHERE UG.[user] = @nickname AND lastPlayed IS NOT NULL ORDER BY UG.playing desc, UG.lastPlayed desc";
                     commandGames.Parameters.Add("@nickname", SqlDbType.VarChar).Value = nickname;
                     readerGames = commandGames.ExecuteReader();
 

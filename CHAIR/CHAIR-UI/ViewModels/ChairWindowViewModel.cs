@@ -22,6 +22,7 @@ using System.IO;
 using System.Net;
 using Ionic.Zip;
 using System.Diagnostics;
+using CHAIR_Entities.Enums;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -44,6 +45,8 @@ namespace CHAIR_UI.ViewModels
             _goToGamePage = false;
             _gameBeingDownloaded = null;
             _gameBeingUnzipped = null;
+            _sounds = new SoundsUtils();
+            _friendsList = new ObservableCollection<UserForFriendList>();
             _optionsList = new List<OptionItem>()
             {
                 //First the itemKind (from material design), then the visible text
@@ -67,10 +70,10 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<ObservableCollection<UserGamesWithGameAndFriends>>("getAllMyGames", getAllMyGames);
             _signalR.proxy.On<GameStore>("getGameInformation", getGameInformation);
             _signalR.proxy.On<List<UserSearch>>("searchForUsers", searchForUsers);
-            _signalR.proxy.On<List<UserForFriendList>>("getFriends", getFriends);
+            _signalR.proxy.On<ObservableCollection<UserForFriendList>>("getFriends", getFriends);
             _signalR.proxy.On<BanResponse>("youHaveBeenBanned", youHaveBeenBanned);
             _signalR.proxy.On("onlineSuccessful", onlineSuccessful);
-            _signalR.proxy.On<string>("updateFriendListWithNotification", updateFriendListWithNotification);
+            _signalR.proxy.On<string, NotificationType>("updateFriendListWithNotification", updateFriendListWithNotification);
             _signalR.proxy.On<string, ObservableCollection<Message>>("getConversation", getConversation);
             _signalR.proxy.On<string>("gameBought", gameBought);
             _signalR.proxy.On<Message>("receiveMessage", receiveMessage);
@@ -85,6 +88,9 @@ namespace CHAIR_UI.ViewModels
 
             //Look up which games are installed (if the folder exists, I take the game is installed, I ain't searching each folder and each file, screw it)
             installedGames = SettingUtils.scanInstallingFolder();
+
+            //Play sound indicating we connected
+            _sounds.PlayOnlineSound();
         }
 
         #endregion
@@ -118,9 +124,10 @@ namespace CHAIR_UI.ViewModels
         private string _gameBeingPlayed { get; set; }
         private int _downloadUnzipProgress { get; set; }
         private Process _gameProcess { get; set; }
+        private SoundsUtils _sounds { get; set; }
 
         //Friend list variables
-        private List<UserForFriendList> _friendsList { get; set; }
+        private ObservableCollection<UserForFriendList> _friendsList { get; set; }
 
         //ConversationWindow
         private ObservableCollection<UserForFriendList> _conversations { get; set; }
@@ -302,29 +309,29 @@ namespace CHAIR_UI.ViewModels
                 return new RelayCommand<string>(acceptFriendshipCommand_Executed);
             }
         }
-        public List<UserForFriendList> friendsListOnline
+        public ObservableCollection<UserForFriendList> friendsListOnline
         {
             get
             {
-                return _friendsList?.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList();
+                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => x.online && x.relationship.acceptedRequestDate != null));
             }
         }
-        public List<UserForFriendList> friendsListOffline
+        public ObservableCollection<UserForFriendList> friendsListOffline
         {
             get
             {
-                return _friendsList?.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList();
+                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => !x.online && x.relationship.acceptedRequestDate != null));
             }
         }
-        public List<UserForFriendList> friendsListPending
+        public ObservableCollection<UserForFriendList> friendsListPending
         {
             get
             {
                 //Return all the friends from whom we haven't accepted the request this user sent them (where the user1 (the friend request sender) is not us)
-                return _friendsList?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList();
+                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname));
             }
         }
-        public List<UserForFriendList> friendsList
+        public ObservableCollection<UserForFriendList> friendsList
         {
             set
             {
@@ -334,7 +341,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("friendsListOffline");
                 NotifyPropertyChanged("friendsListPending");
 
-                NotifyPropertyChanged("conversations");
+                //NotifyPropertyChanged("conversations");
             }
         }
         public RelayCommand<string> addFriendCommand
@@ -631,7 +638,7 @@ namespace CHAIR_UI.ViewModels
 
         private void sendMessageCommand_Executed()
         {
-            if(!string.IsNullOrEmpty(_conversationTextToSend))
+            if(!string.IsNullOrWhiteSpace(_conversationTextToSend))
             {
                 Message message = new Message();
                 message.sender = SharedInfo.loggedUser.nickname;
@@ -642,6 +649,8 @@ namespace CHAIR_UI.ViewModels
                 _signalR.proxy.Invoke("sendMessage", message, SharedInfo.loggedUser.token);
 
                 selectedConversation.messages.Add(message);
+
+                _sounds.PlayMessageSound();
 
                 conversationTextToSend = "";
             }
@@ -690,9 +699,37 @@ namespace CHAIR_UI.ViewModels
             //And raise the can execute changed event
             _openGameCommand.RaiseCanExecuteChanged();
 
+            //Variables that will be sent to the process starter
+            string whatToOpen = "";
+            string arguments = "";
+
             //We get the file that we need to open
-            string exeFile = _libraryGames.Single(x => x.game.name == gameName).game.instructions;
-            string whatToOpen = SettingUtils.getInstallingFolder() + $"\\{gameName}\\{exeFile}";
+            string instructions = _libraryGames.Single(x => x.game.name == gameName).game.instructions;
+            string[] separateInstructions = instructions.Split(';');
+            string key;
+            string value;
+            foreach(string instruction in separateInstructions)
+            {
+                string[] instructionsSplit = instruction.Split(':');
+                key = instructionsSplit[0];
+                value = instructionsSplit.Count() == 2 ? instructionsSplit[1] : "";
+
+                switch (key)
+                {
+                    case "RUN":
+                            whatToOpen = SettingUtils.getInstallingFolder() + $"\\{gameName}\\{value}";
+                        break;
+
+                    case "RUNJAVA":
+                            whatToOpen = "java";
+                        break;
+
+                    //ARGUMENTS MUST BE AFTER THE "RUN" INSTRUCTION IN THE INSTRUCTIONS VARIABLE
+                    case "ARGUMENTSJAVA":
+                            arguments = "-jar " + SettingUtils.getInstallingFolder() + $"\\{gameName}\\{value}";
+                        break;
+                }
+            }
 
             //We get all friends who are connected to notify them we're going offline
             List<string> usersNicknameList = new List<string>();
@@ -705,8 +742,9 @@ namespace CHAIR_UI.ViewModels
             //Actually open the game :D
             _gameProcess = new Process();
             _gameProcess.Exited += new EventHandler(FinishedPlaying);
-            _gameProcess.StartInfo.FileName = whatToOpen;
             _gameProcess.EnableRaisingEvents = true;
+            _gameProcess.StartInfo.FileName = @whatToOpen;
+            _gameProcess.StartInfo.Arguments = arguments;
             _gameProcess.Start();
         }
 
@@ -767,7 +805,7 @@ namespace CHAIR_UI.ViewModels
             });
         }
 
-        private void getFriends(List<UserForFriendList> obj)
+        private void getFriends(ObservableCollection<UserForFriendList> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 friendsList = obj;
@@ -796,14 +834,29 @@ namespace CHAIR_UI.ViewModels
             });
         }
 
-        private void updateFriendListWithNotification(string notificationMessage)
+        private void updateFriendListWithNotification(string notificationMessage, NotificationType notificationType)
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 //Update our friend list
                 _signalR.proxy.Invoke("getFriends", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token);
 
                 //Show notification
-                showNotification(notificationMessage);
+                if(!string.IsNullOrEmpty(notificationMessage))
+                    showNotification(notificationMessage);
+
+                if(notificationType != NotificationType.GENERIC)
+                {
+                    switch(notificationType)
+                    {
+                        case NotificationType.ONLINE:
+                            _sounds.PlayOnlineSound();
+                            break;
+
+                        case NotificationType.OFFLINE:
+                            _sounds.PlayOfflineSound();
+                            break;
+                    }
+                }
             });
         }
 
@@ -852,6 +905,9 @@ namespace CHAIR_UI.ViewModels
         private void receiveMessage(Message message)
         {
             Application.Current.Dispatcher.Invoke(delegate {
+                //Play sound
+                _sounds.PlayMessageSound();
+
                 string friend = message.sender;
 
                 try
@@ -996,6 +1052,7 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 closeOpenGame();
+                _gameProcess = null;
             });
         }
         #endregion

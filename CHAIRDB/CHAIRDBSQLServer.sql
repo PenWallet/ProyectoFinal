@@ -246,16 +246,14 @@ INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin])
 			('Migue', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0),
 			('Test', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0)
 
-INSERT INTO Games (name, description, developer, minimumAge, releaseDate, storeImageUrl, libraryImageUrl, frontPage, downloadUrl) VALUES
-('Portal', 'Best game eva but not really its just very very good', 'VALVe', 3, '2007-10-10', 'https://i.imgur.com/1X60875.jpg', 'https://i.imgur.com/6FpgZlV.gif', 0, ''),
-('Portal 2', 'Best game eva 2 but not really its just very very good', 'VALVe', 3, '2011-04-18', 'https://i.imgur.com/KRAuJqV.jpg', 'https://i.imgur.com/8AJKwE9.png', 0, ''),
-('Overwatch', 'Play Mercy, like Medic in TF2', 'Blizzard', 10, '2016-05-24', 'https://i.imgur.com/hNBUyoc.jpg', 'https://i.imgur.com/M4WcKHc.png', 0, ''),
-('Crashex Legends', 'You will love our non-descriptive crash errors', 'Respawn Entertainment', 12, '2019-02-04', 'https://i.imgur.com/kG4nQo7.jpg', 'https://i.imgur.com/WbBV5KU.png', 0, ''),
+INSERT INTO Games (name, description, developer, minimumAge, releaseDate, storeImageUrl, libraryImageUrl, frontPage, downloadUrl, instructions) VALUES
+('MainDemo.Wpf', 'The program that the amazing CHAIR developer used to design and style the application you''re using right now. Wonderful, ain''t it?', '¯\_(🤷)_/¯', -4, '2010-01-01', 'http://8music.ddns.net/ODeloitte/Images/xamlbanner.png', 'http://8music.ddns.net/ODeloitte/Images/xaml.png', 0, 'RUN:MaterialDesignDemo.exe'),
+('Somaville', 'Puedes aprobar si sacas un 9.75', 'BurstSword', 9, '2018-12-17', '', 'http://8music.ddns.net/ODeloitte/Images/somaville.png', 0, 'RUNJAVA;ARGUMENTSJAVA:Somaville.jar'),
 ('Last Quest', 'Do you miss pixels? Then, remember good old times with Last Quest!
 
 Last Quest is a Zelda-like ARPG filled with enemies, puzzles, items and enemies
 
-Do you dare to face evil and bring peace back to the world?', 'jolsensei', 3, '2019-06-14', 'https://i.imgur.com/YvH79xF.png', 'https://i.imgur.com/cX6cVln.png', 1, 'http://8music.ddns.net/ODeloitte/Last%20Quest.zip')
+Do you dare to face evil and bring peace back to the world?', 'jolsensei', 3, '2019-06-14', 'http://8music.ddns.net/ODeloitte/Images/lastquestbanner.png', 'http://8music.ddns.net/ODeloitte/Images/lastquest.png', 1, 'http://8music.ddns.net/ODeloitte/Last%20Quest.zip')
 
 /*GO
 

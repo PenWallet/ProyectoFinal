@@ -89,7 +89,7 @@
                     </Grid>
                 </Expander.Header>
                 <!-- Online users -->
-                <ItemsControl ItemsSource="{Binding friendsListOnline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
+                <ItemsControl x:Name="OnlineUsersList" ItemsSource="{Binding friendsListOnline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical" />
@@ -104,15 +104,15 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <!-- Profile picture (set depending on whether the user is admin or not) -->
-                                    <Border BorderBrush="{Binding gamePlaying, Converter={StaticResource GPTBBConverter}}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
+                                    <Border BorderBrush="{Binding gamePlaying, Converter={StaticResource GPTBBConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
                                         <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
                                     </Border>
 
                                     <!-- Game information -->
                                     <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
                                         <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
-                                        <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding gamePlaying, Converter={StaticResource NTVConverter}}">
-                                            Playing <TextBlock FontWeight="ExtraBold" Text="{Binding gamePlaying}"/>
+                                        <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding Path=gamePlaying, Converter={StaticResource NTVConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                            Playing <TextBlock FontWeight="ExtraBold" Text="{Binding Path=gamePlaying, UpdateSourceTrigger=PropertyChanged}"/>
                                         </TextBlock>
                                     </StackPanel>
                                 </Grid>

@@ -12,6 +12,7 @@ using CHAIRSignalR_Entities.Responses;
 using System.Threading;
 using CHAIRSignalR.Common;
 using CHAIRSignalR_DAL.Calls;
+using CHAIRSignalR_Entities.Enums;
 
 namespace CHAIRSignalR.Hubs
 {
@@ -112,9 +113,12 @@ namespace CHAIRSignalR.Hubs
             {
                 string conId;
                 if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
-                    Clients.Client(conId).updateFriendListWithNotification($"{myself} and {friend} are now friends!"); //Tell our new online friend we accepted their request
-
-                Clients.Caller.updateFriendListWithNotification($"{myself} and {friend} are now friends!"); //Update our friendlist and show notification
+                {
+                    Clients.Client(conId).updateFriendListWithNotification($"{myself} and {friend} are now friends!", NotificationType.ONLINE); //Tell our new online friend we accepted their request
+                    Clients.Caller.updateFriendListWithNotification($"{myself} and {friend} are now friends!", NotificationType.ONLINE); //Update our friendlist and show notification
+                }
+                else
+                    Clients.Caller.updateFriendListWithNotification($"{myself} and {friend} are now friends!", NotificationType.OFFLINE); //Update our friendlist and show notification
 
             }
             else
@@ -131,7 +135,7 @@ namespace CHAIRSignalR.Hubs
             {
                 string conId;
                 if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
-                    Clients.Client(conId).updateFriendListWithNotification(""); //We don't tell them who deleted them, we just want them to update their friend list
+                    Clients.Client(conId).updateFriendListWithNotification("", NotificationType.GENERIC); //We don't tell them who deleted them, we just want them to update their friend list
             }
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to end a friendship. Please try again when it's fixed :D");
@@ -162,7 +166,7 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} just got online!");
+                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} just got online!", NotificationType.ONLINE);
                 }
 
                 Clients.Caller.onlineSuccessful();
@@ -184,7 +188,7 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} had enough for today");
+                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} had enough for today", NotificationType.OFFLINE);
                 }
             }
         }
@@ -205,14 +209,14 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{user} is now playing {game}");
+                        Clients.Client(conId).updateFriendListWithNotification($"{user} is now playing {game}", NotificationType.GENERIC);
                 }
             }
         }
 
         public void stopPlayingGame(string nickname, string token, List<string> usersToNotify)
         {
-            //We add the user to the usersPlaying liist 
+            //We add the user to the usersPlaying list
             KeyValuePair<string, DateTime> game;
             ChairInfo.usersPlaying.TryRemove(nickname, out game);
             
@@ -232,7 +236,7 @@ namespace CHAIRSignalR.Hubs
                     foreach(string user in usersToNotify)
                     {
                         if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}");
+                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}", NotificationType.GENERIC);
                     }
 
                     Clients.Caller.closedGameSuccessfully();

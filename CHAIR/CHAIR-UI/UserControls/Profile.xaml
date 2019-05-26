@@ -120,7 +120,7 @@
                                     <TextBlock FontSize="15" Text="{Binding Path=relationship.acquisitionDate, Converter={StaticResource ADTSConverter}}"/>
                                     <TextBlock>
                                         <TextBlock FontSize="15" Text="{Binding Path=relationship.hoursPlayed, Converter={StaticResource HPTPTConverter}}"/>
-                                        <TextBlock FontSize="15" Text=" on record"/>
+                                        <TextBlock FontSize="15" Text="on record"/>
                                     </TextBlock>
                                     <TextBlock FontSize="15" FontWeight="Bold" Text="Currently In-Game" Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVConverter}}" Foreground="{StaticResource PastelGreen}"/>
                                     <TextBlock Visibility="{Binding Path=relationship.playing, Converter={StaticResource BTVIConverter}}">
