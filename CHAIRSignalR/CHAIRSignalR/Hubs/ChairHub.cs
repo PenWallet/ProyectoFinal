@@ -236,7 +236,7 @@ namespace CHAIRSignalR.Hubs
                     foreach(string user in usersToNotify)
                     {
                         if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game}", NotificationType.GENERIC);
+                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game.Key}", NotificationType.GENERIC);
                     }
 
                     Clients.Caller.closedGameSuccessfully();

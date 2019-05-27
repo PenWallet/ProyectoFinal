@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -28,6 +29,7 @@ namespace CHAIR_UI.Views
     public partial class ChairWindow : Window, IBasicActionsChair
     {
         private FriendListWindow _friendListWindow;
+        private System.Windows.Forms.NotifyIcon _notifyIcon;
 
         public ChairWindow()
         {
@@ -36,6 +38,21 @@ namespace CHAIR_UI.Views
             _friendListWindow = new FriendListWindow(this.DataContext);
 
             Closing += OnWindowClosing;
+
+            //Setup notifyIcon
+            Image imageIcon = (Image)Application.Current.FindResource("CHAIRIcon");
+            System.Drawing.Icon icon = Utilities.ConvertImageToIcon(imageIcon);
+
+            //NotifyIcon
+            _notifyIcon = new System.Windows.Forms.NotifyIcon();
+            _notifyIcon.Icon = icon;
+            _notifyIcon.Visible = false;
+            _notifyIcon.DoubleClick += delegate (object sender, EventArgs args)
+            {
+                this.WindowState = WindowState.Normal;
+                this.Show();
+                _notifyIcon.Visible = false;
+            };
         }
 
         /// <summary>
@@ -113,20 +130,21 @@ namespace CHAIR_UI.Views
                 ContentCtrl.Content = new Settings(viewmodel);
             else if (page == "Community")
                 ContentCtrl.Content = new Search(viewmodel);
-            else if(page == "Game")
+            else if (page == "Game")
                 ContentCtrl.Content = new UserControls.Game(viewmodel);
             else if (page == "Admin")
                 ContentCtrl.Content = new Admin(viewmodel);
-            else if (page == "Log out")
-            {
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.Show();
-            }
         }
 
         public void OpenConversation()
         {
             _friendListWindow.OpenConversation();
+        }
+
+        public void MinimizeToTray()
+        {
+            this.Hide();
+            _notifyIcon.Visible = true;
         }
         #endregion
 
@@ -137,14 +155,19 @@ namespace CHAIR_UI.Views
 
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
-            ((ChairWindowViewModel)DataContext).disconnectFromSignalR();
-            ((ChairWindowViewModel)DataContext).dispose();
-
+            //If the user is playing something, then close the game because he decided to close our application. Fuck him
+            if(SharedInfo.gameBeingPlayed != null)
+                ((ChairWindowViewModel)DataContext).closeOpenGameIfOpen();
+                
+            //Close the friend list window
             _friendListWindow.Close();
 
-            if(SharedInfo.gameBeingPlayed != null)
-                ((ChairWindowViewModel)DataContext).closeOpenGame();
+            //Disconnect from SignalR
+            ((ChairWindowViewModel)DataContext).disconnectFromSignalR();
+            //Dispose of everything in the chair window viewmodel
+            ((ChairWindowViewModel)DataContext).dispose();
 
+            //Go back to the login window
             LoginWindow loginWindow = new LoginWindow();
             loginWindow.Show();
         }

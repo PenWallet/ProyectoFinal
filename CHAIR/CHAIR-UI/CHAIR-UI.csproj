@@ -126,7 +126,6 @@
     <Compile Include="Interfaces\IBasicActionsChair.cs" />
     <Compile Include="Interfaces\IBasicActionsRegister.cs" />
     <Compile Include="Interfaces\IBasicActions.cs" />
-    <Compile Include="Interfaces\ICloseableMinimizeable.cs" />
     <Compile Include="Interfaces\IMaximizable.cs" />
     <Compile Include="Interfaces\IMinimizeable.cs" />
     <Compile Include="SignalR\SignalRConnection.cs" />
@@ -153,12 +152,14 @@
     </Compile>
     <Compile Include="Utils\DialogCloser.cs" />
     <Compile Include="Interfaces\ICloseable.cs" />
+    <Compile Include="Utils\SettingsConstants.cs" />
     <Compile Include="Utils\SettingUtils.cs" />
     <Compile Include="Utils\SoundsUtils.cs" />
     <Compile Include="Utils\Utilities.cs" />
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />
+    <Compile Include="ViewModels\SettingsUserControlViewModel.cs" />
     <Compile Include="ViewModels\SharedInfo.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -258,7 +259,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\chairlogo.png" />
@@ -279,6 +282,7 @@
     <Resource Include="Assets\pendingicon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\chairlogo.ico" />
     <Content Include="Assets\offline.mp3" />
     <Content Include="Assets\online.mp3" />
     <Content Include="Assets\message.mp3" />

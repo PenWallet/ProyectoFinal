@@ -84,7 +84,7 @@
                         <TextBlock Text="Online" Grid.Column="0" FontSize="15"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <Image Source="/Assets/onlineicon.png" DockPanel.Dock="Right" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListOnline.Count}" FontWeight="Bold" DockPanel.Dock="Right" Grid.Column="0" FontSize="15"/>
+                            <TextBlock Text="{Binding Path=friendsListOnline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" DockPanel.Dock="Right" Grid.Column="0" FontSize="15"/>
                         </StackPanel>
                     </Grid>
                 </Expander.Header>
@@ -141,7 +141,7 @@
                         <TextBlock Text="Offline" Grid.Column="0" FontSize="15"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <Image Source="/Assets/offlineicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListOffline.Count}" FontWeight="Bold" FontSize="15"/>
+                            <TextBlock Text="{Binding Path=friendsListOffline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
                         </StackPanel>
                     </Grid>
                 </Expander.Header>
@@ -194,7 +194,7 @@
                         <TextBlock Text="Pending requests" Grid.Column="0" FontSize="15"/>
                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                             <Image Source="/Assets/pendingicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListPending.Count}" FontWeight="Bold" FontSize="15"/>
+                            <TextBlock Text="{Binding Path=friendsListPending.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
                         </StackPanel>
                     </Grid>
                 </Expander.Header>

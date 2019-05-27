@@ -23,24 +23,38 @@ namespace CHAIR_UI.Utils
             _onlinePlayer.Open(new Uri(@"../../Assets/online.mp3", UriKind.Relative));
             _offlinePlayer.Open(new Uri(@"../../Assets/offline.mp3", UriKind.Relative));
             _messagePlayer.Open(new Uri(@"../../Assets/message.mp3", UriKind.Relative));
+
+            //Notification sounds are a bit too loud (default is 0.5, so lower than that)
+            _offlinePlayer.Volume = 0.3;
+            _onlinePlayer.Volume = 0.35;
+            _messagePlayer.Volume = 0.4;
         }
 
         public void PlayOnlineSound()
         {
-            _onlinePlayer.Stop();
-            _onlinePlayer.Play();
+            if(SettingUtils.getOnlineNotificationSetting())
+            {
+                _onlinePlayer.Stop();
+                _onlinePlayer.Play();
+            }
         }
 
         public void PlayOfflineSound()
         {
-            _offlinePlayer.Stop();
-            _offlinePlayer.Play();
+            if(SettingUtils.getOfflineNotificationSetting())
+            {
+                _offlinePlayer.Stop();
+                _offlinePlayer.Play();
+            }
         }
 
         public void PlayMessageSound()
         {
-            _messagePlayer.Stop();
-            _messagePlayer.Play();
+            if(SettingUtils.getMessageNotificationSetting())
+            {
+                _messagePlayer.Stop();
+                _messagePlayer.Play();
+            }
         }
     }
 }

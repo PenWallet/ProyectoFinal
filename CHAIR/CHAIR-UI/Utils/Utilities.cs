@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace CHAIR_UI.Utils
 {
@@ -43,6 +46,17 @@ namespace CHAIR_UI.Utils
             newUser.banReason = user.banReason;
 
             return newUser;
+        }
+
+        public static Icon ConvertImageToIcon(System.Windows.Controls.Image image)
+        {
+            var ms = new MemoryStream();
+            var encoder = new PngBitmapEncoder(); // With this we also respect transparency.
+            encoder.Frames.Add(BitmapFrame.Create(new Uri(image.Source.ToString(), UriKind.Absolute)));
+            encoder.Save(ms);
+
+            var bmp = new Bitmap(ms);
+            return Icon.FromHandle(bmp.GetHicon());
         }
     }
 }

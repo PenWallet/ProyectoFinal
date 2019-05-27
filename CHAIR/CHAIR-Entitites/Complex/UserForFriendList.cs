@@ -40,7 +40,8 @@ namespace CHAIR_Entities.Complex
                 NotifyPropertyChanged("online");
             }
         }
-        public string gamePlaying //Variable used to know whether the user is playing a game or not. If not, it's null, otherwise, it's the game's name
+        //Variable used to know whether the user is playing a game or not. If not, it's null, otherwise, it's the game's name
+        public string gamePlaying
         {
             get
             {

@@ -10,5 +10,6 @@ namespace CHAIR_UI.Interfaces
     {
         void ChangePage(string page, object viewmodel);
         void OpenConversation();
+        void MinimizeToTray();
     }
 }

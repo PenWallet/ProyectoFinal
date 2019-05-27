@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CHAIR_Entities.Models;
+using CHAIR_UI.Utils;
 
 namespace CHAIR_UI.ViewModels
 {
@@ -20,43 +21,54 @@ namespace CHAIR_UI.ViewModels
         #region Default constructor
         public LoginWindowViewModel(IBasicActions view)
         {
-            _username = "Penny"; //TODO: Eliminar esto jeje
-            _password = "1234";
             _view = view;
+            _isNotLoadingLogin = true;
 
             //SignalR Connection
             _signalR = SignalRHubsConnection.loginHub;
 
+            //Initialize the settings
+            SettingUtils.initializeSettings();
+
+            //Search for a stored username and password
+            _username = SettingUtils.getUsernameRememberMe();
+            _password = SettingUtils.getPasswordRememberMe();
+
             _signalR.proxy.On<UserWithToken>("loginSuccessful", loginSuccessful);
             _signalR.proxy.On<BanResponse>("loginUnauthorized", loginUnauthorized);
+            
+            if(!string.IsNullOrWhiteSpace(_username) && !string.IsNullOrWhiteSpace(_password))
+            {
+                rememberMe = true;
+                login();
+            }
         }
         #endregion
 
         #region Private properties
-        private DelegateCommand _loginCommand;
         private string _username;
         private string _password;
         private bool? _closeWindow;
         private string _errors;
         private SignalRConnection _signalR;
-        private IBasicActions _view; //This allows me to close and minimize the view without breaking MVVM patterns
-        private bool _loadingLogin;
+        private IBasicActions _view; //This allows me to close and minimize the view without breaking the MVVM pattern because it's an interface
+        private bool _isNotLoadingLogin;
+        private DelegateCommand _loginCommand;
         #endregion
 
         #region Public properties
         public bool rememberMe { get; set; }
-        public bool loadingLogin
+        public bool isNotLoadingLogin
         {
             get
             {
-                return _loadingLogin;
+                return _isNotLoadingLogin;
             }
 
             set
             {
-                _loadingLogin = value;
-                NotifyPropertyChanged("loadingLogin");
-                _loginCommand.RaiseCanExecuteChanged();
+                _isNotLoadingLogin = value;
+                NotifyPropertyChanged("isNotLoadingLogin");
             }
         }
         public DelegateCommand registerClickCommand
@@ -74,6 +86,7 @@ namespace CHAIR_UI.ViewModels
                 return _loginCommand;
             }
         }
+
         public DelegateCommand closeCommand
         {
             get
@@ -101,11 +114,11 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("closeWindow");
             }
         }
-        public DelegateCommand rickRollCommand
+        public DelegateCommand recoverPasswordCommand
         {
             get
             {
-                return new DelegateCommand(RickRollCommand_Executed);
+                return new DelegateCommand(RecoverPasswordCommand_Executed);
             }
         }
 
@@ -119,8 +132,8 @@ namespace CHAIR_UI.ViewModels
             set
             {
                 _username = value;
-                _loginCommand.RaiseCanExecuteChanged();
                 NotifyPropertyChanged("username");
+                _loginCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -134,8 +147,8 @@ namespace CHAIR_UI.ViewModels
             set
             {
                 _password = value;
-                _loginCommand.RaiseCanExecuteChanged();
                 NotifyPropertyChanged("password");
+                _loginCommand.RaiseCanExecuteChanged();
             }
         }
         public string errors
@@ -164,26 +177,20 @@ namespace CHAIR_UI.ViewModels
         }
 
         //Sorry
-        private void RickRollCommand_Executed()
+        private void RecoverPasswordCommand_Executed()
         {
+            System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
             _view.Close();
-            //System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
         }
 
         private void LoginCommand_Executed()
         {
-            //Login code, calls to SignalR, etc.
-            loadingLogin = true;
-            _signalR.proxy.Invoke("login", _username, _password);
+            login();
         }
 
         private bool LoginCommand_CanExecute()
         {
-            //Can't click login if there's nothing written on username or password fields or if it's already trying to log in
-            if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password) || _loadingLogin)
-                return false;
-
-            return true;
+            return !string.IsNullOrWhiteSpace(_username) && !string.IsNullOrWhiteSpace(_password);
         }
 
         private void CloseCommand_Executed()
@@ -203,6 +210,13 @@ namespace CHAIR_UI.ViewModels
             Application.Current.Dispatcher.Invoke(delegate {
                 //Save the information in the SharedInfo for the ChairWindowViewModel to have
                 SharedInfo.loggedUser = user;
+
+                //If remember me is checked, then we save the username and password in the registry
+                if(rememberMe)
+                {
+                    SettingUtils.setUsernameRememberMe(_username);
+                    SettingUtils.setPasswordRememberMe(_password);
+                }
 
                 //Open the application window
                 _view.OpenWindow("ChairWindow");
@@ -228,8 +242,17 @@ namespace CHAIR_UI.ViewModels
                     _view.ShowPopUp(str);
                 }
 
-                loadingLogin = false;
+                isNotLoadingLogin = true;
             });
+        }
+        #endregion
+    
+        #region Methods
+        private void login()
+        {
+            //Login code, calls to SignalR, etc.
+            isNotLoadingLogin = false;
+            _signalR.proxy.Invoke("login", _username, _password);
         }
         #endregion
     }

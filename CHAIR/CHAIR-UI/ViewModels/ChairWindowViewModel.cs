@@ -91,6 +91,16 @@ namespace CHAIR_UI.ViewModels
 
             //Play sound indicating we connected
             _sounds.PlayOnlineSound();
+
+            //Initialize settings
+            SettingUtils.initializeSettings(); _installingFolder = SettingUtils.getInstallingFolder();
+            _tempDownloadFolder = SettingUtils.getTempDownloadFolder();
+            _messageNotifications = SettingUtils.getMessageNotificationSetting();
+            _onlineNotifications = SettingUtils.getOnlineNotificationSetting();
+            _offlineNotifications = SettingUtils.getOfflineNotificationSetting();
+            _playingGameNotifications = SettingUtils.getPlayingGameNotificationSetting();
+            _minimizeToTray = SettingUtils.getMinimizeToTraySetting();
+            _canSave = false;
         }
 
         #endregion
@@ -131,13 +141,133 @@ namespace CHAIR_UI.ViewModels
 
         //ConversationWindow
         private ObservableCollection<UserForFriendList> _conversations { get; set; }
+        private ObservableCollection<UserForFriendList> _friendsListOnline { get; set; }
+        private ObservableCollection<UserForFriendList> _friendsListOffline { get; set; }
+        private ObservableCollection<UserForFriendList> _friendsListPending { get; set; }
         private UserForFriendList _selectedConversation { get; set; }
+
+        //Settings variables
+        private string _installingFolder;
+        private string _tempDownloadFolder;
+        private bool _messageNotifications;
+        private bool _onlineNotifications;
+        private bool _offlineNotifications;
+        private bool _playingGameNotifications;
+        private bool _minimizeToTray;
+        private bool _canSave;
+        private DelegateCommand _saveSettingsCommand;
         #endregion
 
 
         #region Public properties
         public UserWithToken loggedUser { get; set; }
         public SnackbarMessageQueue notificationsQueue { get; set; }
+        public DelegateCommand saveSettingsCommand
+        {
+            get
+            {
+                _saveSettingsCommand = new DelegateCommand(SaveSettingsCommand_Executed, SaveSettingsCommand_CanExecute);
+                return _saveSettingsCommand;
+            }
+        }
+        public string installingFolder
+        {
+            get
+            {
+                return _installingFolder;
+            }
+            set
+            {
+                _installingFolder = value;
+                NotifyPropertyChanged("installingFolder");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public string tempDownloadFolder
+        {
+            get
+            {
+                return _tempDownloadFolder;
+            }
+            set
+            {
+                _tempDownloadFolder = value;
+                NotifyPropertyChanged("tempDownloadFolder");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool messageNotifications
+        {
+            get
+            {
+                return _messageNotifications;
+            }
+            set
+            {
+                _messageNotifications = value;
+                NotifyPropertyChanged("messageNotifications");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool onlineNotifications
+        {
+            get
+            {
+                return _onlineNotifications;
+            }
+            set
+            {
+                _onlineNotifications = value;
+                NotifyPropertyChanged("onlineNotifications");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool offlineNotifications
+        {
+            get
+            {
+                return _offlineNotifications;
+            }
+            set
+            {
+                _offlineNotifications = value;
+                NotifyPropertyChanged("offlineNotifications");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool playingGameNotifications
+        {
+            get
+            {
+                return _playingGameNotifications;
+            }
+            set
+            {
+                _playingGameNotifications = value;
+                NotifyPropertyChanged("playingGameNotifications");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool minimizeToTray
+        {
+            get
+            {
+                return _minimizeToTray;
+            }
+            set
+            {
+                _minimizeToTray = value;
+                NotifyPropertyChanged("minimizeToTray");
+                _canSave = true;
+                _saveSettingsCommand.RaiseCanExecuteChanged();
+            }
+        }
         public bool isDownloadButtonVisible
         {
             get
@@ -313,22 +443,36 @@ namespace CHAIR_UI.ViewModels
         {
             get
             {
-                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => x.online && x.relationship.acceptedRequestDate != null));
+                return _friendsListOnline;
+            }
+            set
+            {
+                _friendsListOnline = value;
+                NotifyPropertyChanged("friendsListOnline");
             }
         }
         public ObservableCollection<UserForFriendList> friendsListOffline
         {
             get
             {
-                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => !x.online && x.relationship.acceptedRequestDate != null));
+                return _friendsListOffline;
+            }
+            set
+            {
+                _friendsListOffline = value;
+                NotifyPropertyChanged("friendsListOffline");
             }
         }
         public ObservableCollection<UserForFriendList> friendsListPending
         {
             get
             {
-                //Return all the friends from whom we haven't accepted the request this user sent them (where the user1 (the friend request sender) is not us)
-                return new ObservableCollection<UserForFriendList>(_friendsList?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname));
+                return _friendsListPending;
+            }
+            set
+            {
+                _friendsListPending = value;
+                NotifyPropertyChanged("friendsListPending");
             }
         }
         public ObservableCollection<UserForFriendList> friendsList
@@ -337,11 +481,10 @@ namespace CHAIR_UI.ViewModels
             {
                 //We set the new value and notify changes to all lists which depend on friendList
                 _friendsList = value;
-                NotifyPropertyChanged("friendsListOnline");
-                NotifyPropertyChanged("friendsListOffline");
-                NotifyPropertyChanged("friendsListPending");
-
-                //NotifyPropertyChanged("conversations");
+                friendsListOnline = new ObservableCollection<UserForFriendList>(value?.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList());
+                friendsListOffline = new ObservableCollection<UserForFriendList>(value?.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList());
+                //All the requests from other users we haven't accepted yet (where the user1 -the friend request sender- is not us)
+                friendsListPending = new ObservableCollection<UserForFriendList>(value?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList());
             }
         }
         public RelayCommand<string> addFriendCommand
@@ -545,6 +688,11 @@ namespace CHAIR_UI.ViewModels
                     _signalR.proxy.Invoke("getAllStoreGames", SharedInfo.loggedUser.token);
                 else if (_selectedOption.name == "Log out") //If the user wants to log out, we close the CHAIR window
                 {
+                    //Reset the remember me values because we logged out
+                    SettingUtils.setUsernameRememberMe("");
+                    SettingUtils.setPasswordRememberMe("");
+
+                    //Close this window
                     _view.Close();
                     return;
                 }
@@ -577,9 +725,18 @@ namespace CHAIR_UI.ViewModels
         #region Commands
         private void CloseCommand_Executed()
         {
-            Application.Current.Dispatcher.Invoke(delegate {
+            //If the user wants to minimize the tray when X is closed, then it is minimized to the tray. Otherwise, application closes and goes back to the login window.
+            if(SettingUtils.getMinimizeToTraySetting())
+                _view.MinimizeToTray();
+            else
+            {
+                //Reset the remember me values because we logged out
+                SettingUtils.setUsernameRememberMe("");
+                SettingUtils.setPasswordRememberMe("");
+
+                //Close this window
                 _view.Close();
-            });
+            }
         }
 
         private void MinimizeCommand_Executed()
@@ -591,9 +748,9 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR.proxy.Invoke("getUserProfile", nickname, SharedInfo.loggedUser.token);
 
-            //But we mark "Community" on the list, because it isn't our profile and there is no "Profile" option
+            //We mark "Community" on the list, because it isn't our profile and there is no "Profile" option
             selectedOption = _optionsList.Single(x => x.name == "Community");
-            //We change the page to "Profile" to display the user's information
+            //But we change the page to "Profile" to display the user's information
             _view.ChangePage("Profile", this);
         }
 
@@ -751,6 +908,29 @@ namespace CHAIR_UI.ViewModels
         private bool openGameCommand_CanExecute(string gameName)
         {
             return _gameBeingPlayed == null;
+        }
+
+        private void SaveSettingsCommand_Executed()
+        {
+            SettingUtils.setInstallingFolder(_installingFolder);
+            SettingUtils.setTempDownloadFolder(_tempDownloadFolder);
+            SettingUtils.setMessageNotificationSetting(_messageNotifications);
+            SettingUtils.setOnlineNotificationSetting(_onlineNotifications);
+            SettingUtils.setOfflineNotificationSetting(_offlineNotifications);
+            SettingUtils.setPlayingGameNotificationSetting(_playingGameNotifications);
+            SettingUtils.setMinimizeToTraySetting(_minimizeToTray);
+
+            installedGames = SettingUtils.scanInstallingFolder();
+
+            _canSave = false;
+            _saveSettingsCommand.RaiseCanExecuteChanged();
+
+            notificationsQueue.Enqueue("Settings saved!");
+        }
+
+        private bool SaveSettingsCommand_CanExecute()
+        {
+            return _canSave;
         }
         #endregion
 
@@ -953,14 +1133,11 @@ namespace CHAIR_UI.ViewModels
             loggedUser = null;
         }
 
-        public void closeOpenGame()
+        private void closeOpenGame()
         {
             //We set back to null the variable where we hold the game we're playing
             gameBeingPlayed = null;
             _openGameCommand.RaiseCanExecuteChanged();
-
-            if (_gameBeingPlayed != null)
-                _gameProcess.Close();
 
             //We get all friends who are connected to notify them we're going offline
             List<string> usersNicknameList = new List<string>();
@@ -969,6 +1146,17 @@ namespace CHAIR_UI.ViewModels
 
             //Call to the server to inform that we're no longer playing
             _signalR.proxy.Invoke("stopPlayingGame", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
+        }
+
+        public void closeOpenGameIfOpen()
+        {
+            if (_gameProcess != null)
+            {
+                _gameProcess.EnableRaisingEvents = false;
+                _gameProcess.Kill();
+
+                closeOpenGame();
+            }
         }
 
         public void disconnectFromSignalR()
