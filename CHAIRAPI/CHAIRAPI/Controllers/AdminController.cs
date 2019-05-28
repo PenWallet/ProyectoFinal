@@ -101,10 +101,25 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
+        /// PUT Method is used to update a game
+        /// </summary>
+        /// <param name="game">The game to update</param>
+        [HttpGet("users")]
+        public IActionResult GetAllGames()
+        {
+            List<string> users = AdminHandler.getAllUsers();
+            
+            if (users != null)
+                return Ok(users); //Not Found
+            else
+                return StatusCode(500); //Internal Server Error
+        }
+
+        /// <summary>
         /// GET Method to get all games in the database
         /// </summary>
-        [HttpGet("playingusers")]
-        public IActionResult GetPlayingUsers()
+        [HttpGet("gamesstats")]
+        public IActionResult GetAllGamesStats()
         {
             string accept = Request.Headers["Accept"].ToString();
             if (accept != "application/json" && accept != "*/*")

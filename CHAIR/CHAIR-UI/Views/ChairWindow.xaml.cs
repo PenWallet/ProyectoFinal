@@ -133,7 +133,7 @@ namespace CHAIR_UI.Views
             else if (page == "Game")
                 ContentCtrl.Content = new UserControls.Game(viewmodel);
             else if (page == "Admin")
-                ContentCtrl.Content = new Admin(viewmodel);
+                ContentCtrl.Content = new Admin();
         }
 
         public void OpenConversation()

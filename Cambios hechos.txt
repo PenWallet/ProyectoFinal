@@ -1,0 +1,20 @@
+CHAIR
+- Se debe añadir el método adminUpdateOnlineUsers(string[] users), llamada de SignalR
+- Se debe añadir el método adminUpdateGamesBeingPlayedAlert(), llamada de SignalR
+- Se debe añadir el método adminUpdateGamesBeingPlayed(List<GameBeingPlayed>), llamada de SignalR
+- Se debe añadir el método adminNotification(string), llamada de SignalR
+
+CHAIRSignalR
+- Ahora 'goOnline' y 'goOffline' requiere 'bool admin'
+- Añadido adminPardonIPBan
+- Añadido adminBanIP
+
+
+CHAIRAPI
+- Añadido pardonIP en AdminCallback
+
+CHAIRDB
+- Añadida función GetGamesStats
+
+
+- Clase GameBeingPlayed ahora lleva las horas jugadas por todos los jugadores de ese juego

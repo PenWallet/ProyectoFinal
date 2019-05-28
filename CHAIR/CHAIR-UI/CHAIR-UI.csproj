@@ -156,6 +156,7 @@
     <Compile Include="Utils\SettingUtils.cs" />
     <Compile Include="Utils\SoundsUtils.cs" />
     <Compile Include="Utils\Utilities.cs" />
+    <Compile Include="ViewModels\AdminViewModel.cs" />
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />

@@ -52,6 +52,7 @@
     <Compile Include="Complex\UserProfile.cs" />
     <Compile Include="Complex\UserSearch.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
+    <Compile Include="Enums\AdminNotificationType.cs" />
     <Compile Include="Enums\NotificationType.cs" />
     <Compile Include="Models\OptionItem.cs" />
     <Compile Include="Models\VMBase.cs" />

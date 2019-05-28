@@ -30,7 +30,7 @@ namespace CHAIRAPI_DAL.Handlers
                 sqlConnection = connection.getConnection();
 
                 //Define the command
-                command.CommandText = "SELECT game, SUM(CASE WHEN playing=1 THEN 1 ELSE 0 END) AS numberOfPlayers, COUNT(*) AS numberOfPlayersPlaying FROM UserGames GROUP BY game";
+                command.CommandText = "SELECT name, numberOfPlayers, numberOfPlayersPlaying, totalHoursPlayed FROM GetGamesStats()";
 
                 //Define the connection
                 command.Connection = sqlConnection;
@@ -45,10 +45,61 @@ namespace CHAIRAPI_DAL.Handlers
                     {
                         //Read the result and assign values
                         game = new GameBeingPlayed();
-                        game.game = (string)reader["game"];
+                        game.game = (string)reader["name"];
                         game.numberOfPlayers = (int)reader["numberOfPlayers"];
                         game.numberOfPlayersPlaying = (int)reader["numberOfPlayersPlaying"];
+                        game.totalRegisteredHours = (decimal)reader["totalHoursPlayed"];
                         list.Add(game);
+                    }
+                }
+
+            }
+            catch (SqlException ex) { list = null; }
+            catch (Exception ex) { list = null; }
+            finally
+            {
+                connection.closeConnection(ref sqlConnection);
+                reader?.Close();
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Method which will search the database for all the users and bring their usernames
+        /// </summary>
+        /// <returns>A list with all the games if they're found, null otherwiser</returns>
+        public static List<string> getAllUsers()
+        {
+            //Variables
+            SqlConnection sqlConnection = null;
+            SqlDataReader reader = null;
+            SqlCommand command = new SqlCommand();
+            Connection connection = new Connection();
+            GameBeingPlayed game = null;
+            List<string> list = new List<string>();
+
+            try
+            {
+                //Get open connection
+                sqlConnection = connection.getConnection();
+
+                //Define the command
+                command.CommandText = "SELECT nickname FROM Users WHERE admin = 0";
+
+                //Define the connection
+                command.Connection = sqlConnection;
+
+                //Execute
+                reader = command.ExecuteReader();
+
+                //Check if the user exists
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        //Read the result and assign values
+                        list.Add((string)reader["nickname"]);
                     }
                 }
 

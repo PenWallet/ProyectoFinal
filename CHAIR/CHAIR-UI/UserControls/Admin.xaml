@@ -4,9 +4,108 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CHAIR_UI.UserControls"
+             xmlns:conv="clr-namespace:CHAIR_UI.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:model="clr-namespace:CHAIR_Entities.Complex"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Text="Admin" FontSize="100"/>
-    </Grid>
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontFamily="{DynamicResource MaterialDesignFont}">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Game stats sound -->
+            <StackPanel Orientation="Vertical" Grid.Row="0" Grid.ColumnSpan="2" Margin="30 10 30 10">
+                <TextBlock Text="Real-Time game stats" FontSize="20"/>
+                <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="0 10 0 0">
+                    <DataGrid ItemsSource="{Binding gamesBeingPlayed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" CanUserSortColumns="True" CanUserAddRows="False" AutoGenerateColumns="False" materialDesign:DataGridAssist.CellPadding="13 8 8 8" materialDesign:DataGridAssist.ColumnHeaderPadding="8">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding game, UpdateSourceTrigger=PropertyChanged}" Header="Game" IsReadOnly="True"/>
+                            <DataGridTextColumn Binding="{Binding numberOfPlayers, UpdateSourceTrigger=PropertyChanged}" Header="# of players" IsReadOnly="True"/>
+                            <DataGridTextColumn Binding="{Binding numberOfPlayersPlaying, UpdateSourceTrigger=PropertyChanged}" Header="# of players playing" IsReadOnly="True"/>
+                            <DataGridTextColumn Binding="{Binding totalRegisteredHours, UpdateSourceTrigger=PropertyChanged}" Header="Total registered hours" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </materialDesign:Card>
+            </StackPanel>
+            
+            
+            <!-- Online sound -->
+            <StackPanel Grid.Row="1" Grid.Column="0" Margin="30 10 30 10">
+                <TextBlock Text="Add new game to the store" FontSize="20"/>
+                <materialDesign:Card materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="0 10 0 0">
+                    <Grid Margin="20 10 20 10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Game name -->
+                        <materialDesign:PackIcon Kind="FormatLetterCase" Grid.Column="0" Grid.Row="0" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" materialDesign:HintAssist.Hint="Name" AcceptsReturn="False" Text="{Binding gameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        
+                        <!-- Game description -->
+                        <materialDesign:PackIcon Kind="Comment" Grid.Column="0" Grid.Row="1" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" materialDesign:HintAssist.Hint="Description" AcceptsReturn="True" Text="{Binding gameDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                        <!-- Game developer -->
+                        <materialDesign:PackIcon Kind="Human" Grid.Column="0" Grid.Row="2" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" materialDesign:HintAssist.Hint="Developer" AcceptsReturn="False" Text="{Binding gameDeveloper, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                        <!-- Game minimum age -->
+                        <materialDesign:PackIcon Kind="HumanChild" Grid.Column="0" Grid.Row="3" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" materialDesign:HintAssist.Hint="Minimum age" PreviewTextInput="NumberValidationTextBox" AcceptsReturn="False" Text="{Binding gameMinimumAge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                        <!-- Game releaseDate -->
+                        <materialDesign:PackIcon Kind="DateRange" Grid.Column="0" Grid.Row="4" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <DatePicker Grid.Column="1" Grid.Row="4" materialDesign:HintAssist.Hint="Release date" FontSize="20" Margin="10" SelectedDate="{Binding gameReleaseDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        
+                        <!-- Game instructions -->
+                        <materialDesign:PackIcon Kind="FormatListBulleted" Grid.Column="0" Grid.Row="5" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="5" materialDesign:HintAssist.Hint="Instructions" AcceptsReturn="False" Text="{Binding gameInstructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                        <!-- Game downloadUrl -->
+                        <materialDesign:PackIcon Kind="CloudDownload" Grid.Column="0" Grid.Row="6" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="6" materialDesign:HintAssist.Hint="Download URL" AcceptsReturn="False" Text="{Binding gameDownloadUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+
+                        <!-- Game storeImageUrl -->
+                        <materialDesign:PackIcon Kind="Image" Grid.Column="0" Grid.Row="7" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="7" materialDesign:HintAssist.Hint="Store Image URL" AcceptsReturn="False" Text="{Binding gameStoreImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        <Image Grid.Column="2" Grid.Row="7"  Source="{Binding gameStoreImageUrl, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MaxWidth="150" MaxHeight="50"/>
+
+                        <!-- Game libraryImageUrl -->
+                        <materialDesign:PackIcon Kind="Image" Grid.Column="0" Grid.Row="8" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Grid.Row="8" materialDesign:HintAssist.Hint="Library Image URL" AcceptsReturn="False" Text="{Binding gameLibraryImageUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Margin="10" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        <Image Grid.Column="2" Grid.Row="8" Source="{Binding gameLibraryImageUrl, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MaxWidth="50" MaxHeight="50"/>
+                        
+                        <!-- Save button -->
+                        <Button Content="Add new game" Margin="10" Grid.Row="9" Grid.ColumnSpan="3" FontSize="30" Height="50" Foreground="#2C0735" Background="{StaticResource PastelGreen}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding addNewGameCommand}"/>
+                    </Grid>
+                </materialDesign:Card>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

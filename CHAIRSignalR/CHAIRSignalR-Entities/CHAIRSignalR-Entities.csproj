@@ -49,6 +49,7 @@
     <Compile Include="Complex\UserSearch.cs" />
     <Compile Include="Complex\UserWithToken.cs" />
     <Compile Include="Enums\BannedByEnum.cs" />
+    <Compile Include="Enums\AdminNotificationType.cs" />
     <Compile Include="Enums\NotificationType.cs" />
     <Compile Include="Responses\BanResponse.cs" />
     <Compile Include="Complex\GameBeingPlayed.cs" />

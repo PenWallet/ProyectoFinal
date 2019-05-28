@@ -153,7 +153,7 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get your friends. Please try again when it's fixed :D");
         }
 
-        public void goOnline(string nickname, string token, List<string> usersToNotify)
+        public void goOnline(string nickname, bool admin, string token, List<string> usersToNotify)
         {
             //Make the call to the API
             HttpStatusCode statusCode;
@@ -166,16 +166,24 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} just got online!", NotificationType.ONLINE);
+                        Clients.Client(conId).updateFriendListWithNotification((admin ? $"Our Lord and Saviour " : "") + $"{nickname} just got online!", NotificationType.ONLINE);
                 }
 
                 Clients.Caller.onlineSuccessful();
+
+                //We inform all admins that someone got online and update their list
+                foreach(string adminConId in ChairInfo.onlineAdmins.Values)
+                    Clients.Client(adminConId).adminUpdateOnlineUsers(ChairInfo.onlineUsers.Keys.ToArray());
+
+                //If the user is an admin, add him to the admin group so he is alerted when changes occur in his Admin tab
+                if(admin)
+                    ChairInfo.onlineAdmins.AddOrUpdate(nickname, Context.ConnectionId, (key, value) => value);
             }
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to set you online. Please try again when it's fixed :D");
         }
 
-        public void goOffline(string nickname, string token, List<string> usersToNotify)
+        public void goOffline(string nickname, bool admin, string token, List<string> usersToNotify)
         {
             //Make the call to the API
             HttpStatusCode statusCode;
@@ -189,6 +197,17 @@ namespace CHAIRSignalR.Hubs
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
                         Clients.Client(conId).updateFriendListWithNotification($"{nickname} had enough for today", NotificationType.OFFLINE);
+
+                    if(admin)
+                    {
+                        string deletedConId;
+                        ChairInfo.onlineAdmins.TryRemove(nickname, out deletedConId);
+                    }
+
+                    //Alert all the online admins that someone disconnected by updating their online users list
+                    foreach(string adminConId in ChairInfo.onlineAdmins.Values)
+                        Clients.Client(adminConId).adminUpdateOnlineUsers(ChairInfo.onlineUsers.Keys.ToArray());
+
                 }
             }
         }
@@ -211,6 +230,8 @@ namespace CHAIRSignalR.Hubs
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
                         Clients.Client(conId).updateFriendListWithNotification($"{user} is now playing {game}", NotificationType.GENERIC);
                 }
+
+                tellAllAdminsToUpdateTheirGamesList();
             }
         }
 
@@ -240,6 +261,8 @@ namespace CHAIRSignalR.Hubs
                     }
 
                     Clients.Caller.closedGameSuccessfully();
+
+                    tellAllAdminsToUpdateTheirGamesList();
                 }
                 else
                     Clients.Caller.unexpectedError($"An unexpected error occurred when trying to stop you from playing that game. Please try again when it's fixed :D");
@@ -290,23 +313,16 @@ namespace CHAIRSignalR.Hubs
 
             //If it all went well, then we notify the online user's friends that he disconnected
             if (statusCode == HttpStatusCode.Created)
+            {
                 Clients.Caller.gameBought(relationship.game);
+                
+                tellAllAdminsToUpdateTheirGamesList();
+            }
             else
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to buy {relationship.game}. Please try again when it's fixed :D");
         }
 
         #region Admin
-        public void adminGetOnlineUsers()
-        {
-            //Get all the nicknames of the online users
-            List<string> onlineUsersNicknames = new List<string>();
-            foreach(string user in ChairInfo.onlineUsers.Keys)
-                onlineUsersNicknames.Add(user);
-            
-            //Return all the nicknames of the online users to the caller
-            Clients.Caller.adminGetOnlineUsers(onlineUsersNicknames);
-        }
-
         public void adminBanUser(string nickname, string reason, string token, DateTime until)
         {
             User user = new User();
@@ -328,14 +344,51 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D");
         }
 
+        public void adminBanIP(string nickname, string reason, string token, DateTime until)
+        {
+            User user = new User();
+            user.nickname = nickname;
+            user.banReason = reason;
+            user.bannedUntil = until;
+
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.ban(user, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+            {
+                Clients.Caller.adminNotification($"{nickname} was successfully banned for all his sins", AdminNotificationType.BANIP);
+
+                string conId;
+                if(ChairInfo.onlineUsers.TryGetValue(nickname, out conId))
+                    Clients.Client(conId).youHaveBeenBanned(new BanResponse(BannedByEnum.USER, reason, until));
+            }
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D");
+        }
+
         public void adminPardonBan(string nickname, string token)
         {
             //Make the call to the API
             HttpStatusCode statusCode;
-            AdminCallback.pardon(nickname, token, out statusCode);
+            AdminCallback.pardonUser(nickname, token, out statusCode);
 
-            if (statusCode != HttpStatusCode.NoContent)
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.adminNotification($"{nickname} was successfully pardoned from all sins", AdminNotificationType.PARDONPLAYER);
+            else
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon {nickname}. Please try again when it's fixed :D");
+        }
+
+        public void adminPardonIPBan(string IP, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.pardonIP(IP, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.adminNotification($"The IP \'{IP}\' was successfully pardoned from all sins", AdminNotificationType.PARDONIP);
+            else
+                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon the IP \'{IP}\'. Please try again when it's fixed :D");
         }
 
         public void adminChangeFrontPageGame(string gameName, string token)
@@ -344,18 +397,56 @@ namespace CHAIRSignalR.Hubs
             HttpStatusCode statusCode;
             AdminCallback.changeFrontPageGame(gameName, token, out statusCode);
 
-            if (statusCode != HttpStatusCode.NoContent)
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.adminNotification($"{gameName} is now the proud owner of the store's spotlight", AdminNotificationType.FRONTPAGE);
+            else
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to change the front page game to {gameName}. Please try again when it's fixed :D");
         }
 
-        public void addGameToStore(Game game, string token)
+        public void adminAddGameToStore(Game game, string token)
         {
             //Make the call to the API
             HttpStatusCode statusCode;
             AdminCallback.addNewGame(game, token, out statusCode);
 
-            if (statusCode != HttpStatusCode.NoContent)
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to add the new game {game.name}. Please try again when it's fixed :D");
+            if (statusCode == HttpStatusCode.Created)
+                Clients.Caller.adminNotification($"{game.name} was successfully added to the store! Time to start raking in the $$$", AdminNotificationType.GAMEADDED);
+            else if (statusCode == HttpStatusCode.Conflict)
+                Clients.Caller.adminNotification($"A game with the name of {game.name} already exists!", AdminNotificationType.GAMEADDED);
+            else
+                Clients.Caller.adminNotification($"An unexpected error occurred when trying to add the new game {game.name}. Please try again when it's fixed :D", AdminNotificationType.GAMEADDED);
+
+        }
+
+        public void adminUpdateGamesBeingPlayed(string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<GameBeingPlayed> list = AdminCallback.getGamesStats(token, out statusCode);
+
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.adminUpdateGamesBeingPlayed(list);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to update your list of games being played. Please try again when it's fixed :D");
+        }
+
+        public void adminGetAllUsers(string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<string> list = AdminCallback.getAllUsers(token, out statusCode);
+
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.adminGetAllUsers(list);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to get all the players in the application. Please try again when it's fixed :D");
+        }
+
+        private void tellAllAdminsToUpdateTheirGamesList()
+        {
+            //Tell every admin to update their games list
+            foreach(string adminConId in ChairInfo.onlineAdmins.Values)
+                Clients.Client(adminConId).adminUpdateGamesBeingPlayedAlert();
         }
         #endregion
 

@@ -10,8 +10,8 @@ namespace CHAIR_UI.SignalR
 {
     public static class SignalRHubsConnection
     {
-        private static string url = "https://chairserver.azurewebsites.net";
-        //private static string url = "http://localhost:51930/";
+        //private static string url = "https://chairserver.azurewebsites.net";
+        private static string url = "http://localhost:51930/";
         private static SignalRConnection _loginHub { get; set; }
         private static SignalRConnection _chairHub { get; set; }
 

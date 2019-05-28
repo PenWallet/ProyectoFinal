@@ -35,10 +35,23 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
-        public static void pardon(string nickname, string token, out HttpStatusCode status)
+        public static void pardonUser(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
             RestRequest request = new RestRequest("admin/pardon/{nickname}", Method.PATCH);
+            request.AddHeader("Authorization", $"Bearer {token}");
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
+
+        public static void pardonIP(string IP, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("ipbans/{nickname}", Method.DELETE);
             request.AddHeader("Authorization", $"Bearer {token}");
 
             //Make the request
@@ -75,6 +88,45 @@ namespace CHAIRSignalR_DAL.Calls
 
             //Profit
             status = response.StatusCode;
+        }
+
+        public static List<GameBeingPlayed> getGamesStats(string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/gamesstats", Method.GET);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Accept", "application/json");
+
+            //Make the request
+            var response = APIConnection.Client.Execute<List<GameBeingPlayed>>(request);
+
+            //Profit
+            status = response.StatusCode;
+
+            if(response.StatusCode == HttpStatusCode.OK)
+                return response.Data;
+            else
+                return null;
+
+        }
+
+        public static List<string> getAllUsers(string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/users", Method.GET);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Accept", "application/json");
+
+            //Make the request
+            var response = APIConnection.Client.Execute<List<string>>(request);
+
+            //Profit
+            status = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+                return response.Data;
+            else
+                return null;
         }
     }
 }

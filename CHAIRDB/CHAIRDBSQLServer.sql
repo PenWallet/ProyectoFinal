@@ -213,6 +213,20 @@ RETURN
 		WHERE (user1 = @nickname AND acceptedRequestDate IS NOT NULL) OR (user2 = @nickname AND acceptedRequestDate IS NOT NULL) OR (user2 = @nickname AND acceptedRequestDate IS NULL)
 GO
 
+-- Function that returns all games, how many players play each game, and how many are playing it right now
+GO
+CREATE FUNCTION GetGamesStats ()
+RETURNS TABLE
+AS
+RETURN
+	SELECT G.name, COUNT(UG.game) AS numberOfPlayers, SUM(CASE WHEN UG.playing = 1 THEN 1 ELSE 0 END) AS numberOfPlayersPlaying, ISNULL(SUM(UG.hoursPlayed), 0) AS totalHoursPlayed
+		FROM Games AS G
+			LEFT JOIN UserGames AS UG
+				ON G.name = UG.game
+		GROUP BY G.name
+GO
+
+
 /* PROCEDURES */
 -- Procedure used to insert a new friendship between two users
 -- Returns 1 if inserted, 0 if one of the users doesn't exists, -1 if a friendship already exists

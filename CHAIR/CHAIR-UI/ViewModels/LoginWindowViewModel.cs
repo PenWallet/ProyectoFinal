@@ -190,7 +190,7 @@ namespace CHAIR_UI.ViewModels
 
         private bool LoginCommand_CanExecute()
         {
-            return !string.IsNullOrWhiteSpace(_username) && !string.IsNullOrWhiteSpace(_password);
+            return !string.IsNullOrWhiteSpace(_username) && _username.Length >= 3 && !string.IsNullOrWhiteSpace(_password);
         }
 
         private void CloseCommand_Executed()

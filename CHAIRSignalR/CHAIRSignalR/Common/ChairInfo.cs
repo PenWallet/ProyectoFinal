@@ -13,5 +13,8 @@ namespace CHAIRSignalR.Common
 
         //Dictionary for <nickname, KeyValuePair<game, fecha en la que empezó a jugar>>
         public static ConcurrentDictionary<string, KeyValuePair<string, DateTime>> usersPlaying { get; set; }
+
+        //Dictionary for <nickname, ConnectionId>
+        public static ConcurrentDictionary<string, string> onlineAdmins { get; set; }
     }
 }

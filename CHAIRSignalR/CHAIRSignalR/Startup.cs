@@ -19,6 +19,7 @@ namespace CHAIRSignalR
             //Initializing data structures
             ChairInfo.onlineUsers = new ConcurrentDictionary<string, string>();
             ChairInfo.usersPlaying = new ConcurrentDictionary<string, KeyValuePair<string, DateTime>>();
+            ChairInfo.onlineAdmins = new ConcurrentDictionary<string, string>();
 
             //Marcar un usuario como desconectado tras 5 segundos
             //GlobalHost.Configuration.DisconnectTimeout = TimeSpan.FromSeconds(6);
