@@ -78,22 +78,5 @@ namespace CHAIRAPI.Controllers
             else
                 return StatusCode(500); //Internal Server Error
         }
-
-        /// <summary>
-        /// DELETE Method is used to pardon a ban
-        /// </summary>
-        /// <param name="ip">The IP to delete</param>
-        [HttpDelete("{IP}")]
-        public IActionResult Delete(string ip)
-        {
-            int deleteStatus = IPBansHandler.deleteIPBan(ip);
-
-            if (deleteStatus == 1)
-                return StatusCode(204); //No Content
-            else if (deleteStatus == 0)
-                return StatusCode(404); //Not Found
-            else
-                return StatusCode(500); //Internal Server Error
-        }
     }
 }

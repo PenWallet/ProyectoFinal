@@ -166,46 +166,5 @@ namespace CHAIRAPI_DAL.Handlers
 
             return ipBan;
         }
-
-        /// <summary>
-        /// Method which will delete an IPBan in the database
-        /// </summary>
-        /// <param name="relationship">The IPBan to delete</param>
-        /// <returns>1 if deleted successfully; 0 if there's no IP like that; -1 otherwise</returns>
-        public static int deleteIPBan(string IP)
-        {
-            //Variables
-            SqlConnection sqlConnection = null;
-            int affectedRows = -1;
-            SqlCommand command = new SqlCommand();
-            Connection connection = new Connection();
-
-            try
-            {
-                //Get open connection
-                sqlConnection = connection.getConnection();
-
-                //Define the command
-                command.CommandText = "DELETE FROM IPBans WHERE IP = @IP";
-
-                //Set the parameter
-                command.Parameters.Add("@IP", SqlDbType.VarChar).Value = IP;
-
-                //Define the connection
-                command.Connection = sqlConnection;
-
-                //Execute
-                affectedRows = command.ExecuteNonQuery();
-
-            }
-            catch (SqlException) { affectedRows = -1; }
-            catch (Exception) { affectedRows = -1; }
-            finally
-            {
-                connection.closeConnection(ref sqlConnection);
-            }
-
-            return affectedRows;
-        }
     }
 }

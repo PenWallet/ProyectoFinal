@@ -38,7 +38,8 @@ namespace CHAIRSignalR_DAL.Calls
         public static void pardonUser(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
-            RestRequest request = new RestRequest("admin/pardon/{nickname}", Method.PATCH);
+            RestRequest request = new RestRequest("admin/pardonuser/{nickname}", Method.PATCH);
+            request.AddUrlSegment("nickname", nickname);
             request.AddHeader("Authorization", $"Bearer {token}");
 
             //Make the request
@@ -48,11 +49,27 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
-        public static void pardonIP(string IP, string token, out HttpStatusCode status)
+        public static void pardonUserAndIP(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
-            RestRequest request = new RestRequest("ipbans/{nickname}", Method.DELETE);
+            RestRequest request = new RestRequest("admin/pardonuserandip/{nickname}", Method.PATCH);
+            request.AddUrlSegment("nickname", nickname);
             request.AddHeader("Authorization", $"Bearer {token}");
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
+
+        public static void banUserAndIp(User user, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/banuserandip", Method.PATCH);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddJsonBody(user);
 
             //Make the request
             var response = APIConnection.Client.Execute(request);
@@ -114,6 +131,44 @@ namespace CHAIRSignalR_DAL.Calls
         {
             //Prepare the request
             RestRequest request = new RestRequest("admin/users", Method.GET);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Accept", "application/json");
+
+            //Make the request
+            var response = APIConnection.Client.Execute<List<string>>(request);
+
+            //Profit
+            status = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+                return response.Data;
+            else
+                return null;
+        }
+
+        public static List<string> getBannedUsers(string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/bannedusers", Method.GET);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Accept", "application/json");
+
+            //Make the request
+            var response = APIConnection.Client.Execute<List<string>>(request);
+
+            //Profit
+            status = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.OK)
+                return response.Data;
+            else
+                return null;
+        }
+
+        public static List<string> getAllStoreGamesNames(string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("admin/gamesnames", Method.GET);
             request.AddHeader("Authorization", $"Bearer {token}");
             request.AddHeader("Accept", "application/json");
 

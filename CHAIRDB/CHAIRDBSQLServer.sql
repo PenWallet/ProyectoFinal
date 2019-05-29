@@ -254,7 +254,65 @@ BEGIN
 END
 GO
 
-/* SOME TEST DATA */
+-- Procedure used to ban an user as well as his IP
+GO
+CREATE PROCEDURE BanUserAndIP (@userToBan VARCHAR(20), @bannedUntil DATETIME, @banReason VARCHAR(MAX), @status INT OUTPUT)
+AS
+BEGIN
+	SET @status = 0
+	
+	--Ban the user
+	UPDATE Users SET bannedUntil = @bannedUntil, banReason = @banReason WHERE nickname = @userToBan
+
+	--Search for his last IP and ban it as well
+	DECLARE @IP VARCHAR(15) = (SELECT lastIp FROM Users WHERE nickname = @userToBan)
+	IF(EXISTS(SELECT 1 FROM IPBans WHERE [IP] = @IP))
+	BEGIN
+		UPDATE IPBans SET untilDate = @bannedUntil, banReason = @banReason WHERE [IP] = @IP
+		SET @status = 1
+	END
+	ELSE
+	BEGIN
+		INSERT INTO IPBans ([IP], banReason, untilDate) VALUES (@IP, @banReason, @bannedUntil)
+		SET @status = 1
+	END
+END
+GO
+
+-- Procedure used to pardon an user from his ban
+GO
+CREATE PROCEDURE PardonUser (@userToPardon VARCHAR(20), @status INT OUTPUT)
+AS
+BEGIN
+	SET @status = 0
+	
+	--Pardon the user
+	UPDATE Users SET bannedUntil = NULL, banReason = '' WHERE nickname = @userToPardon
+	SET @status = 1
+END
+GO
+
+-- Procedure used to pardon an user from his ban and his IP ban
+GO
+CREATE PROCEDURE PardonUserAndIP (@userToPardon VARCHAR(20), @status INT OUTPUT)
+AS
+BEGIN
+	SET @status = 0
+	
+	--Pardon the user
+	UPDATE Users SET bannedUntil = NULL, banReason = '' WHERE nickname = @userToPardon
+
+	--Get the user's last IP
+	DECLARE @IP VARCHAR(15) = (SELECT lastIP FROM Users WHERE nickname = @userToPardon)
+
+	--Pardon the IP
+	DELETE FROM IPBans WHERE [IP] = @IP
+
+	SET @status = 1
+END
+GO
+
+/* SOME DATA */
 INSERT INTO Users (nickname, [password], salt, birthDate, lastIP, [admin]) 
 	VALUES	('Penny', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 1),
 			('Migue', '0c0qYhFIv8qP2y9yXaHK1VCZgvQmZ/2TF5/ooNRSODc=', 'TlO2kHcldnFdtbJH2yNNPg==', '1999-12-13', '192.168.0.0', 0),

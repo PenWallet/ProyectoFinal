@@ -197,18 +197,18 @@ namespace CHAIRSignalR.Hubs
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
                         Clients.Client(conId).updateFriendListWithNotification($"{nickname} had enough for today", NotificationType.OFFLINE);
-
-                    if(admin)
-                    {
-                        string deletedConId;
-                        ChairInfo.onlineAdmins.TryRemove(nickname, out deletedConId);
-                    }
-
-                    //Alert all the online admins that someone disconnected by updating their online users list
-                    foreach(string adminConId in ChairInfo.onlineAdmins.Values)
-                        Clients.Client(adminConId).adminUpdateOnlineUsers(ChairInfo.onlineUsers.Keys.ToArray());
-
                 }
+
+                //If the user is an admin, delete him from the admin group
+                if (admin)
+                {
+                    string deletedConId;
+                    ChairInfo.onlineAdmins.TryRemove(nickname, out deletedConId);
+                }
+
+                //Alert all the online admins that someone disconnected by updating their online users list
+                foreach (string adminConId in ChairInfo.onlineAdmins.Values)
+                    Clients.Client(adminConId).adminUpdateOnlineUsers(ChairInfo.onlineUsers.Keys.ToArray());
             }
         }
 
@@ -323,7 +323,7 @@ namespace CHAIRSignalR.Hubs
         }
 
         #region Admin
-        public void adminBanUser(string nickname, string reason, string token, DateTime until)
+        public void adminBanUser(string nickname, string reason, DateTime until, string token)
         {
             User user = new User();
             user.nickname = nickname;
@@ -339,12 +339,14 @@ namespace CHAIRSignalR.Hubs
                 string conId;
                 if(ChairInfo.onlineUsers.TryGetValue(nickname, out conId))
                     Clients.Client(conId).youHaveBeenBanned(new BanResponse(BannedByEnum.USER, reason, until));
+
+                Clients.Caller.adminNotification($"{nickname} was successfully exiled from his comfy seat until {until.ToString()}", AdminNotificationType.BANPLAYER);
             }
             else
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D");
+                Clients.Caller.adminNotification($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D", AdminNotificationType.BANPLAYER);
         }
 
-        public void adminBanIP(string nickname, string reason, string token, DateTime until)
+        public void adminBanUserAndIp(string nickname, string reason, DateTime until, string token)
         {
             User user = new User();
             user.nickname = nickname;
@@ -353,42 +355,18 @@ namespace CHAIRSignalR.Hubs
 
             //Make the call to the API
             HttpStatusCode statusCode;
-            AdminCallback.ban(user, token, out statusCode);
+            AdminCallback.banUserAndIp(user, token, out statusCode);
 
             if (statusCode == HttpStatusCode.NoContent)
             {
-                Clients.Caller.adminNotification($"{nickname} was successfully banned for all his sins", AdminNotificationType.BANIP);
-
                 string conId;
                 if(ChairInfo.onlineUsers.TryGetValue(nickname, out conId))
                     Clients.Client(conId).youHaveBeenBanned(new BanResponse(BannedByEnum.USER, reason, until));
+
+                Clients.Caller.adminNotification($"{nickname} and his IP were successfully exiled from his comfy seat until {until.ToString()}", AdminNotificationType.BANPLAYER);
             }
             else
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D");
-        }
-
-        public void adminPardonBan(string nickname, string token)
-        {
-            //Make the call to the API
-            HttpStatusCode statusCode;
-            AdminCallback.pardonUser(nickname, token, out statusCode);
-
-            if (statusCode == HttpStatusCode.NoContent)
-                Clients.Caller.adminNotification($"{nickname} was successfully pardoned from all sins", AdminNotificationType.PARDONPLAYER);
-            else
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon {nickname}. Please try again when it's fixed :D");
-        }
-
-        public void adminPardonIPBan(string IP, string token)
-        {
-            //Make the call to the API
-            HttpStatusCode statusCode;
-            AdminCallback.pardonIP(IP, token, out statusCode);
-
-            if (statusCode == HttpStatusCode.NoContent)
-                Clients.Caller.adminNotification($"The IP \'{IP}\' was successfully pardoned from all sins", AdminNotificationType.PARDONIP);
-            else
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to pardon the IP \'{IP}\'. Please try again when it's fixed :D");
+                Clients.Caller.adminNotification($"An unexpected error occurred when trying to ban {nickname} and his IP. Please try again when it's fixed :D", AdminNotificationType.BANPLAYER);
         }
 
         public void adminChangeFrontPageGame(string gameName, string token)
@@ -400,7 +378,7 @@ namespace CHAIRSignalR.Hubs
             if (statusCode == HttpStatusCode.NoContent)
                 Clients.Caller.adminNotification($"{gameName} is now the proud owner of the store's spotlight", AdminNotificationType.FRONTPAGE);
             else
-                Clients.Caller.unexpectedError($"An unexpected error occurred when trying to change the front page game to {gameName}. Please try again when it's fixed :D");
+                Clients.Caller.adminNotification($"An unexpected error occurred when trying to change the front page game to {gameName}. Please try again when it's fixed :D", AdminNotificationType.FRONTPAGE);
         }
 
         public void adminAddGameToStore(Game game, string token)
@@ -440,6 +418,54 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminGetAllUsers(list);
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get all the players in the application. Please try again when it's fixed :D");
+        }
+
+        public void adminGetBannedUsers(string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<string> list = AdminCallback.getBannedUsers(token, out statusCode);
+
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.adminGetBannedUsers(list);
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to get all the players in the application. Please try again when it's fixed :D");
+        }
+
+        public void adminPardonUser(string username, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.pardonUser(username, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.adminNotification($"{username} was pardoned from all his sins!", AdminNotificationType.PARDONPLAYER);
+            else
+                Clients.Caller.adminNotification($"There was an error when trying to pardon an user from his sins", AdminNotificationType.PARDONPLAYER);
+        }
+
+        public void adminPardonUserAndIp(string username, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            AdminCallback.pardonUserAndIP(username, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.adminNotification($"The user {username} and his IP were pardoned from all their sins!", AdminNotificationType.PARDONPLAYER);
+            else
+                Clients.Caller.adminNotification($"There was an error when trying to pardon an user and his IP from their sins", AdminNotificationType.PARDONPLAYER);
+        }
+
+        public void adminGetAllStoreGamesNames(string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            List<string> list = AdminCallback.getAllStoreGamesNames(token, out statusCode);
+
+            if (statusCode == HttpStatusCode.OK)
+                Clients.Caller.adminGetAllStoreGamesNames(list);
+            else
+                Clients.Caller.unexpectedError($"There was an error when trying to get all the games names information. Please try again when it's fixed :D");
         }
 
         private void tellAllAdminsToUpdateTheirGamesList()

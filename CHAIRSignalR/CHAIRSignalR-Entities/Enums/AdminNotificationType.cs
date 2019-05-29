@@ -8,6 +8,6 @@ namespace CHAIRSignalR_Entities.Enums
 {
     public enum AdminNotificationType
     {
-        FRONTPAGE, BANPLAYER, BANIP, PARDONPLAYER, PARDONIP, GAMEADDED, GENERIC
+        FRONTPAGE, BANPLAYER, PARDONPLAYER, GAMEADDED, GENERIC
     }
 }

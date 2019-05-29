@@ -42,23 +42,6 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to set the user's online status to true
-        /// </summary>
-        /// <param name="nickname">The user's nickname</param>
-        [HttpPatch("pardon/{nickname}")]
-        public IActionResult Pardon(string nickname)
-        {
-            int updateStatus = UsersHandler.pardonUser(nickname);
-
-            if (updateStatus == 1)
-                return StatusCode(204); //No Content
-            else if (updateStatus == 0)
-                return StatusCode(404); //Not Found
-            else
-                return StatusCode(500); //Internal Server Error
-        }
-
-        /// <summary>
         /// POST Method is used to add new games to the database
         /// </summary>
         /// <param name="game">The game to be stored in the database</param>
@@ -101,16 +84,80 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PUT Method is used to update a game
+        /// GET Method used to get all the users in the platform (all who are not admins)
         /// </summary>
         /// <param name="game">The game to update</param>
         [HttpGet("users")]
-        public IActionResult GetAllGames()
+        public IActionResult GetAllUsers()
         {
             List<string> users = AdminHandler.getAllUsers();
             
             if (users != null)
                 return Ok(users); //Not Found
+            else
+                return StatusCode(500); //Internal Server Error
+        }
+
+        /// <summary>
+        /// GET Method used to get all the banned users in the platform
+        /// </summary>
+        /// <param name="game">The game to update</param>
+        [HttpGet("bannedusers")]
+        public IActionResult GetAllBannedUsers()
+        {
+            List<string> users = AdminHandler.getAllBannedUsers();
+            
+            if (users != null)
+                return Ok(users); //Not Found
+            else
+                return StatusCode(500); //Internal Server Error
+        }
+
+        /// <summary>
+        /// PATCH Method used to get all the banned IPs in the platform
+        /// </summary>
+        /// <param name="user">The user to ban</param>
+        [HttpPatch("banuserandip")]
+        public IActionResult BanUserAndIp([FromBody]User user)
+        {
+            int status = AdminHandler.banUserAndIp(user);
+
+            if (status == 1)
+                return StatusCode(204); //No Content
+            else
+                return StatusCode(500); //Internal Server Error
+        }
+
+        /// <summary>
+        /// PATCH Method used to pardon an user from his ban
+        /// </summary>
+        /// <param name="user">The user to pardon</param>
+        [HttpPatch("pardonuser/{user}")]
+        public IActionResult PardonUser(string user)
+        {
+            int status = AdminHandler.pardonUser(user);
+
+            if (status == 1)
+                return StatusCode(204); //No Content
+            else if (status == 0)
+                return StatusCode(404); //Not Found
+            else
+                return StatusCode(500); //Internal Server Error
+        }
+
+        /// <summary>
+        /// PATCH Method used to pardon an user and his IP from their ban
+        /// </summary>
+        /// <param name="user">The user to pardon</param>
+        [HttpPatch("pardonuserandip/{user}")]
+        public IActionResult PardonUserAndIP(string user)
+        {
+            int status = AdminHandler.pardonUserAndIP(user);
+
+            if (status == 1)
+                return StatusCode(204); //No Content
+            else if (status == 0)
+                return StatusCode(404); //Not Found
             else
                 return StatusCode(500); //Internal Server Error
         }
@@ -136,6 +183,26 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
+        /// GET Method to get all games names in the database
+        /// </summary>
+        [HttpGet("gamesnames")]
+        public IActionResult GetAllGamesNames()
+        {
+            string accept = Request.Headers["Accept"].ToString();
+            if (accept != "application/json" && accept != "*/*")
+                return StatusCode(406); //Not Acceptable
+            else
+            {
+                List<string> list = AdminHandler.getAllStoreGamesNames();
+
+                if (list != null)
+                    return Ok(list);
+                else
+                    return StatusCode(500);
+            }
+        }
+
+        /// <summary>
         /// PUT Method is used to update a game
         /// </summary>
         /// <param name="game">The game to update</param>
@@ -144,7 +211,7 @@ namespace CHAIRAPI.Controllers
         {
             int updateStatus = AdminHandler.updateFrontPageGame(game);
 
-            if (updateStatus == 1)
+            if (updateStatus >= 1)
                 return StatusCode(204); //No Content
             else if (updateStatus == 0)
                 return StatusCode(404); //Not Found

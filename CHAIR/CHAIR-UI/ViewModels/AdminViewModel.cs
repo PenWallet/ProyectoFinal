@@ -29,37 +29,182 @@ namespace CHAIR_UI.ViewModels
             _processingNewGame = false;
 
             _signalR.proxy.On<string, AdminNotificationType>("adminNotification", adminNotification);
-            _signalR.proxy.On<List<Game>>("getAllStoreGames", getAllStoreGames);
-            _signalR.proxy.On<List<string>>("getAllUsers", getAllUsers);
+            _signalR.proxy.On<List<string>>("adminGetAllUsers", adminGetAllUsers);
+            _signalR.proxy.On<List<string>>("adminGetBannedUsers", adminGetBannedUsers);
+            _signalR.proxy.On<List<string>>("adminGetAllStoreGamesNames", adminGetAllStoreGamesNames);
             _signalR.proxy.On<ObservableCollection<GameBeingPlayed>>("adminUpdateGamesBeingPlayed", adminUpdateGamesBeingPlayed);
 
+            //Prepare variables from the add game functionality
             _gameToAdd = new Game();
             _processingNewGame = false;
             _updatingFrontPageGame = false;
             _gameToAdd.releaseDate = DateTime.Now;
 
+            //Prepare variables from the ban user functionality
+            _selectedUserToBanIp = false;
+            _banButtonText = "Ban User";
+            _processingBan = false;
+            _processingNewGame = false;
+            _processingPardon = false;
+            _pardonButtonText = "Pardon User";
+
             //Get the information from the server
-            _signalR.proxy.Invoke("getAllUsers", SharedInfo.loggedUser.token);
+            _signalR.proxy.Invoke("adminGetAllUsers", SharedInfo.loggedUser.token);
             _signalR.proxy.Invoke("adminUpdateGamesBeingPlayed", SharedInfo.loggedUser.token);
+            _signalR.proxy.Invoke("adminGetBannedUsers", SharedInfo.loggedUser.token);
+            _signalR.proxy.Invoke("adminGetAllStoreGamesNames", SharedInfo.loggedUser.token);
         }
         #endregion
 
         #region Private properties
         private SignalRConnection _signalR;
-        private List<string> _onlineUsers;
-        private List<Game> _storeGames;
+        private List<string> _allUsers;
+        private List<string> _bannedUsers;
+        private List<string> _storeGames;
         private ObservableCollection<GameBeingPlayed> _gamesBeingPlayed;
         private DelegateCommand _addNewGameCommand;
-        private DelegateCommand _banPlayerCommand;
-        private DelegateCommand _banIpCommand;
+        private DelegateCommand _banUserAndIpCommand;
+        private DelegateCommand _pardonUserAndIpCommand;
         private DelegateCommand _changeFrontPageGameCommand;
         private Game _gameToAdd;
         private bool _processingNewGame;
         private bool _updatingFrontPageGame;
-        private string _gameToUpdateToFrontPage;
+        private bool _selectedUserToBanIp;
+        private bool _processingBan;
+        private bool _processingPardon;
+        private bool _selectedUserToPardonIp;
+        private string _selectedGameToFrontPage;
+        private string _selectedUserToBan;
+        private string _selectedUserToBanDuration;
+        private string _selectedUserToBanReason;
+        private string _selectedUserToPardon;
+        private string _banButtonText;
+        private string _pardonButtonText;
         #endregion
 
         #region Public properties
+        public string selectedGameToFrontPage
+        {
+            get
+            {
+                return _selectedGameToFrontPage;
+            }
+            set
+            {
+                _selectedGameToFrontPage = value;
+                NotifyPropertyChanged("selectedGameToFrontPage");
+                _changeFrontPageGameCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public bool selectedUserToPardonIp
+        {
+            get
+            {
+                return _selectedUserToPardonIp;
+            }
+            set
+            {
+                _selectedUserToPardonIp = value;
+                NotifyPropertyChanged("selectedUserToPardonIp");
+
+                if (value)
+                    pardonButtonText = "Pardon User and IP";
+                else
+                    pardonButtonText = "Pardon User";
+            }
+        }
+        public string selectedUserToPardon
+        {
+            get
+            {
+                return _selectedUserToPardon;
+            }
+            set
+            {
+                _selectedUserToPardon = value;
+                NotifyPropertyChanged("selectedUserToPardon");
+                _pardonUserAndIpCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public string pardonButtonText
+        {
+            get
+            {
+                return _pardonButtonText;
+            }
+            set
+            {
+                _pardonButtonText = value;
+                NotifyPropertyChanged("pardonButtonText");
+            }
+        }
+        public string banButtonText
+        {
+            get
+            {
+                return _banButtonText;
+            }
+            set
+            {
+                _banButtonText = value;
+                NotifyPropertyChanged("banButtonText");
+            }
+        }
+        public bool selectedUserToBanIp
+        {
+            get
+            {
+                return _selectedUserToBanIp;
+            }
+            set
+            {
+                _selectedUserToBanIp = value;
+                NotifyPropertyChanged("selectedUserToBanIp");
+
+                banButtonText = value ? "Ban User and IP" : "Ban User";
+
+                _banUserAndIpCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public string selectedUserToBanReason
+        {
+            get
+            {
+                return _selectedUserToBanReason;
+            }
+            set
+            {
+                _selectedUserToBanReason = value;
+                NotifyPropertyChanged("selectedUserToBanReason");
+                _banUserAndIpCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public string selectedUserToBanDuration
+        {
+            get
+            {
+                return _selectedUserToBanDuration;
+            }
+            set
+            {
+                _selectedUserToBanDuration = value;
+                NotifyPropertyChanged("selectedUserToBanDuration");
+                _banUserAndIpCommand.RaiseCanExecuteChanged();
+            }
+        }
+        public string selectedUserToBan
+        {
+            get
+            {
+                return _selectedUserToBan;
+            }
+            set
+            {
+                _selectedUserToBan = value;
+                NotifyPropertyChanged("selectedUserToBan");
+                _banUserAndIpCommand.RaiseCanExecuteChanged();
+            }
+        }
         public string gameName
         {
             get
@@ -176,7 +321,7 @@ namespace CHAIR_UI.ViewModels
                 _addNewGameCommand.RaiseCanExecuteChanged();
             }
         }
-        public List<Game> storeGames
+        public List<string> storeGames
         {
             get
             {
@@ -200,16 +345,28 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("gameToAdd");
             }
         }
-        public List<string> onlineUsers
+        public List<string> allUsers
         {
             get
             {
-                return _onlineUsers;
+                return _allUsers;
             }
             set
             {
-                _onlineUsers = value;
-                NotifyPropertyChanged("onlineUsers");
+                _allUsers = value;
+                NotifyPropertyChanged("allUsers");
+            }
+        }
+        public List<string> bannedUsers
+        {
+            get
+            {
+                return _bannedUsers;
+            }
+            set
+            {
+                _bannedUsers = value;
+                NotifyPropertyChanged("bannedUsers");
             }
         }
         public ObservableCollection<GameBeingPlayed> gamesBeingPlayed
@@ -232,20 +389,12 @@ namespace CHAIR_UI.ViewModels
                 return _addNewGameCommand;
             }
         }
-        public DelegateCommand banPlayerCommand
+        public DelegateCommand banUserAndIpCommand
         {
             get
             {
-                _banPlayerCommand = new DelegateCommand(BanPlayerCommand_Executed, BanPlayerCommand_CanExecute);
-                return _banPlayerCommand;
-            }
-        }
-        public DelegateCommand banIpCommand
-        {
-            get
-            {
-                _banIpCommand = new DelegateCommand(BanIpCommand_Executed, BanIpCommand_CanExecute);
-                return _banIpCommand;
+                _banUserAndIpCommand = new DelegateCommand(BanUserAndIpCommand_Executed, BanUserAndIpCommand_CanExecute);
+                return _banUserAndIpCommand;
             }
         }
         public DelegateCommand changeFrontPageGameCommand
@@ -254,6 +403,14 @@ namespace CHAIR_UI.ViewModels
             {
                 _changeFrontPageGameCommand = new DelegateCommand(ChangeFrontPageGameCommand_Executed, ChangeFrontPageGameCommand_CanExecute);
                 return _changeFrontPageGameCommand;
+            }
+        }
+        public DelegateCommand pardonUserAndIpCommand
+        {
+            get
+            {
+                _pardonUserAndIpCommand = new DelegateCommand(PardonUserAndIpCommand_Executed, PardonUserAndIpCommand_CanExecute);
+                return _pardonUserAndIpCommand;
             }
         }
         #endregion
@@ -271,40 +428,80 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.Invoke("adminAddGameToStore", _gameToAdd, SharedInfo.loggedUser.token);
         }
 
-        private bool BanPlayerCommand_CanExecute()
+        private bool BanUserAndIpCommand_CanExecute()
         {
-            return !_processingNewGame && !string.IsNullOrWhiteSpace(_gameToAdd.name) && !string.IsNullOrWhiteSpace(_gameToAdd.description) && !string.IsNullOrWhiteSpace(_gameToAdd.developer) && _gameToAdd.minimumAge >= 0 && !string.IsNullOrWhiteSpace(_gameToAdd.instructions) && !string.IsNullOrWhiteSpace(_gameToAdd.downloadUrl) && !string.IsNullOrWhiteSpace(_gameToAdd.storeImageUrl) && !string.IsNullOrWhiteSpace(_gameToAdd.libraryImageUrl);
+            return !_processingBan && !string.IsNullOrWhiteSpace(_selectedUserToBan) && !string.IsNullOrWhiteSpace(_selectedUserToBanDuration) && !string.IsNullOrWhiteSpace(_selectedUserToBanReason);
         }
 
-        private void BanPlayerCommand_Executed()
+        private void BanUserAndIpCommand_Executed()
         {
-            _processingNewGame = true;
-            _addNewGameCommand.RaiseCanExecuteChanged();
-            _signalR.proxy.Invoke("adminAddGameToStore", _gameToAdd, SharedInfo.loggedUser.token);
-        }
+            //Start processing ban
+            _processingBan = true;
+            _banUserAndIpCommand.RaiseCanExecuteChanged();
 
-        private bool BanIpCommand_CanExecute()
-        {
-            return !_processingNewGame && !string.IsNullOrWhiteSpace(_gameToAdd.name) && !string.IsNullOrWhiteSpace(_gameToAdd.description) && !string.IsNullOrWhiteSpace(_gameToAdd.developer) && _gameToAdd.minimumAge >= 0 && !string.IsNullOrWhiteSpace(_gameToAdd.instructions) && !string.IsNullOrWhiteSpace(_gameToAdd.downloadUrl) && !string.IsNullOrWhiteSpace(_gameToAdd.storeImageUrl) && !string.IsNullOrWhiteSpace(_gameToAdd.libraryImageUrl);
-        }
+            DateTime bannedUntil = DateTime.Now;
+            switch(_selectedUserToBanDuration)
+            {
+                case "24 hours":
+                    bannedUntil = DateTime.Now.AddHours(24);
+                    break;
+                case "48 hours":
+                    bannedUntil = DateTime.Now.AddHours(48);
+                    break;
+                case "7 days":
+                    bannedUntil = DateTime.Now.AddDays(7);
+                    break;
+                case "30 days":
+                    bannedUntil = DateTime.Now.AddDays(30);
+                    break;
+                case "6 months":
+                    bannedUntil = DateTime.Now.AddMonths(6);
+                    break;
+                case "1 year":
+                    bannedUntil = DateTime.Now.AddYears(1);
+                    break;
+                case "5 years":
+                    bannedUntil = DateTime.Now.AddYears(5);
+                    break;
+                case "Permanent":
+                    bannedUntil = DateTime.Now.AddYears(100);
+                    break;
+            }
 
-        private void BanIpCommand_Executed()
-        {
-            _processingNewGame = true;
-            _addNewGameCommand.RaiseCanExecuteChanged();
-            _signalR.proxy.Invoke("adminAddGameToStore", _gameToAdd, SharedInfo.loggedUser.token);
+            //Call to SignalR depending on whether the admin wants to ban only the user or the IP as well
+            if(_selectedUserToBanIp)
+                _signalR.proxy.Invoke("adminBanUserAndIp", _selectedUserToBan, _selectedUserToBanReason, bannedUntil, SharedInfo.loggedUser.token);
+            else
+                _signalR.proxy.Invoke("adminBanUser", _selectedUserToBan, _selectedUserToBanReason, bannedUntil, SharedInfo.loggedUser.token);
         }
 
         private void ChangeFrontPageGameCommand_Executed()
         {
             _updatingFrontPageGame = true;
             _changeFrontPageGameCommand.RaiseCanExecuteChanged();
-            _signalR.proxy.Invoke("adminChangeFrontPageGame", _gameToUpdateToFrontPage, SharedInfo.loggedUser.token);
+
+            _signalR.proxy.Invoke("adminChangeFrontPageGame", _selectedGameToFrontPage, SharedInfo.loggedUser.token);
         }
 
         private bool ChangeFrontPageGameCommand_CanExecute()
         {
-            return !_updatingFrontPageGame && !string.IsNullOrWhiteSpace(_gameToUpdateToFrontPage);
+            return !_updatingFrontPageGame && !string.IsNullOrWhiteSpace(_selectedGameToFrontPage);
+        }
+
+        private void PardonUserAndIpCommand_Executed()
+        {
+            _processingPardon = true;
+            _pardonUserAndIpCommand.RaiseCanExecuteChanged();
+
+            if(_selectedUserToPardonIp)
+                _signalR.proxy.Invoke("adminPardonUserAndIp", _selectedUserToPardon, SharedInfo.loggedUser.token);
+            else
+                _signalR.proxy.Invoke("adminPardonUser", _selectedUserToPardon, SharedInfo.loggedUser.token);
+        }
+
+        private bool PardonUserAndIpCommand_CanExecute()
+        {
+            return !_processingPardon && !string.IsNullOrWhiteSpace(_selectedUserToPardon);
         }
         #endregion
 
@@ -333,23 +530,47 @@ namespace CHAIR_UI.ViewModels
 
                     case AdminNotificationType.FRONTPAGE:
                         _updatingFrontPageGame = false;
+                        selectedGameToFrontPage = "";
                         _changeFrontPageGameCommand.RaiseCanExecuteChanged();
+                        break;
+
+                    case AdminNotificationType.BANPLAYER:
+                        //Reset variables
+                        _processingBan = false;
+                        selectedUserToBan = "";
+                        selectedUserToBanDuration = "";
+                        selectedUserToBanIp = false;
+                        selectedUserToBanReason = "";
+                        _banUserAndIpCommand.RaiseCanExecuteChanged();
+                        //Call to the server to refresh the banned players list
+                        _signalR.proxy.Invoke("adminGetBannedUsers", SharedInfo.loggedUser.token);
+                        break;
+
+                    case AdminNotificationType.PARDONPLAYER:
+                        //Reset variables
+                        _processingPardon = false;
+                        selectedUserToPardon = "";
+                        selectedUserToPardonIp = false;
+                        _pardonUserAndIpCommand.RaiseCanExecuteChanged();
+
+                        //Call to the server to refresh the banned players list
+                        _signalR.proxy.Invoke("adminGetBannedUsers", SharedInfo.loggedUser.token);
                         break;
                 }
             });
         }
-
-        private void getAllStoreGames(List<Game> obj)
+        
+        private void adminGetAllUsers(List<string> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                storeGames = obj;
+                allUsers = obj;
             });
         }
 
-        private void getAllUsers(List<string> obj)
+        private void adminGetBannedUsers(List<string> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                onlineUsers = obj;
+                bannedUsers = obj;
             });
         }
 
@@ -357,6 +578,13 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 gamesBeingPlayed = obj;
+            });
+        }
+
+        private void adminGetAllStoreGamesNames(List<string> obj)
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                storeGames = obj;
             });
         }
         #endregion

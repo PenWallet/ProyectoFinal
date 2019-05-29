@@ -1166,7 +1166,7 @@ namespace CHAIR_UI.ViewModels
             foreach (UserForFriendList user in friendsListOnline)
                 usersNicknameList.Add(user.nickname);
 
-            _signalR.proxy.Invoke("goOffline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.token, usersNicknameList);
+            _signalR.proxy.Invoke("goOffline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.admin, SharedInfo.loggedUser.token, usersNicknameList);
 
             SignalRHubsConnection.closeChairHub();
         }
