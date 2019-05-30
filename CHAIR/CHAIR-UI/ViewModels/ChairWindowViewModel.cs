@@ -40,7 +40,7 @@ namespace CHAIR_UI.ViewModels
             _libraryGameVisible = Visibility.Hidden;
             _openCommunity = true;
             _conversations = new ObservableCollection<UserForFriendList>();
-            notificationsQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(8000)); //We create a new snackbar with a time duration for each notification of 3 seconds
+            notificationsQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(4000)); //We create a new snackbar with a time duration for each notification of 3 seconds
             _installedGames = new List<string>();
             _goToGamePage = false;
             _gameBeingDownloaded = null;
@@ -730,14 +730,7 @@ namespace CHAIR_UI.ViewModels
             if(SettingUtils.getMinimizeToTraySetting())
                 _view.MinimizeToTray();
             else
-            {
-                //Reset the remember me values because we logged out
-                SettingUtils.setUsernameRememberMe("");
-                SettingUtils.setPasswordRememberMe("");
-
-                //Close this window
-                _view.CloseWithParameter(true);
-            }
+                _view.CloseWithParameter(true); //Close this window
         }
 
         private void MinimizeCommand_Executed()

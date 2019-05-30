@@ -142,7 +142,7 @@ namespace CHAIRAPI.Controllers
             if (Utilities.checkUsrClaimValidity(User, user))
             {
                 int updateStatus = UserGamesHandler.updatePlayingStatus(user, game, true, 0);
-                if (updateStatus == 1)
+                if (updateStatus >= 1)
                     return StatusCode(204); //No Content
                 else if (updateStatus == 0)
                     return StatusCode(404); //Not Found

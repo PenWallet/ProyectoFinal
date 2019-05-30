@@ -228,7 +228,7 @@ namespace CHAIRSignalR.Hubs
                 foreach(string user in usersToNotify)
                 {
                     if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                        Clients.Client(conId).updateFriendListWithNotification($"{user} is now playing {game}", NotificationType.PLAYING);
+                        Clients.Client(conId).updateFriendListWithNotification($"{nickname} is now playing {game}", NotificationType.PLAYING);
                 }
 
                 tellAllAdminsToUpdateTheirGamesList();
@@ -257,7 +257,7 @@ namespace CHAIRSignalR.Hubs
                     foreach(string user in usersToNotify)
                     {
                         if(ChairInfo.onlineUsers.TryGetValue(user, out conId))
-                            Clients.Client(conId).updateFriendListWithNotification($"{user} stopped playing {game.Key}", NotificationType.GENERIC);
+                            Clients.Client(conId).updateFriendListWithNotification($"{nickname} stopped playing {game.Key}", NotificationType.GENERIC);
                     }
 
                     Clients.Caller.closedGameSuccessfully();
