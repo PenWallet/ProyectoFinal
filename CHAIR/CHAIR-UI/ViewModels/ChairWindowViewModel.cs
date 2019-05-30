@@ -55,6 +55,7 @@ namespace CHAIR_UI.ViewModels
                 new OptionItem("ShoppingBasket", "Store"),
                 new OptionItem("UserGroup", "Community"),
                 new OptionItem("Settings", "Settings"),
+                new OptionItem("About", "About"),
                 new OptionItem("ExitToApp", "Log out")
             };
 
@@ -692,8 +693,8 @@ namespace CHAIR_UI.ViewModels
                     SettingUtils.setUsernameRememberMe("");
                     SettingUtils.setPasswordRememberMe("");
 
-                    //Close this window
-                    _view.Close();
+                    //Close this window but without  closing the entire application, we need to go out to the login window
+                    _view.CloseWithParameter(false);
                     return;
                 }
 
@@ -735,7 +736,7 @@ namespace CHAIR_UI.ViewModels
                 SettingUtils.setPasswordRememberMe("");
 
                 //Close this window
-                _view.Close();
+                _view.CloseWithParameter(true);
             }
         }
 
@@ -1043,14 +1044,10 @@ namespace CHAIR_UI.ViewModels
         private void youHaveBeenBanned(BanResponse ban)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                MessageBox.Show($"You have been banned for {ban.banReason} until {ban.bannedUntil.ToLongDateString()}. Pick up your things and get out.");
+                MessageBox.Show($"You have been banned for {ban.banReason} until {ban.bannedUntil.ToLongDateString()}. Pick up your things and GTFO.");
 
-                //TODO: Disconnect and close game if he's playing, close friendlist and close the application
-
-                disconnectFromSignalR();
-                dispose();
-
-                Environment.Exit(0);
+                //Close the application completely
+                _view.CloseWithParameter(true);
             });
         }
 

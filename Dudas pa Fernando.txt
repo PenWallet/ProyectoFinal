@@ -1,3 +1,4 @@
 - PasswordBox del login
 - Lista de usuarios no se actualiza cuando alguien abre un juego
 - Los bordes en maximize
+- No se actualizan las listas

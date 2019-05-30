@@ -132,6 +132,8 @@ namespace CHAIR_UI.Views
                 ContentCtrl.Content = new Search(viewmodel);
             else if (page == "Game")
                 ContentCtrl.Content = new UserControls.Game(viewmodel);
+            else if (page == "About")
+                ContentCtrl.Content = new About();
             else if (page == "Admin")
                 ContentCtrl.Content = new Admin();
         }
@@ -146,6 +148,21 @@ namespace CHAIR_UI.Views
             this.Hide();
             _notifyIcon.Visible = true;
         }
+
+        public void CloseWithParameter(bool callShutdown)
+        {
+            if(callShutdown)
+                Application.Current.Shutdown();
+            else
+            {
+                //Go back to the login window
+                LoginWindow loginWindow = new LoginWindow();
+                loginWindow.Show();
+
+                //Close the application
+                this.Close();
+            }
+        }
         #endregion
 
         private void OpenFriendList_Click(object sender, RoutedEventArgs e)
@@ -153,6 +170,7 @@ namespace CHAIR_UI.Views
             _friendListWindow.Show();
         }
 
+        //We need to execute all of this code every time the application closes (*closes*, not minimizes nor goes to the tray)
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
             //If the user is playing something, then close the game because he decided to close our application. Fuck him
@@ -166,10 +184,6 @@ namespace CHAIR_UI.Views
             ((ChairWindowViewModel)DataContext).disconnectFromSignalR();
             //Dispose of everything in the chair window viewmodel
             ((ChairWindowViewModel)DataContext).dispose();
-
-            //Go back to the login window
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
         }
     }
 }

@@ -129,6 +129,9 @@
     <Compile Include="Interfaces\IMaximizable.cs" />
     <Compile Include="Interfaces\IMinimizeable.cs" />
     <Compile Include="SignalR\SignalRConnection.cs" />
+    <Compile Include="UserControls\About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Admin.xaml.cs">
       <DependentUpon>Admin.xaml</DependentUpon>
     </Compile>
@@ -176,6 +179,10 @@
     <Compile Include="Views\RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControls\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\Admin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -283,8 +290,11 @@
     <Resource Include="Assets\pendingicon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Assets\oscar.png" />
     <Resource Include="Assets\chairlogo.ico" />
+    <Resource Include="Assets\miguel.png" />
     <Content Include="Assets\offline.mp3" />
+    <Resource Include="Assets\olga.jpg" />
     <Content Include="Assets\online.mp3" />
     <Content Include="Assets\message.mp3" />
     <Resource Include="chairlogo.ico" />
