@@ -1036,6 +1036,10 @@ namespace CHAIR_UI.ViewModels
                         case NotificationType.OFFLINE:
                             _sounds.PlayOfflineSound();
                             break;
+
+                        case NotificationType.PLAYING:
+                            _sounds.PlayPlayingSound();
+                            break;
                     }
                 }
             });

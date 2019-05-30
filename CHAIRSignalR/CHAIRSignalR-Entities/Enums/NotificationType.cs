@@ -8,6 +8,6 @@ namespace CHAIRSignalR_Entities.Enums
 {
     public enum NotificationType
     {
-        ONLINE, OFFLINE, GENERIC
+        ONLINE, OFFLINE, PLAYING, GENERIC
     }
 }

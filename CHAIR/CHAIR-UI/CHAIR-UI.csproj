@@ -290,6 +290,7 @@
     <Resource Include="Assets\pendingicon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\playing.mp3" />
     <Resource Include="Assets\oscar.png" />
     <Resource Include="Assets\chairlogo.ico" />
     <Resource Include="Assets\miguel.png" />

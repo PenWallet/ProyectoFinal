@@ -46,6 +46,18 @@ namespace CHAIR_UI.Views
             }
         }
 
+        //Highlight the buttons as the mouse comes in
+        private void TopButtons_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5C146D"));
+        }
+
+        //Give the button its normal color once the mouse leaves
+        private void TopButtons_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2C0735"));
+        }
+
         #region IBasicActions implementation
         public void Maximize()
         {

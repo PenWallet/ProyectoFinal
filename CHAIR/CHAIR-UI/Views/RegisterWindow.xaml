@@ -35,10 +35,10 @@
                 </DockPanel.Background>
 
                 <!-- Closing button -->
-                <Button x:Name="CloseButton" Content="X" Command="{Binding closeCommand}" DockPanel.Dock="Right" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" FontSize="15" Margin="10, 0, 10, 0" Foreground="#2C0735"/>
+                <Button x:Name="CloseButton" Height="30" Width="41" Content="X" Command="{Binding closeCommand}" MouseEnter="TopButtons_MouseEnter" MouseLeave="TopButtons_MouseLeave" DockPanel.Dock="Right" FontSize="15" Background="Transparent" BorderBrush="Transparent" Foreground="#2C0735"/>
 
                 <!-- Minimizing button -->
-                <Button x:Name="MinButton" Content="__" Command="{Binding minimizeCommand}" DockPanel.Dock="Right" FontSize="15" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="#2C0735"/>
+                <Button x:Name="MinButton" Height="30" Width="44" Content="___" Command="{Binding minimizeCommand}" MouseEnter="TopButtons_MouseEnter" MouseLeave="TopButtons_MouseLeave" DockPanel.Dock="Right" FontSize="15" Background="Transparent" BorderBrush="Transparent" Foreground="#2C0735"/>
 
                 <!-- CHAIR Login text -->
                 <TextBlock HorizontalAlignment="Left" Margin="6, 6, 0, 0" Foreground="#2C0735">Create an Account</TextBlock>
