@@ -25,7 +25,7 @@ namespace CHAIR_UI
     /// Interaction logic for LoginWindow.xaml
     /// ICloseable allows to be able to close the window whenever we want without breaking MVVM standards (it's an interface)
     /// </summary>
-    public partial class LoginWindow : Window, IBasicActions
+    public partial class LoginWindow : Window, IBasicActionsLogin
     {
         public LoginWindow()
         {
@@ -113,7 +113,17 @@ namespace CHAIR_UI
 
             await DialogHost.Show(view, "LoginDialog");
         }
+
+        public void SetPassword(string password)
+        {
+            Pass.Password = password;
+        }
         #endregion
 
+        private void PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(this.DataContext != null)
+                ((LoginWindowViewModel)this.DataContext).password = ((PasswordBox)sender).Password;
+        }
     }
 }

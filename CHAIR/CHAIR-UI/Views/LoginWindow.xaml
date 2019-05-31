@@ -85,11 +85,11 @@
 
                 <!-- Password -->
                 <TextBlock Text="Password" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" FontSize="20" Foreground="#2C0735" Margin="0, 0, 0, 0"/>
-                <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding isNotLoadingLogin, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="50">
-                    <TextBox.InputBindings>
+                <PasswordBox PasswordChanged="PasswordChanged" x:Name="Pass" IsEnabled="{Binding isNotLoadingLogin, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Foreground="#2C0735" Margin="5, 0, 0, 0" MaxLength="50">
+                    <PasswordBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding loginCommand}" />
-                    </TextBox.InputBindings>
-                </TextBox>
+                    </PasswordBox.InputBindings>
+                </PasswordBox>
 
                 <!-- Remember me -->
                 <CheckBox Content="Remember me" IsChecked="{Binding rememberMe, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding isNotLoadingLogin, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="5, 10, 0, 0" Foreground="#2C0735" FontSize="15"/>

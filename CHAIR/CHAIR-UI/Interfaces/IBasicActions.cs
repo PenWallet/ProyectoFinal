@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace CHAIR_UI.Interfaces
 {
-    public interface IBasicActions : ICloseable, IMinimizeable, IMaximizable
+    public interface IBasicActions
     {
         void ShowPopUp(string message);
         void OpenWindow(string window);
+        void Close();
+        void Maximize();
+        void Minimize();
     }
 }

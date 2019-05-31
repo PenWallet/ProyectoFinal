@@ -123,12 +123,11 @@
     <Compile Include="Converters\BoolToVisibility.cs" />
     <Compile Include="Converters\ProfDescToVisibility.cs" />
     <Compile Include="Converters\OnlineBooleanToBorderBrush.cs" />
+    <Compile Include="Interfaces\IBasicActionsLogin.cs" />
     <Compile Include="Interfaces\IBasicActionsFriendList.cs" />
     <Compile Include="Interfaces\IBasicActionsChair.cs" />
     <Compile Include="Interfaces\IBasicActionsRegister.cs" />
     <Compile Include="Interfaces\IBasicActions.cs" />
-    <Compile Include="Interfaces\IMaximizable.cs" />
-    <Compile Include="Interfaces\IMinimizeable.cs" />
     <Compile Include="SignalR\SignalRConnection.cs" />
     <Compile Include="UserControls\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
@@ -155,7 +154,6 @@
       <DependentUpon>Store.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DialogCloser.cs" />
-    <Compile Include="Interfaces\ICloseable.cs" />
     <Compile Include="Utils\SettingsConstants.cs" />
     <Compile Include="Utils\SettingUtils.cs" />
     <Compile Include="Utils\SoundsUtils.cs" />

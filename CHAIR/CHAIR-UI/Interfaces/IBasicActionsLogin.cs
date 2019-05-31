@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CHAIR_UI.Interfaces
 {
-    public interface IMaximizable
+    public interface IBasicActionsLogin : IBasicActions
     {
-        void Maximize();
+        void SetPassword(string password);
     }
 }

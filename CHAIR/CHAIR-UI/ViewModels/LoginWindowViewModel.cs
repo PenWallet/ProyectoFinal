@@ -19,7 +19,7 @@ namespace CHAIR_UI.ViewModels
     public class LoginWindowViewModel : VMBase
     {
         #region Default constructor
-        public LoginWindowViewModel(IBasicActions view)
+        public LoginWindowViewModel(IBasicActionsLogin view)
         {
             _view = view;
             _isNotLoadingLogin = true;
@@ -33,6 +33,7 @@ namespace CHAIR_UI.ViewModels
             //Search for a stored username and password
             _username = SettingUtils.getUsernameRememberMe();
             _password = SettingUtils.getPasswordRememberMe();
+            _view.SetPassword(_password);
 
             _signalR.proxy.On<UserWithToken>("loginSuccessful", loginSuccessful);
             _signalR.proxy.On<BanResponse>("loginUnauthorized", loginUnauthorized);
@@ -51,7 +52,7 @@ namespace CHAIR_UI.ViewModels
         private bool? _closeWindow;
         private string _errors;
         private SignalRConnection _signalR;
-        private IBasicActions _view; //This allows me to close and minimize the view without breaking the MVVM pattern because it's an interface
+        private IBasicActionsLogin _view; //This allows me to close and minimize the view without breaking the MVVM pattern because it's an interface
         private bool _isNotLoadingLogin;
         private DelegateCommand _loginCommand;
         #endregion
