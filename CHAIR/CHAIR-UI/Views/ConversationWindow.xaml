@@ -19,8 +19,10 @@
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
-        Background="White"
         FontFamily="{DynamicResource MaterialDesignFont}">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/background.jpg" Stretch="UniformToFill"/>
+    </Window.Background>
     <Window.Resources>
         <conv:DateToLongString x:Key="DTLSConverter"/>
         <conv:MessageSenderToColorBrush x:Key="MSTCBConverter"/>
@@ -91,7 +93,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Listbox with all the users we are having conversations with -->
-                <ListBox Grid.Column="0" Grid.RowSpan="3" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox Background="White" Grid.Column="0" Grid.RowSpan="3" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="model:UserForFriendList">
                             <StackPanel Orientation="Horizontal">

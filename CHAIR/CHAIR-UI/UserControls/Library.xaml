@@ -29,7 +29,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Listbox with all the games the user owns -->
-        <ListBox Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <ListBox Background="White" Grid.Column="0" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding libraryGames, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedLibraryGame, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="model:OptionItem">
                     <StackPanel Orientation="Horizontal">

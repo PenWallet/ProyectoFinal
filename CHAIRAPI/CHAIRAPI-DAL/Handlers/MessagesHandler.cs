@@ -80,7 +80,7 @@ namespace CHAIRAPI_DAL.Handlers
                 sqlConnection = connection.getConnection();
 
                 //Define the command
-                command.CommandText = "SELECT TOP 100 [text], sender, receiver, [date] FROM Messages WHERE sender = @user1 AND receiver = @user2 OR sender = @user2 AND receiver = @user1 ORDER BY ID";
+                command.CommandText = "SELECT [text], sender, receiver, [date] FROM (SELECT TOP 100 ID, [text], sender, receiver, [date] FROM[Messages] WHERE sender = @user1 AND receiver = @user2 OR sender = @user2 AND receiver = @user1 ORDER BY ID DESC) AS Q ORDER BY Q.ID ASC";
 
                 //Set the parameter
                 command.Parameters.Add("@user1", SqlDbType.VarChar).Value = user1;

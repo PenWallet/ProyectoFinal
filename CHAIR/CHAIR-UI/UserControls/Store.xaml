@@ -9,7 +9,6 @@
              xmlns:model="clr-namespace:CHAIR_Entities.Persistent"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="White"
              FontFamily="{DynamicResource MaterialDesignFont}">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid>

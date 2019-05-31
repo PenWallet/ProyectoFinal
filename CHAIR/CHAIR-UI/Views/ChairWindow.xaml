@@ -18,8 +18,10 @@
         MinHeight="600"
         MinWidth="900"
         WindowStyle="None"
-        Background="White"
         FontFamily="{DynamicResource MaterialDesignFont}">
+    <Window.Background>
+        <ImageBrush ImageSource="/Assets/background.jpg" Stretch="UniformToFill"/>
+    </Window.Background>
     <Window.Resources>
         <conv:GamePlayingToBorderBrush x:Key="GPTBBConverter"/>
         <conv:NullToVisibility x:Key="NTVConverter"/>
