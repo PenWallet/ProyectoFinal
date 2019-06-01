@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -322,21 +323,9 @@ namespace CHAIR_UI.ViewModels
                 wrongUsername = true;
             }
 
-            if(_password.Length < 8)
+            if(!Regex.Match(_password, @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$").Success)
             {
-                errorsList.Add("The password must be at least 8 characters long!");
-                wrongPassword = true;
-            } 
-
-            if(!_password.Any(c => char.IsSymbol(c)))
-            {
-                errorsList.Add("The password must contain at least one special character!");
-                wrongPassword = true;
-            }
-
-            if(!_password.Any(c => char.IsNumber(c)))
-            {
-                errorsList.Add("The password must contain at least one number!");
+                errorsList.Add("The password must be at least 8 characters long, contain one letter, one number and one special character!");
                 wrongPassword = true;
             }
 

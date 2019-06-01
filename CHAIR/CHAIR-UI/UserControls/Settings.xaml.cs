@@ -1,4 +1,5 @@
 ﻿using CHAIR_UI.ViewModels;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,18 @@ namespace CHAIR_UI.UserControls
         {
             InitializeComponent();
             this.DataContext = (ChairWindowViewModel)viewmodel;
+        }
+
+        private void SettingsMouseEnterFolderIcon(object sender, MouseEventArgs e)
+        {
+            ((PackIcon)sender).Foreground = new SolidColorBrush(Colors.Gray);
+            Mouse.OverrideCursor = Cursors.Hand;
+        }
+
+        private void SettingsMouseLeaveFolderIcon(object sender, MouseEventArgs e)
+        {
+            ((PackIcon)sender).Foreground = new SolidColorBrush(Colors.Black);
+            Mouse.OverrideCursor = null;
         }
     }
 }

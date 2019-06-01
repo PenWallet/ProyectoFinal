@@ -33,6 +33,7 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.On<List<string>>("adminGetBannedUsers", adminGetBannedUsers);
             _signalR.proxy.On<List<string>>("adminGetAllStoreGamesNames", adminGetAllStoreGamesNames);
             _signalR.proxy.On<ObservableCollection<GameBeingPlayed>>("adminUpdateGamesBeingPlayed", adminUpdateGamesBeingPlayed);
+            _signalR.proxy.On("adminUpdateGamesBeingPlayedAlert", adminUpdateGamesBeingPlayedAlert);
 
             //Prepare variables from the add game functionality
             _gameToAdd = new Game();
@@ -577,7 +578,18 @@ namespace CHAIR_UI.ViewModels
         private void adminUpdateGamesBeingPlayed(ObservableCollection<GameBeingPlayed> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                gamesBeingPlayed = obj;
+                if (_gamesBeingPlayed == null || _gamesBeingPlayed.Count == 0)
+                    gamesBeingPlayed = obj;
+                else
+                {
+                    foreach (GameBeingPlayed game in _gamesBeingPlayed)
+                    {
+                        GameBeingPlayed gameUpdated = obj.Single(x => x.game == game.game);
+                        game.numberOfPlayers = gameUpdated.numberOfPlayers;
+                        game.numberOfPlayersPlaying = gameUpdated.numberOfPlayersPlaying;
+                        game.totalRegisteredHours = gameUpdated.totalRegisteredHours;
+                    }
+                }
             });
         }
 
@@ -585,6 +597,13 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 storeGames = obj;
+            });
+        }
+
+        private void adminUpdateGamesBeingPlayedAlert()
+        {
+            Application.Current.Dispatcher.Invoke(delegate {
+                _signalR.proxy.Invoke("adminUpdateGamesBeingPlayed", SharedInfo.loggedUser.token);
             });
         }
         #endregion

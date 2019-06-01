@@ -94,7 +94,8 @@ namespace CHAIR_UI.ViewModels
             _sounds.PlayOnlineSound();
 
             //Initialize settings
-            SettingUtils.initializeSettings(); _installingFolder = SettingUtils.getInstallingFolder();
+            SettingUtils.initializeSettings();
+            _installingFolder = SettingUtils.getInstallingFolder();
             _tempDownloadFolder = SettingUtils.getTempDownloadFolder();
             _messageNotifications = SettingUtils.getMessageNotificationSetting();
             _onlineNotifications = SettingUtils.getOnlineNotificationSetting();
@@ -157,17 +158,40 @@ namespace CHAIR_UI.ViewModels
         private bool _minimizeToTray;
         private bool _canSave;
         private DelegateCommand _saveSettingsCommand;
+        private DelegateCommand _resetSettingsCommand;
         #endregion
 
 
         #region Public properties
+        public DelegateCommand openFolderDialogTempCommand
+        {
+            get
+            {
+                return new DelegateCommand(openFolderDialogTempCommand_Executed);
+            }
+        }
+        public DelegateCommand openFolderDialogInstallationCommand
+        {
+            get
+            {
+                return new DelegateCommand(openFolderDialogInstallationCommand_Executed);
+            }
+        }
         public UserWithToken loggedUser { get; set; }
         public SnackbarMessageQueue notificationsQueue { get; set; }
+        public DelegateCommand resetSettingsCommand
+        {
+            get
+            {
+                _resetSettingsCommand = new DelegateCommand(ResetSettingsCommand_Executed, SaveAndResetSettingsCommand_CanExecute);
+                return _resetSettingsCommand;
+            }
+        }
         public DelegateCommand saveSettingsCommand
         {
             get
             {
-                _saveSettingsCommand = new DelegateCommand(SaveSettingsCommand_Executed, SaveSettingsCommand_CanExecute);
+                _saveSettingsCommand = new DelegateCommand(SaveSettingsCommand_Executed, SaveAndResetSettingsCommand_CanExecute);
                 return _saveSettingsCommand;
             }
         }
@@ -183,6 +207,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("installingFolder");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public string tempDownloadFolder
@@ -197,6 +222,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("tempDownloadFolder");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool messageNotifications
@@ -211,6 +237,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("messageNotifications");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool onlineNotifications
@@ -225,6 +252,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("onlineNotifications");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool offlineNotifications
@@ -239,6 +267,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("offlineNotifications");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool playingGameNotifications
@@ -253,6 +282,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("playingGameNotifications");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool minimizeToTray
@@ -267,6 +297,7 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("minimizeToTray");
                 _canSave = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
+                _resetSettingsCommand.RaiseCanExecuteChanged();
             }
         }
         public bool isDownloadButtonVisible
@@ -918,13 +949,54 @@ namespace CHAIR_UI.ViewModels
 
             _canSave = false;
             _saveSettingsCommand.RaiseCanExecuteChanged();
+            _resetSettingsCommand.RaiseCanExecuteChanged();
 
             notificationsQueue.Enqueue("Settings saved!");
         }
 
-        private bool SaveSettingsCommand_CanExecute()
+        private void ResetSettingsCommand_Executed()
+        {
+
+            installingFolder = SettingUtils.getInstallingFolder();
+            tempDownloadFolder = SettingUtils.getTempDownloadFolder();
+            messageNotifications = SettingUtils.getMessageNotificationSetting();
+            onlineNotifications = SettingUtils.getOnlineNotificationSetting();
+            offlineNotifications = SettingUtils.getOfflineNotificationSetting();
+            playingGameNotifications = SettingUtils.getPlayingGameNotificationSetting();
+            minimizeToTray = SettingUtils.getMinimizeToTraySetting();
+
+            _canSave = false;
+            _saveSettingsCommand.RaiseCanExecuteChanged();
+            _resetSettingsCommand.RaiseCanExecuteChanged();
+        }
+
+        private bool SaveAndResetSettingsCommand_CanExecute()
         {
             return _canSave;
+        }
+
+        private void openFolderDialogInstallationCommand_Executed()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = Environment.SpecialFolder.Desktop;
+                dialog.ShowNewFolderButton = true;
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                    installingFolder = dialog.SelectedPath;
+            }
+        }
+
+        private void openFolderDialogTempCommand_Executed()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = Environment.SpecialFolder.Desktop;
+                dialog.ShowNewFolderButton = true;
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                    tempDownloadFolder = dialog.SelectedPath;
+            }
         }
         #endregion
 

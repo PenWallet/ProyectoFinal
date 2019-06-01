@@ -23,6 +23,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Online sound -->
@@ -93,15 +94,37 @@
 
             <!-- Download folder -->
             <materialDesign:Card Grid.Row="5" Padding="20 10 20 10" Height="70" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="0 10 0 0">
-                <TextBox Text="{Binding installingFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Install my games in this folder" FontSize="20" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Games Installation Folder" FontSize="20"/>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="FolderEdit" MouseEnter="SettingsMouseEnterFolderIcon" MouseLeave="SettingsMouseLeaveFolderIcon" VerticalAlignment="Center" Height="25" Width="25" Margin="0 0 8 0">
+                            <materialDesign:PackIcon.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding openFolderDialogInstallationCommand}" />
+                            </materialDesign:PackIcon.InputBindings>
+                        </materialDesign:PackIcon>
+                        <TextBlock Text="{Binding installingFolder, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Foreground="DarkGray" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
             </materialDesign:Card>
 
             <!-- Temp folder -->
             <materialDesign:Card Grid.Row="6" Padding="20 10 20 10" Height="70" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="0 10 0 0">
-                <TextBox Text="{Binding tempDownloadFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" materialDesign:HintAssist.Hint="Temporarily download my games in this folder" FontSize="20" />
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Temporary Download Folder" FontSize="20"/>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="FolderEdit" MouseEnter="SettingsMouseEnterFolderIcon" MouseLeave="SettingsMouseLeaveFolderIcon" VerticalAlignment="Center" Height="25" Width="25" Margin="0 0 8 0">
+                            <materialDesign:PackIcon.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding openFolderDialogTempCommand}" />
+                            </materialDesign:PackIcon.InputBindings>
+                        </materialDesign:PackIcon>
+                        <TextBlock Text="{Binding tempDownloadFolder, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="20" Foreground="DarkGray" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
             </materialDesign:Card>
 
             <Button Content="Save" Grid.Row="7" FontSize="30" Height="50" Foreground="#2C0735" Background="{StaticResource PastelGreen}" Margin="0 10 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding saveSettingsCommand}"/>
+            
+            <Button Content="Reset" Grid.Row="8" FontSize="30" Height="50" Foreground="#2C0735" Background="{StaticResource PastelRed}" Margin="0 10 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding resetSettingsCommand}"/>
 
         </Grid>
     </ScrollViewer>
