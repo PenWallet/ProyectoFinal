@@ -18,7 +18,7 @@ namespace CHAIRAPI.Controllers
     public class UserGamesController : ControllerBase
     {
         /// <summary>
-        /// POST Method is used to create new relationship between users and games
+        /// POST Method is used to create a new relationship between an user and a game
         /// </summary>
         /// <param name="relationship">The relationship that will be stored in the database</param>
         [HttpPost]
@@ -84,7 +84,7 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method to get a game given his nickname
+        /// GET Method to get a relationship given its name and the user's nickname
         /// </summary>
         /// <param name="nickname">The user to look for</param>
         /// <param name="game">The game to look for</param>
@@ -133,9 +133,10 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to change the playing status to playing given a name and a game
+        /// PATCH Method used to change the playing status to playing given a name and a game
         /// </summary>
-        /// <param name="nickname">The user's nickname</param>
+        /// <param name="user">The user's nickname</param>
+        /// <param name="game">The game's name</param>
         [HttpPatch("{user}/playing/{game}")]
         public IActionResult Playing(string user, string game)
         {
@@ -155,10 +156,12 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to change the playing status to playing given a name and a game and to add to the total
+        /// PATCH Method used to change the playing status to playing given a name and a game and to add to the total
         /// of time the user has played that game
         /// </summary>
-        /// <param name="nickname">The user's nickname</param>
+        /// <param name="user">The user's nickname</param>
+        /// <param name="game">The game's name</param>
+        /// <param name="secondsToAdd">The total amount of seconds the user played for</param>
         [HttpPatch("{user}/notplaying/{game}")]
         public IActionResult NotPlaying(string user, string game, [FromQuery(Name = "s")] string secondsToAdd)
         {

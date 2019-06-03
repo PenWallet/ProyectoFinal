@@ -19,7 +19,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// POST Method is used to create new IP Bans
         /// </summary>
-        /// <param name="ipBan">The information that will be stored in the database about the user</param>
+        /// <param name="ipBan">The IPBan to be stored in the database</param>
         [HttpPost]
         public IActionResult Post([FromBody] IPBan ipBan)
         {
@@ -60,23 +60,6 @@ namespace CHAIRAPI.Controllers
                 else
                     return StatusCode(404);
             }
-        }
-
-        /// <summary>
-        /// PUT Method is used to update a ban
-        /// </summary>
-        /// <param name="ipBan">The IPBan to update</param>
-        [HttpPut]
-        public IActionResult Put([FromBody] IPBan ipBan)
-        {
-            int updateStatus = IPBansHandler.updateIPBan(ipBan);
-
-            if (updateStatus == 1)
-                return StatusCode(204); //No Content
-            else if (updateStatus == 0)
-                return StatusCode(404); //Not Found
-            else
-                return StatusCode(500); //Internal Server Error
         }
     }
 }

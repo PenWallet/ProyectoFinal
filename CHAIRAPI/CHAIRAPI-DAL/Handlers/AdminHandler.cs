@@ -12,9 +12,10 @@ namespace CHAIRAPI_DAL.Handlers
     public class AdminHandler
     {
         /// <summary>
-        /// Method which will search the database for all relationships and return all of the games which users have in their libraries and are being played
+        /// Method which will search the database for all the games and return their names, the number of players which have the game in their library,
+        /// the number of players playing the game, and the total amount of hours all players have spent in that game
         /// </summary>
-        /// <returns>A list with all the games if they're found, null otherwiser</returns>
+        /// <returns>A list with all the games if they're found, null otherwise</returns>
         public static List<GameBeingPlayed> getGamesBeingPlayed()
         {
             //Variables
@@ -67,9 +68,9 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will save the game in the database
+        /// Method which will ban an user and his lastIP
         /// </summary>
-        /// <param name="relationship">The relationship to be saved</param>
+        /// <param name="relationship">The user with all the necessary information to be banned: nickname, bannedUntil and banReason</param>
         /// <returns>1 if saved successfully; 0 an error in SQL; -1 other errors</returns>
         public static int banUserAndIp(User user)
         {
@@ -112,10 +113,10 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will pardon an user from his ban
+        /// Method which will pardon an user from his ban (not his IP)
         /// </summary>
-        /// <param name="relationship">The relationship to be saved</param>
-        /// <returns>1 if saved successfully; 0 an error in SQL; -1 other errors</returns>
+        /// <param name="nickname">The nickname of the user to be pardoned</param>
+        /// <returns>1 if upadted successfully; 0 an error in SQL; -1 other errors</returns>
         public static int pardonUser(string nickname)
         {
             Connection connection = new Connection();
@@ -155,9 +156,9 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will pardon an user and his IP from the ban
+        /// Method which will pardon an user and his last IP from the ban
         /// </summary>
-        /// <param name="relationship">The relationship to be saved</param>
+        /// <param name="nickname">The nickname of the user to be pardoned</param>
         /// <returns>1 if saved successfully; 0 an error in SQL; -1 other errors</returns>
         public static int pardonUserAndIP(string nickname)
         {
@@ -198,9 +199,9 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will search the database for all the users and bring their usernames
+        /// Method which will search the database for all the users (not admins) and bring their usernames
         /// </summary>
-        /// <returns>A list with all the games if they're found, null otherwiser</returns>
+        /// <returns>A list with all the users if they're found, null otherwiser</returns>
         public static List<string> getAllUsers()
         {
             //Variables
@@ -247,9 +248,9 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will search the database for all the users and bring their usernames
+        /// Method which will search the database for all the store games names TODO: Borrar si se arregla el front page
         /// </summary>
-        /// <returns>A list with all the games if they're found, null otherwiser</returns>
+        /// <returns>A list with all the games names if they're found, null otherwiser</returns>
         public static List<string> getAllStoreGamesNames()
         {
             //Variables
@@ -298,7 +299,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// <summary>
         /// Method which will search the database for all the banned users and bring their usernames
         /// </summary>
-        /// <returns>A list with all the games if they're found, null otherwiser</returns>
+        /// <returns>A list with all the banned users nicknames if they're found, null otherwiser</returns>
         public static List<string> getAllBannedUsers()
         {
             //Variables
@@ -345,7 +346,7 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will change the game that is displayed in the front page
+        /// Method which will update the specified game to the front page
         /// </summary>
         /// <param name="name">Name of the game to be set to front page</param>
         /// <returns>1 if updated successfully; 0 if no game was found; -1 otherwise</returns>

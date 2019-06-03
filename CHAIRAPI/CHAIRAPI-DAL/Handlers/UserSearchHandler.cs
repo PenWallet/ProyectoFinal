@@ -12,9 +12,9 @@ namespace CHAIRAPI_DAL.Handlers
     public class UserSearchHandler
     {
         /// <summary>
-        /// Method which will search the database for users with nicknames where the search string fits
+        /// Method which will get the users whose nicknames match the 'search' parameter
         /// <param name="search">The string to be searched</param>
-        /// <param name="nickname">The nickname of the user searching</param>
+        /// <param name="nickname">The nickname of the user searching (used to exclude his name from the results)</param>
         /// <returns>The user with all its information if it was found, false otherwise</returns>
         public static List<UserSearch> searchUsersFromString(string search, string nickname)
         {

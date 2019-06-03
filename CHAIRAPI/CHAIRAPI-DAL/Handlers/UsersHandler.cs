@@ -130,7 +130,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// Method used to update the online status of the user to online
         /// </summary>
         /// <param name="nickname">The user to be updated</param>
-        /// <param name="online">His status, true to be online, false to be offline</param>
+        /// <param name="online">His status, true to change to online, false to change to offline</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
         public static int updateUserStatus(string nickname, bool online)
         {
@@ -175,7 +175,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// Method used to update the IP of the user
         /// </summary>
         /// <param name="nickname">The user to be updated</param>
-        /// <param name="online">New IP</param>
+        /// <param name="IP">The new IP</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
         public static int updateUserIP(string nickname, string IP)
         {
@@ -217,7 +217,7 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method used to update the information of an user in order to ban 
+        /// Method used to update the information of an user in order to ban him 
         /// </summary>
         /// <param name="user">The user to be banned. Has to contain nickname, banReason and bannedUntil</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
@@ -354,68 +354,6 @@ namespace CHAIRAPI_DAL.Handlers
                     user.banReason = reader["banReason"] is DBNull ? "" : (string)reader["banReason"];
                     user.profileDescription = (string)reader["profileDescription"];
                     user.profileLocation = (string)reader["profileLocation"];
-                }
-
-            }
-            catch (SqlException ex) { user = null; }
-            catch (Exception ex) { user = null; }
-            finally
-            {
-                connection.closeConnection(ref sqlConnection);
-                reader?.Close();
-            }
-
-            return user;
-        }
-
-        /// <summary>
-        /// Method which will search the database for the user with the specified nickname and return the basic information
-        /// </summary>
-        /// <param name="nickname">The nickname of the user to be searched</param>
-        /// <returns>The user with all its information if it was found, false otherwise</returns>
-        public static User searchBasicUserByNickname(string nickname)
-        {
-            //Variables
-            SqlConnection sqlConnection = null;
-            SqlDataReader reader = null;
-            SqlCommand command = new SqlCommand();
-            Connection connection = new Connection();
-            User user = null;
-
-
-            try
-            {
-                //Get open connection
-                sqlConnection = connection.getConnection();
-
-                //Define the command
-                command.CommandText = "SELECT nickname, profileDescription, profileLocation, birthDate, privateProfile, accountCreationDate, online, admin, bannedUntil, banReason FROM Users WHERE nickname = @nickname";
-
-                //Set the parameter
-                command.Parameters.Add("@nickname", SqlDbType.VarChar).Value = nickname;
-
-                //Define the connection
-                command.Connection = sqlConnection;
-
-                //Execute
-                reader = command.ExecuteReader();
-
-                //Check if the user exists
-                if (reader.HasRows)
-                {
-                    //Read the result and assign values
-                    reader.Read();
-                    user = new User();
-                    user.nickname = (string)reader["nickname"];
-                    user.profileDescription = (string)reader["profileDescription"];
-                    user.profileLocation = (string)reader["profileLocation"];
-                    user.birthDate = (DateTime)reader["birthDate"];
-                    user.privateProfile = (bool)reader["privateProfile"];
-                    user.accountCreationDate = (DateTime)reader["accountCreationDate"];
-                    user.online = (bool)reader["online"];
-                    user.admin = (bool)reader["admin"];
-                    user.bannedUntil = reader["bannedUntil"] is DBNull ? null : (DateTime?)reader["bannedUntil"];
-                    user.banReason = reader["banReason"] is DBNull ? "" : (string)reader["banReason"];
                 }
 
             }

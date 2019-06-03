@@ -20,10 +20,9 @@ namespace CHAIRAPI.Controllers
     public class UserProfileController : ControllerBase
     {
         /// <summary>
-        /// GET Method from UsersControllers to get the basic information of an user
+        /// GET Method from UsersControllers to get the basic profile information of an user TODO: Cambiar este método si se implementan los perfiles privados
         /// </summary>
         /// <param name="nickname">The user's nickname</param>
-        /// <returns></returns>
         [HttpGet("{nickname}")]
         public IActionResult Get(string nickname)
         {

@@ -18,9 +18,10 @@ namespace CHAIRAPI.Controllers
     public class GameStoreController : ControllerBase
     {
         /// <summary>
-        /// GET Method to get a game given its name
+        /// GET Method to get a game and the relationship between an user and said game, if there is any
         /// </summary>
-        /// <param name="name">The name to look for</param>
+        /// <param name="game">The name to look for</param>
+        /// <param name="nickname">The nickname of the user to look for</param>
         [HttpGet("{game}/{nickname}")]
         public IActionResult Get(string game, string nickname)
         {

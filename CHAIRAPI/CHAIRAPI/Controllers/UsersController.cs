@@ -21,7 +21,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// POST Method from UsersControllers is used to register new users
         /// </summary>
-        /// <param name="user">The information that will be stored in the database about the user</param>
+        /// <param name="user">The user that will be stored in the database</param>
         [HttpPost("register")]
         [AllowAnonymous]
         public IActionResult Register([FromBody] User user)
@@ -63,10 +63,9 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method from UsersControllers is used to login
+        /// POST Method used to login
         /// </summary>
-        /// <param name="nickname"></param>
-        /// <returns></returns>
+        /// <param name="user">The user with the necessary information to login: nickname, password and lastIP</param>
         [HttpPost("login")]
         [AllowAnonymous]
         public IActionResult Login([FromBody] User user)
@@ -99,23 +98,6 @@ namespace CHAIRAPI.Controllers
             }
             else
                 return StatusCode(400); //Bad Request
-        }
-
-        /// <summary>
-        /// GET Method from UsersControllers to get the basic information of an user
-        /// </summary>
-        /// <param name="nickname">The user's nickname</param>
-        /// <returns></returns>
-        [HttpGet("{nickname}/basic")]
-        [AllowAnonymous]
-        public IActionResult Get(string nickname)
-        {
-            User user = UsersHandler.searchBasicUserByNickname(nickname);
-
-            if (user != null)
-                return Ok(user);
-            else
-                return StatusCode(404); //Not Found
         }
 
         /// <summary>
@@ -160,7 +142,7 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to set the user's online status to true
+        /// PATCH Method used to set the user's online status to true
         /// </summary>
         /// <param name="nickname">The user's nickname</param>
         [HttpPatch("{nickname}/online")]
@@ -182,7 +164,7 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PATCH Method is used here to set the user's online status to false
+        /// PATCH Method used to set the user's online status to false
         /// </summary>
         /// <param name="nickname">The user's nickname</param>
         [HttpPatch("{nickname}/offline")]

@@ -15,7 +15,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// Method which will search the database for all the games the specified user plays, along with the information about the game and
         /// all the friends who play the same game
         /// </summary>
-        /// <param name="nickname">The user who wants all the games he plays</param>
+        /// <param name="nickname">The nickname of the user who wants all the games he plays</param>
         /// <returns>A list with all the relationships if they're found, null otherwiser</returns>
         public static List<UserGamesWithGameAndFriends> searchAllMyGamesAndFriendsWhoPlayThem(string nickname)
         {

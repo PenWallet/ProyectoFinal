@@ -64,9 +64,9 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will save the changes made to the user in the database
+        /// Method which will save the changes made to the IPBan in the database
         /// </summary>
-        /// <param name="user">The user to be updated</param>
+        /// <param name="ipBan">The IPBAn to be updated</param>
         /// <returns>1 if updated successfully; 0 if no IP was found; -1 otherwise</returns>
         public static int updateIPBan(IPBan ipBan)
         {

@@ -97,45 +97,10 @@ namespace CHAIRAPI.Utils
         /// </summary>
         /// <param name="isAdmin"></param>
         /// <returns></returns>
-        public static string generateToken(User user)
-        {
-            //Added a Nuget Package to be able to read config files. I stored there the key
-            var parser = new FileIniDataParser();
-            IniData config = parser.ReadFile("Config/config.ini");
-            string signingKeyString = config["JWTSettings"]["JWTSigningKey"];
-            string issuer = config["JWTSettings"]["Issuer"];
-
-            //Symmetric Security Key
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKeyString));
-
-            //Add claims
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Role, user.admin ? "Administrator" : "User"));
-            claims.Add(new Claim("usr", user.nickname));
-
-            //Sign Credentials
-            var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
-
-            //Create the actual token
-            var token = new JwtSecurityToken(
-                    issuer: issuer,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials: credentials,
-                    claims: claims
-                );
-
-            //Return Token
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        /// <summary>
-        /// Method to generate a token based on an user
-        /// </summary>
-        /// <param name="isAdmin"></param>
-        /// <returns></returns>
         public static string generateToken(UserWithSalt user)
         {
-            /*//Added a Nuget Package to be able to read config files. I stored there the key
+            /*Peta porque Azure el config.ini no se sube a Azure
+            //Added a Nuget Package to be able to read config files. I stored there the key
             var parser = new FileIniDataParser();
             IniData config = parser.ReadFile("Config/config.ini");*/
             string signingKeyString = "sTiGe40l7vEfQGBoXbJhFp64r7ana5ZjsDUrkotz0Q3xULGN8t9nRw0U0c9wMABP";
@@ -155,7 +120,7 @@ namespace CHAIRAPI.Utils
             //Create the actual token
             var token = new JwtSecurityToken(
                     issuer: issuer,
-                    expires: DateTime.Now.AddHours(1),
+                    expires: DateTime.Now.AddMonths(1),
                     signingCredentials: credentials,
                     claims: claims
                 );
@@ -203,11 +168,11 @@ namespace CHAIRAPI.Utils
         }
 
         /// <summary>
-        /// Small private method to check if the nickname in the URL is the same as the nickname
-        /// stored in the "usr" claim of the token (basically, check for validity)
+        /// Small method used to check if one of the nicknames sent as params is the same as the nickname stored in the "usr" claim of the token
+        /// (basically, further check of the token validity)
         /// </summary>
         /// <param name="nicknames">Send as many nicknames as you want (useful for double relationships like UserFriends)</param>
-        /// <returns>Returns true if one of the nicknames checks agains the token's username, false otherwise</returns>
+        /// <returns>Returns true if one of the nicknames checks against the token's username, false otherwise</returns>
         public static bool checkUsrClaimValidity(ClaimsPrincipal user, params string[] nicknames)
         {
             //First check, just in case (it can blow up)

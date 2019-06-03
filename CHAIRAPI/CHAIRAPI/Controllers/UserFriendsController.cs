@@ -20,7 +20,8 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// POST Method is used to create a new friendship between users and store it in the database
         /// </summary>
-        /// <param name="relationship">The relationship that will be stored in the database</param>
+        /// <param name="user1">The user sending the friend request</param>
+        /// <param name="user2">The user receiving the friend request</param>
         [HttpPost("{user1}/befriends/{user2}")]
         public IActionResult Post(string user1, string user2)
         {
@@ -69,7 +70,7 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method to get a relationship given the two related users
+        /// GET Method to get a relationship given two nicknames, if there is any
         /// </summary>
         /// <param name="user1">One of the users from the relationship</param>
         /// <param name="user2">One of the users from the relationship</param>
@@ -87,7 +88,6 @@ namespace CHAIRAPI.Controllers
             }
             else
                 return StatusCode(401); //Unauthorized
-
         }
 
         /// <summary>

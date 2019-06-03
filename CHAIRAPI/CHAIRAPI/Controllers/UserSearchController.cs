@@ -20,10 +20,9 @@ namespace CHAIRAPI.Controllers
     public class UserSearchController : ControllerBase
     {
         /// <summary>
-        /// GET Method from UsersControllers to get the basic information of an user
+        /// GET Method used to get the users whose nicknames match the 'search' parameter
         /// </summary>
         /// <param name="s">The search parameter</param>
-        /// <returns></returns>
         [HttpGet]
         public IActionResult Get([FromQuery(Name = "s")] string search)
         {

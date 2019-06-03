@@ -20,6 +20,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// GET Method to get all games a user plays, along with all the information about each game and which friends play them
         /// </summary>
+        /// <param name="nickname">The user's nickname</param>
         [HttpGet("{nickname}")]
         public IActionResult GetMyGames(string nickname)
         {

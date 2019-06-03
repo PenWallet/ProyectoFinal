@@ -18,9 +18,9 @@ namespace CHAIRAPI.Controllers
     public class AdminController : ControllerBase
     {
         /// <summary>
-        /// PATCH Method is used here to set the user's online status to true
+        /// PATCH Method used to ban an user by changing his bannedUntil and banReason
         /// </summary>
-        /// <param name="nickname">The user's nickname</param>
+        /// <param name="user">The user with the necessary information to ban him: nickname, banReason and bannedUntil</param>
         [HttpPatch("ban")]
         public IActionResult Ban([FromBody]User user)
         {
@@ -44,7 +44,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// POST Method is used to add new games to the database
         /// </summary>
-        /// <param name="game">The game to be stored in the database</param>
+        /// <param name="game">The game to be added to the database</param>
         [HttpPost("games")]
         public IActionResult AddNewGame([FromBody] Game game)
         {
@@ -84,9 +84,8 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method used to get all the users in the platform (all who are not admins)
+        /// GET Method used to get all the users in the platform (doesn't include admins)
         /// </summary>
-        /// <param name="game">The game to update</param>
         [HttpGet("users")]
         public IActionResult GetAllUsers()
         {
@@ -101,7 +100,6 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// GET Method used to get all the banned users in the platform
         /// </summary>
-        /// <param name="game">The game to update</param>
         [HttpGet("bannedusers")]
         public IActionResult GetAllBannedUsers()
         {
@@ -116,7 +114,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// PATCH Method used to get all the banned IPs in the platform
         /// </summary>
-        /// <param name="user">The user to ban</param>
+        /// <param name="user">The user with the necessary information to ban him: nickname, banReason and bannedUntil</param>
         [HttpPatch("banuserandip")]
         public IActionResult BanUserAndIp([FromBody]User user)
         {
@@ -131,7 +129,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// PATCH Method used to pardon an user from his ban
         /// </summary>
-        /// <param name="user">The user to pardon</param>
+        /// <param name="user">The nickname of the user to be pardoned</param>
         [HttpPatch("pardonuser/{user}")]
         public IActionResult PardonUser(string user)
         {
@@ -148,7 +146,7 @@ namespace CHAIRAPI.Controllers
         /// <summary>
         /// PATCH Method used to pardon an user and his IP from their ban
         /// </summary>
-        /// <param name="user">The user to pardon</param>
+        /// <param name="user">The nickname of the user to be pardoned</param>
         [HttpPatch("pardonuserandip/{user}")]
         public IActionResult PardonUserAndIP(string user)
         {
@@ -163,7 +161,8 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method to get all games in the database
+        /// GET Method to get all games in the database with how many users play each game, how many users are playing it, and for how many hours have all users
+        /// played that game
         /// </summary>
         [HttpGet("gamesstats")]
         public IActionResult GetAllGamesStats()
@@ -183,7 +182,7 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method to get all games names in the database
+        /// GET Method to get all games names in the database TODO: Quitar
         /// </summary>
         [HttpGet("gamesnames")]
         public IActionResult GetAllGamesNames()
@@ -203,9 +202,9 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// PUT Method is used to update a game
+        /// PUT Method is used to update a game and set its frontpage status to true
         /// </summary>
-        /// <param name="game">The game to update</param>
+        /// <param name="game">The name of the game to be set to front page</param>
         [HttpPatch("frontpage/{game}")]
         public IActionResult ChangeFrontPageGame(string game)
         {

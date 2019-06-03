@@ -11,9 +11,10 @@ namespace CHAIRAPI_DAL.Handlers
     public class UserFriendsHandler
     {
         /// <summary>
-        /// Method which will save the game in the database
+        /// Method which will save the friendship in the database
         /// </summary>
-        /// <param name="relationship">The relationship to be saved</param>
+        /// <param name="user1">The sender of the friend request</param>
+        /// <param name="user2">The receiver of the friend request</param>
         /// <returns>1 if saved successfully; 0 if the relationship already exists; -1 other errors</returns>
         public static int saveNewRelationship(string user1, string user2)
         {
@@ -55,10 +56,11 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will save the changes made to the game in the database
+        /// Method which will save the changes made to the friendship in the database
         /// </summary>
-        /// <param name="relationship">The relationship to be updated</param>
-        /// <returns>True if updated successfully, false otherwise</returns>
+        /// <param name="user1">One of the users in the friendship</param>
+        /// <param name="user2">One of the users in the friendship</param>
+        /// <returns>1 if updated successfully; 0 if the relationship doesn't exist; -1 other errors</returns>
         public static int acceptRelationship(string user1, string user2)
         {
             Connection connection = new Connection();
@@ -147,11 +149,11 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will search the database for the user with the specified nickname
+        /// Method which will search the database for the friendship with the specified nicknames
         /// </summary>
         /// <param name="user1">One of the nicknames to search</param>
         /// <param name="user2">One of the nicknames to search</param>
-        /// <returns>The user with all its information if it was found, false otherwise</returns>
+        /// <returns>The friendship with all its information if it was found, false otherwise</returns>
         public static UserFriends searchRelationshipByUsers(string user1, string user2)
         {
             //Variables
@@ -205,7 +207,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// <summary>
         /// Method which will search the database for the friends of the specified user
         /// </summary>
-        /// <param name="nickname">One of the nicknames to search</param>
+        /// <param name="nickname">The nickname of the user from whom we want all his friends</param>
         /// <returns>A list with all the relationships if they're found, null otherwiser</returns>
         public static List<UserFriends> searchRelationshipsByUser(string nickname)
         {

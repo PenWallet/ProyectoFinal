@@ -4,10 +4,6 @@ using System.Text;
 
 namespace CHAIRAPI_Entities.Persistent
 {
-    /// <summary>
-    /// This is the class that the final User will have in his client. It lacks salt because they don't need
-    /// and mustn't see the salt used to hash their passwords.
-    /// </summary>
     public class User
     {
         public string nickname { get; set; }

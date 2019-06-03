@@ -12,11 +12,10 @@ namespace CHAIRAPI_DAL.Handlers
     public class UserForFriendListHandler
     {
         /// <summary>
-        /// Method which will search the database for the user with the specified nickname
+        /// Method which will search the database for all the friends the specified user has
         /// </summary>
-        /// <param name="user1">One of the nicknames to search</param>
-        /// <param name="user2">One of the nicknames to search</param>
-        /// <returns>The user with all its information if it was found, false otherwise</returns>
+        /// <param name="nickname">The nickname of the user of whom we want to get all his friends</param>
+        /// <returns>A list with all his friends if it was found, false otherwise</returns>
         public static List<UserForFriendList> searchFriends(string nickname)
         {
             //Variables

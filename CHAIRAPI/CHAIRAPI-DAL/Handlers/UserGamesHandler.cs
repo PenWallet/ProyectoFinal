@@ -11,7 +11,7 @@ namespace CHAIRAPI_DAL.Handlers
     public class UserGamesHandler
     {
         /// <summary>
-        /// Method which will save the game in the database
+        /// Method which will save the relationship in the database
         /// </summary>
         /// <param name="relationship">The relationship to be saved</param>
         /// <returns>1 if saved successfully; 0 if the specified user or game can't be found; -1 if the relationship already exists; -2 other errors</returns>
@@ -178,7 +178,7 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method which will search the database for the user with the specified nickname
+        /// Method which will search the database for all the games an user owns given the user's nickname
         /// </summary>
         /// <param name="nickname">The nickname of the user to be searched</param>
         /// <returns>The userGames with all its information if they were found, false otherwise</returns>
@@ -240,10 +240,12 @@ namespace CHAIRAPI_DAL.Handlers
         }
 
         /// <summary>
-        /// Method used to update the information of an user given the updated information and its nickname
+        /// Method used to update the information of an user's relationship with a game
         /// </summary>
-        /// <param name="user">The updated info of the user</param>
-        /// <param name="nickname">The nickname of the user (in case the user is changing his nickname)</param>
+        /// <param name="user">The nickname of the user</param>
+        /// <param name="game">The name of the game</param>
+        /// <param name="playing">Whether the user is playing or not</param>
+        /// <param name="secondsToAdd">The total amount of seconds the user played for (only necessary if playing is false)</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 otherwise</returns>
         public static int updatePlayingStatus(string user, string game, bool playing, int secondsToAdd)
         {
