@@ -55,10 +55,12 @@
                 <!-- Game name -->
                 <TextBlock Text="{Binding Path=selectedLibraryGame.game.name}" FontSize="50" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="10"/>
                 <TextBlock Text="{Binding Path=selectedLibraryGame.game.developer}" FontSize="20" FontWeight="Bold" Grid.Column="0" Grid.Row="0" Margin="13 -15 0 10"/>
+                
                 <Separator/>
 
                 <!-- Description -->
                 <TextBlock Text="{Binding Path=selectedLibraryGame.game.description}" FontWeight="Light" TextWrapping="Wrap" FontSize="15" Margin="10 8 0 0"/>
+                
                 <Separator Margin="0 8 0 0"/>
 
                 <Grid Grid.Column="1" Visibility="{Binding libraryGameVisible}" Margin="16">
@@ -99,7 +101,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="modelP:User">
-                                <Border BorderBrush="{Binding Path=online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Height="80" Width="80" Margin="20 0 0 0">
+                                <Border BorderBrush="{Binding Path=online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Height="80" Width="80" Margin="20 0 0 0" MouseEnter="MouseEnterFriendIcon" MouseLeave="MouseLeaveFriendIcon">
                                     <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=LibraryUserControl, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
                                         <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}" ToolTip="{Binding Path=nickname}"/>
                                     </Button>

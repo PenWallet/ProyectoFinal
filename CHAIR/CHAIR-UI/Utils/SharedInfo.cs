@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CHAIR_UI.ViewModels
+namespace CHAIR_UI.Utils
 {
     /// <summary>
     /// This is most likely not the best solution for sharing information across ViewModels, but the other

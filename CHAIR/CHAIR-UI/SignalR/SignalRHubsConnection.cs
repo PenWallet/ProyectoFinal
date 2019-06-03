@@ -1,4 +1,4 @@
-﻿using CHAIR_UI.ViewModels;
+﻿using CHAIR_UI.Utils;
 using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;

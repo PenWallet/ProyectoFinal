@@ -14,7 +14,7 @@
         Background="#858AE3"
         MinWidth="600"
         MinHeight="500"
-        Title="RegisterWindow" Height="500" Width="600">
+        Title="CHAIR Registration" Height="500" Width="600">
     <!-- Small border around the window (for aesthetics :D) -->
     <Window.BorderBrush>#613DC1</Window.BorderBrush>
     <Window.BorderThickness>1</Window.BorderThickness>

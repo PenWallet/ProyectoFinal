@@ -10,11 +10,11 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:conv="clr-namespace:CHAIR_UI.Converters"
         mc:Ignorable="d"
-        Title="ChairWindow"
+        Title="CHAIR"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip"
-        Height="600" 
-        Width="900"
+        Height="Auto" 
+        Width="Auto"
         MinHeight="600"
         MinWidth="900"
         WindowStyle="None"
@@ -112,8 +112,8 @@
                             </Border>
 
                             <!-- Nickname -->
-                            <StackPanel Orientation="Vertical"  Margin="10 10 0 0">
-                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}"/>
+                            <StackPanel Orientation="Vertical"  Margin="10 4 0 0">
+                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=loggedUser.nickname}" Foreground="{StaticResource FontColor}"/>
                                 <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding gameBeingPlayed, Converter={StaticResource NTVConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     Playing <TextBlock FontWeight="ExtraBold" Text="{Binding gameBeingPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </TextBlock>

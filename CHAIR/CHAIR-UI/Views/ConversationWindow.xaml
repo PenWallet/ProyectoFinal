@@ -11,7 +11,7 @@
         xmlns:behaviors="clr-namespace:CHAIR_UI.Behaviors"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
-        Title="ConversationWindow"
+        Title="CHAIR Conversations"
         Height="800"
         Width="800"
         MinHeight="600"

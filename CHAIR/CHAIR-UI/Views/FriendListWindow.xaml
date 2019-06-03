@@ -10,11 +10,11 @@
         xmlns:model="clr-namespace:CHAIR_Entities.Complex"
         mc:Ignorable="d"
         MinHeight="800"
-        MinWidth="800"
-        MaxWidth="800"
-        Title="FriendListWindow"
+        MinWidth="750"
+        MaxWidth="750"
+        Title="CHAIR Friends"
         Height="800"
-        Width="800"
+        Width="750"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
@@ -42,8 +42,8 @@
     
     <!-- Top bar -->
     <materialDesign:DialogHost Identifier="FriendListDialog">
-        <StackPanel Orientation="Vertical">
-            <materialDesign:ColorZone MouseDown="TitleBar_MouseDown" x:Name="TitleBar" Grid.Row="0" Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid">
+        <DockPanel>
+            <materialDesign:ColorZone MouseDown="TitleBar_MouseDown" x:Name="TitleBar" DockPanel.Dock="Top" Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth2" Mode="PrimaryMid">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="85"/>
@@ -72,185 +72,194 @@
                 </Grid>
             </materialDesign:ColorZone>
 
-            <!-- Online expander -->
-            <Expander>
-                <Expander.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Text="Online" Grid.Column="0" FontSize="15"/>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Image Source="/Assets/onlineicon.png" DockPanel.Dock="Right" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListOnline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" DockPanel.Dock="Right" Grid.Column="0" FontSize="15"/>
-                        </StackPanel>
-                    </Grid>
-                </Expander.Header>
-                <!-- Online users -->
-                <ItemsControl x:Name="OnlineUsersList" ItemsSource="{Binding friendsListOnline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="model:UserForFriendList">
-                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20 20 20 10" MouseDoubleClick="DoubleClickFriend">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <!-- Profile picture (set depending on whether the user is admin or not) -->
-                                    <Border BorderBrush="{Binding gamePlaying, Converter={StaticResource GPTBBConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
-                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
-                                    </Border>
+            <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical">
+                    <!-- Online expander -->
+                    <Expander>
+                        <Expander.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                                    <!-- Game information -->
-                                    <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
-                                        <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
-                                        <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding Path=gamePlaying, Converter={StaticResource NTVConverter}, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBlock Text="Online" Grid.Column="0" FontSize="15"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                    <Image Source="/Assets/onlineicon.png" DockPanel.Dock="Right" Height="15" Width="15" Margin="0 0 5 0"/>
+                                    <TextBlock Text="{Binding Path=friendsListOnline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" DockPanel.Dock="Right" Grid.Column="0" FontSize="15"/>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <!-- Online users -->
+                        <ItemsControl x:Name="OnlineUsersList" ItemsSource="{Binding friendsListOnline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:UserForFriendList">
+                                    <materialDesign:Card Height="120" Width="700" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="10" MouseDoubleClick="DoubleClickFriend">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <!-- Profile picture (set depending on whether the user is admin or not) -->
+                                            <Border BorderBrush="{Binding gamePlaying, Converter={StaticResource GPTBBConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0" MouseEnter="MouseEnterFriendIcon" MouseLeave="MouseLeaveFriendIcon">
+                                                <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=FrListWindow, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
+                                                    <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                                </Button>
+                                            </Border>
+
+                                            <!-- Game information -->
+                                            <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
+                                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
+                                                <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding Path=gamePlaying, Converter={StaticResource NTVConverter}, UpdateSourceTrigger=PropertyChanged}">
                                             Playing <TextBlock FontWeight="ExtraBold" Text="{Binding Path=gamePlaying, UpdateSourceTrigger=PropertyChanged}"/>
                                         </TextBlock>
-                                    </StackPanel>
-                                </Grid>
-                                
-                                <materialDesign:Card.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
-                                </materialDesign:Card.InputBindings>
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
-
-            <Separator/>
-
-            <!-- Offline expander -->
-            <Expander>
-                
-                <Expander.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Offline" Grid.Column="0" FontSize="15"/>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Image Source="/Assets/offlineicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListOffline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
-                        </StackPanel>
-                    </Grid>
-                </Expander.Header>
-                
-                <!-- Offline users -->
-                <ItemsControl ItemsSource="{Binding friendsListOffline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="model:UserForFriendList">
-                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20" MouseDoubleClick="DoubleClickFriend">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <!-- Profile picture (set depending on whether the user is admin or not) -->
-                                    <Border BorderBrush="{StaticResource ProfPicBorderOffline}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
-                                        <Image Source="{Binding admin, Converter={StaticResource BTPPConverter}}"/>
-                                    </Border>
-
-                                    <!-- User information -->
-                                    <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
-                                        <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding nickname}" />
-                                    </StackPanel>
-                                </Grid>
-                                <materialDesign:Card.InputBindings>
-                                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
-                                </materialDesign:Card.InputBindings>
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
-
-            <Separator/>
-            
-            <!-- Pending request users expander -->
-            <Expander>
-                <Expander.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="Pending requests" Grid.Column="0" FontSize="15"/>
-                        <StackPanel Orientation="Horizontal" Grid.Column="1">
-                            <Image Source="/Assets/pendingicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
-                            <TextBlock Text="{Binding Path=friendsListPending.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
-                        </StackPanel>
-                    </Grid>
-                </Expander.Header>
-                <!-- Pending request users -->
-                <ItemsControl ItemsSource="{Binding friendsListPending, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="model:UserForFriendList">
-                            <materialDesign:Card Height="120" Width="750" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="20">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="120" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <!-- Profile picture (set depending on whether the user is admin or not) -->
-                                    <Border BorderBrush="{StaticResource ProfPicBorderOffline}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0">
-                                        <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
-                                    </Border>
-                                    
-                                    <!-- User information -->
-                                    <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
-                                        <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
-                                    </StackPanel>
-
-                                    <!-- Accept and Reject buttons -->
-                                    <StackPanel Orientation="Vertical" Grid.Column="2" Width="200" VerticalAlignment="Center" Margin="0 0 20 0">
-                                        <!-- Accept button -->
-                                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Height="40" Background="{StaticResource PastelGreen}" Margin="0 0 0 10" Command="{Binding ElementName=FrListWindow, Path=DataContext.acceptFriendshipCommand}" CommandParameter="{Binding nickname}">
-                                            <StackPanel Orientation="Horizontal" Margin="5 0 5 0">
-                                                <materialDesign:PackIcon Kind="UserTick" Height="30" Width="30" Margin="0 0 10 0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="Accept" FontSize="25"/>
                                             </StackPanel>
-                                        </Button>
+                                        </Grid>
 
-                                        <!-- Reject button -->
-                                        <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Height="40" Background="{StaticResource PastelRed}" Command="{Binding ElementName=FrListWindow, Path=DataContext.rejectFriendshipCommand}" CommandParameter="{Binding nickname}">
-                                            <StackPanel Orientation="Horizontal" Margin="5 0 5 0">
-                                                <TextBlock Text="Reject" FontSize="25"/>
-                                                <materialDesign:PackIcon Kind="UserMinus" Height="30" Width="30" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                                        <materialDesign:Card.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
+                                        </materialDesign:Card.InputBindings>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Expander>
+
+                    <Separator/>
+
+                    <!-- Offline expander -->
+                    <Expander>
+                        <Expander.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Offline" Grid.Column="0" FontSize="15"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                    <Image Source="/Assets/offlineicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
+                                    <TextBlock Text="{Binding Path=friendsListOffline.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+
+                        <!-- Offline users -->
+                        <ItemsControl ItemsSource="{Binding friendsListOffline, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:UserForFriendList">
+                                    <materialDesign:Card Height="120" Width="700" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="10" MouseDoubleClick="DoubleClickFriend">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <!-- Profile picture (set depending on whether the user is admin or not) -->
+                                            <Border BorderBrush="{StaticResource ProfPicBorderOffline}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0" MouseEnter="MouseEnterFriendIcon" MouseLeave="MouseLeaveFriendIcon">
+                                                <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=FrListWindow, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
+                                                    <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                                </Button>
+                                            </Border>
+
+                                            <!-- User information -->
+                                            <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
+                                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding nickname}" />
                                             </StackPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                            </materialDesign:Card>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Expander>
+                                        </Grid>
+                                        <materialDesign:Card.InputBindings>
+                                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding ElementName=FrListWindow, Path=DataContext.openConversationCommand}" CommandParameter="{Binding nickname}" />
+                                        </materialDesign:Card.InputBindings>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Expander>
 
-            <Separator/>
+                    <Separator/>
 
-        </StackPanel>
+                    <!-- Pending request users expander -->
+                    <Expander>
+                        <Expander.Header>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Pending requests" Grid.Column="0" FontSize="15"/>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                    <Image Source="/Assets/pendingicon.png" Height="15" Width="15" Margin="0 0 5 0"/>
+                                    <TextBlock Text="{Binding Path=friendsListPending.Count, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold" FontSize="15"/>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <!-- Pending request users -->
+                        <ItemsControl ItemsSource="{Binding friendsListPending, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Width="Auto">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:UserForFriendList">
+                                    <materialDesign:Card Height="120" Width="700" materialDesign:ShadowAssist.ShadowDepth="Depth2" materialDesign:ShadowAssist.ShadowEdges="All" Margin="10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <!-- Profile picture (set depending on whether the user is admin or not) -->
+                                            <Border BorderBrush="{StaticResource ProfPicBorderOffline}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0" MouseEnter="MouseEnterFriendIcon" MouseLeave="MouseLeaveFriendIcon">
+                                                <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=FrListWindow, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
+                                                    <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                                </Button>
+                                            </Border>
+
+                                            <!-- User information -->
+                                            <StackPanel Orientation="Vertical" Margin="10" Grid.Column="1">
+                                                <TextBlock FontWeight="Bold" FontSize="30" Text="{Binding Path=nickname}" />
+                                            </StackPanel>
+
+                                            <!-- Accept and Reject buttons -->
+                                            <StackPanel Orientation="Vertical" Grid.Column="2" Width="200" VerticalAlignment="Center" Margin="0 0 20 0">
+                                                <!-- Accept button -->
+                                                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Height="40" Background="{StaticResource PastelGreen}" Margin="0 0 0 10" Command="{Binding ElementName=FrListWindow, Path=DataContext.acceptFriendshipCommand}" CommandParameter="{Binding nickname}">
+                                                    <StackPanel Orientation="Horizontal" Margin="5 0 5 0">
+                                                        <materialDesign:PackIcon Kind="UserTick" Height="30" Width="30" Margin="0 0 10 0" VerticalAlignment="Center"/>
+                                                        <TextBlock Text="Accept" FontSize="25"/>
+                                                    </StackPanel>
+                                                </Button>
+
+                                                <!-- Reject button -->
+                                                <Button Style="{StaticResource MaterialDesignRaisedLightButton}" Height="40" Background="{StaticResource PastelRed}" Command="{Binding ElementName=FrListWindow, Path=DataContext.rejectFriendshipCommand}" CommandParameter="{Binding nickname}">
+                                                    <StackPanel Orientation="Horizontal" Margin="5 0 5 0">
+                                                        <TextBlock Text="Reject" FontSize="25"/>
+                                                        <materialDesign:PackIcon Kind="UserMinus" Height="30" Width="30" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </materialDesign:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Expander>
+
+                    <Separator/>
+                </StackPanel>
+            </ScrollViewer>
+
+        </DockPanel>
     </materialDesign:DialogHost>
 </Window>

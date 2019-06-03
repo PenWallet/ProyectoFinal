@@ -85,6 +85,16 @@ namespace CHAIR_UI.Views
                 _convWindow.Show();
         }
 
+        private void MouseEnterFriendIcon(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Hand;
+        }
+
+        private void MouseLeaveFriendIcon(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+        }
+
         #region IBasicActionsFriendList Implementation
         public void OpenConversation()
         {

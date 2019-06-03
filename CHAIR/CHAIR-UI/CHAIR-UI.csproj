@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FF8F4051-BBD4-4368-AFF4-14EE6236339B}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CHAIR_UI</RootNamespace>
-    <AssemblyName>CHAIR-UI</AssemblyName>
+    <RootNamespace>CHAIR</RootNamespace>
+    <AssemblyName>CHAIR</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -162,8 +162,7 @@
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />
-    <Compile Include="ViewModels\SettingsUserControlViewModel.cs" />
-    <Compile Include="ViewModels\SharedInfo.cs" />
+    <Compile Include="Utils\SharedInfo.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\ChairWindow.xaml.cs">
