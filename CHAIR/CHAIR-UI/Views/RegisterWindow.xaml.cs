@@ -35,14 +35,9 @@ namespace CHAIR_UI.Views
         /// </summary>
         private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 1)
             {
-                if (e.ClickCount == 2)
-                {
-                    Maximize();
-                }
-                else
-                    this.DragMove();
+                this.DragMove();
             }
         }
 

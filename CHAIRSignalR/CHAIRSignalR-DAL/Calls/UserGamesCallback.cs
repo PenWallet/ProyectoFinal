@@ -43,6 +43,14 @@ namespace CHAIRSignalR_DAL.Calls
             return null;
         }
 
+        /// <summary>
+        /// Method used to change an user's status to playing
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user">The name of the user to be set to playing</param>
+        /// <param name="game">The name of the game the user began to play</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void setPlayingTrue(string user, string game, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -58,6 +66,15 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to change an user's status to not playing
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user">The name of the user to be set to not playing</param>
+        /// <param name="game">The name of the game the user stopped playing</param>
+        /// <param name="secondsToAdd">The amount of time the user played the game for, in seconds</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void setPlayingFalse(string user, string game, int secondsToAdd, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -74,6 +91,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to add a game to an user's library
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="relationship">The new relationship between an user and a game</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void buyGame(UserGames relationship, string token, out HttpStatusCode status)
         {
             //Prepare the request

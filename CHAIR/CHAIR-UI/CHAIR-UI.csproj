@@ -289,6 +289,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\background.jpg" />
+    <Resource Include="Assets\olga.png" />
+    <Resource Include="Assets\conversationbackground.png" />
     <Content Include="Assets\playing.mp3" />
     <Resource Include="Assets\oscar.png" />
     <Resource Include="Assets\chairlogo.ico" />

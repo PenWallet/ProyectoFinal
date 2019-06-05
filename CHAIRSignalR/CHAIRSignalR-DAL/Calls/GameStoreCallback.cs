@@ -16,9 +16,10 @@ namespace CHAIRSignalR_DAL.Calls
     public static class GameStoreCallback
     {
         /// <summary>
-        /// Method used to retrieve all the necessary information to display an user's profile
+        /// Method used to retrieve the information of a game as well as the relationship the given user has with that game
         /// </summary>
-        /// <param name="nickname">The user from whom we want his profile</param>
+        /// <param name="nickname">The name of the user</param>
+        /// <param name="game">The name of the game</param>
         /// <param name="token">The user's token</param>
         /// <param name="status">Same as the API response</param>
         /// <returns></returns>

@@ -23,7 +23,7 @@ namespace CHAIR_UI.ViewModels
             _usernameBorder = "#ABADB3";
             _passwordBorder = "#ABADB3";
             _birthdateBorder = "#ABADB3";
-            _errorsVisibility = "Hidden";
+            _errorsVisibility = "Collapsed";
             _birthdate = new DateTime(1999, 8, 12);
             _view = view;
             _signalR = SignalRHubsConnection.loginHub;
@@ -264,7 +264,7 @@ namespace CHAIR_UI.ViewModels
             {
                 loadingRegister = true;
 
-                errorsVisibility = "Hidden";
+                errorsVisibility = "Collapsed";
 
                 //Make the user with all the information
                 User user = new User();

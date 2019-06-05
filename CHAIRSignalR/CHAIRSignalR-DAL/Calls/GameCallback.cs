@@ -13,6 +13,12 @@ namespace CHAIRSignalR_DAL.Calls
 {
     public static class GameCallback
     {
+        /// <summary>
+        /// Method used to get all the games in the store
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<Game> getAllStoreGames(string token, out HttpStatusCode status)
         {
             //Prepare the request

@@ -21,7 +21,7 @@
         AllowsTransparency="True"
         FontFamily="{DynamicResource MaterialDesignFont}">
     <Window.Background>
-        <ImageBrush ImageSource="/Assets/background.jpg" Stretch="UniformToFill"/>
+        <ImageBrush ImageSource="/Assets/conversationbackground.png" Stretch="UniformToFill"/>
     </Window.Background>
     <Window.Resources>
         <conv:DateToLongString x:Key="DTLSConverter"/>

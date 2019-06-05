@@ -19,7 +19,9 @@ namespace CHAIRSignalR_DAL.Calls
         /// <summary>
         /// Method used to ban an user from entering the application
         /// </summary>
-        /// <returns></returns>
+        /// <param name="user">The user information to be banned</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void ban(User user, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -35,6 +37,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to pardon an user from a ban
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="nickname">The name of the user to be pardoned</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void pardonUser(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -49,6 +58,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to pardon an user and his IP from a ban
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="nickname">The name of the user to be pardoned</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void pardonUserAndIP(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -63,6 +79,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to ban an user and his IP from entering the application
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user">The user information to be banned</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void banUserAndIp(User user, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -78,6 +101,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to change the game displayed in the front page of the store
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="game">The game to be set to the front page</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void changeFrontPageGame(string game, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -92,6 +122,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to add a new game to the store
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="game">The game to be added</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void addNewGame(Game game, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -107,6 +144,12 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to get all information about all the games in the store
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<GameBeingPlayed> getGamesStats(string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -127,6 +170,12 @@ namespace CHAIRSignalR_DAL.Calls
 
         }
 
+        /// <summary>
+        /// Method used to geta list with the names of all the users in the application
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<string> getAllUsers(string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -146,6 +195,12 @@ namespace CHAIRSignalR_DAL.Calls
                 return null;
         }
 
+        /// <summary>
+        /// Method used to get a list with the names of all the banned users in the application
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<string> getBannedUsers(string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -165,6 +220,12 @@ namespace CHAIRSignalR_DAL.Calls
                 return null;
         }
 
+        /// <summary>
+        /// Method used to get the names of all the games in the store
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<string> getAllStoreGamesNames(string token, out HttpStatusCode status)
         {
             //Prepare the request

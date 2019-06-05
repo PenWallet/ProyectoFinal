@@ -53,15 +53,21 @@
                             <!-- Birthday -->
                         </Grid.RowDefinitions>
                         <!-- Nickname -->
-                        <TextBlock FontSize="40" Grid.Row="0" Text="{Binding Path=profileUser.user.nickname}" Foreground="{StaticResource FontColor}" />
+                        <TextBlock FontSize="40" Grid.Row="0" FontWeight="Bold" Text="{Binding Path=profileUser.user.nickname}" />
 
                         <!-- Profile location -->
-                        <TextBlock FontSize="15" Grid.Row="1" Text="{Binding Path=profileUser.user.profileLocation}" Foreground="{StaticResource LocationFontColor}" />
+                        <TextBlock FontSize="15" Grid.Row="1" Text="{Binding Path=profileUser.user.profileLocation}" />
 
                         <!-- Birthday -->
-                        <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Bottom">
-                            <materialDesign:PackIcon Kind="CakeVariant" Height="30" Width="30"/>
-                            <TextBlock FontSize="25" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" Foreground="{StaticResource FontColor}"/>
+                        <StackPanel Orientation="Vertical" Grid.Row="2" VerticalAlignment="Bottom">
+                            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                <materialDesign:PackIcon Kind="CakeVariant" Height="25" Width="25"/>
+                                <TextBlock FontSize="20" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Medal" Height="25" Width="25" Grid.Row="0" Grid.Column="0"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=profileUser.user.accountCreationDate, Converter={StaticResource ACDTSConverter}}" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -76,8 +82,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <materialDesign:PackIcon Kind="Medal" Height="25" Width="25" Grid.Row="0" Grid.Column="0"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=profileUser.user.accountCreationDate, Converter={StaticResource ACDTSConverter}}" FontSize="20" Foreground="{StaticResource FontColor}" TextWrapping="Wrap"/>
+                    
                 </Grid>
 
             </StackPanel>

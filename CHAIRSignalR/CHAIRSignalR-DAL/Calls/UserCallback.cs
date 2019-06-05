@@ -47,6 +47,12 @@ namespace CHAIRSignalR_DAL.Calls
             return null;
         }
 
+        /// <summary>
+        /// Method used to register a new user
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user">The user to register</param>
+        /// <param name="status">The API's response</param>
         public static object register(User user, out HttpStatusCode status)
         {
             //Prepare the request
@@ -67,6 +73,13 @@ namespace CHAIRSignalR_DAL.Calls
             return null;
         }
 
+        /// <summary>
+        /// Method used to set an user's status to online
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="nickname">The nickname of the user we want to set to online</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void online(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -81,6 +94,13 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to set an user's status to offline
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="nickname">The nickname of the user we want to set to offline</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void offline(string nickname, string token, out HttpStatusCode status)
         {
             //Prepare the request

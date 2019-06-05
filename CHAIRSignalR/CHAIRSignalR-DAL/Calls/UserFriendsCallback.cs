@@ -13,6 +13,15 @@ namespace CHAIRSignalR_DAL.Calls
 {
     public static class UserFriendsCallback
     {
+
+        /// <summary>
+        /// Method used to create a new friendship
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user1">The user who sent the friend request</param>
+        /// <param name="user2">The receiver of the friend request</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void saveNewRelationship(string user1, string user2, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -28,6 +37,14 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
 
+        /// <summary>
+        /// Method used to accept a friend request
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user1">One of the users in the friendship</param>
+        /// <param name="user2">One of the users in the friendship</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void acceptFriendship(string user1, string user2, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -43,6 +60,14 @@ namespace CHAIRSignalR_DAL.Calls
             status = response.StatusCode;
         }
         
+        /// <summary>
+        /// Method used to delete a friendship
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user1">One of the users in the friendship</param>
+        /// <param name="user2">One of the users in the friendship</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void endFriendship(string user1, string user2, string token, out HttpStatusCode status)
         {
             //Prepare the request

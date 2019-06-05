@@ -21,7 +21,7 @@ namespace CHAIRSignalR.Hubs
         /// <summary>
         /// Method used to retrieve all the games available in the store
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="token">The user's token</param>
         public void getAllStoreGames(string token)
         {
             //Make the call to the API
@@ -53,6 +53,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch your games. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to retrieve the information about an user's profile
+        /// </summary>
+        /// <param name="nickname">The nickname of the user of whom we want the profile</param>
+        /// <param name="token">The caller's token</param>
         public void getUserProfile(string nickname, string token)
         {
             //Make the call to the API
@@ -65,6 +70,12 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch this user's profile. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to retrieve the information about a game and the relationship with its owner
+        /// </summary>
+        /// <param name="nickname">The nickname of the user who owns the game</param>
+        /// <param name="game">The name of the game</param>
+        /// <param name="token">The caller's token</param>
         public void getGameInformation(string nickname, string game, string token)
         {
             //Make the call to the API
@@ -80,6 +91,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to fetch the game information. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to retrieve a list of users after searching
+        /// </summary>
+        /// <param name="search">The search parameter</param>
+        /// <param name="token">The caller's token</param>
         public void searchForUsers(string search, string token)
         {
             //Make the call to the API
@@ -93,6 +109,12 @@ namespace CHAIRSignalR.Hubs
 
         }
 
+        /// <summary>
+        /// Method used to add a friend to your friend list
+        /// </summary>
+        /// <param name="user1">The user who is sending the request</param>
+        /// <param name="user2">The user receiving the request</param>
+        /// <param name="token">The caller's token</param>
         public void addFriend(string user1, string user2, string token)
         {
             //Make the call to the API
@@ -103,6 +125,12 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to add a friend. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to accept a friend request
+        /// </summary>
+        /// <param name="myself">Really?</param>
+        /// <param name="friend">The name of the user we are accepting</param>
+        /// <param name="token">The caller's token</param>
         public void acceptFriendship(string myself, string friend, string token)
         {
             //Make the call to the API
@@ -125,6 +153,12 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to accept a friendship. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to accept a friend request
+        /// </summary>
+        /// <param name="myself">Really?</param>
+        /// <param name="friend">The name of the user we are deleting :(</param>
+        /// <param name="token">The caller's token</param>
         public void endFriendship(string myself, string friend, string token)
         {
             //Make the call to the API
@@ -136,11 +170,18 @@ namespace CHAIRSignalR.Hubs
                 string conId;
                 if (ChairInfo.onlineUsers.TryGetValue(friend, out conId))
                     Clients.Client(conId).updateFriendListWithNotification("", NotificationType.GENERIC); //We don't tell them who deleted them, we just want them to update their friend list
+
+                Clients.Caller.updateFriendListWithNotification($"{friend} was deleted from your friend list.", NotificationType.GENERIC);
             }
             else
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to end a friendship. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to retrieve all the friends the requested user has
+        /// </summary>
+        /// <param name="nickname">The user from whom we want to retrieve all his friends</param>
+        /// <param name="token">The caller's token</param>
         public void getFriends(string nickname, string token)
         {
             //Make the call to the API
@@ -153,6 +194,13 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get your friends. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to set the specified user's status to online
+        /// </summary>
+        /// <param name="nickname">The user we want to set to online</param>
+        /// <param name="admin">Whether the user is an admin or not</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="usersToNotify">The users we want to notify (the user's friends)</param>
         public void goOnline(string nickname, bool admin, string token, List<string> usersToNotify)
         {
             //Make the call to the API
@@ -183,6 +231,13 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to set you online. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to set the specified user's status to offline
+        /// </summary>
+        /// <param name="nickname">The user we want to set to offline</param>
+        /// <param name="admin">Whether the user is an admin or not</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="usersToNotify">The users we want to notify (the user's friends)</param>
         public void goOffline(string nickname, bool admin, string token, List<string> usersToNotify)
         {
             //Make the call to the API
@@ -212,6 +267,13 @@ namespace CHAIRSignalR.Hubs
             }
         }
 
+        /// <summary>
+        /// Method used to set the specified user's status to playing and notify his friends
+        /// </summary>
+        /// <param name="nickname">The user we want to set to playing</param>
+        /// <param name="game">The game the user started playing</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="usersToNotify">The users we want to notify (the user's friends)</param>
         public void startPlayingGame(string nickname, string game, string token, List<string> usersToNotify)
         {
             //We add the user to the usersPlaying liist 
@@ -235,6 +297,12 @@ namespace CHAIRSignalR.Hubs
             }
         }
 
+        /// <summary>
+        /// Method used to set the specified user's status to not playing and notify his friends
+        /// </summary>
+        /// <param name="nickname">The user we want to set to not playing</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="usersToNotify">The users we want to notify (the user's friends)</param>
         public void stopPlayingGame(string nickname, string token, List<string> usersToNotify)
         {
             //We add the user to the usersPlaying list
@@ -272,6 +340,12 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError($"An unexpected error ocurred trying to find which game you were playing. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to retrieve the last 100 messages between two friends
+        /// </summary>
+        /// <param name="me">Really, again?</param>
+        /// <param name="friend">The user's friend</param>
+        /// <param name="token">The caller's token</param>
         public void getConversation(string me, string friend, string token)
         {
             //Make the call to the API
@@ -286,6 +360,11 @@ namespace CHAIRSignalR.Hubs
 
         }
 
+        /// <summary>
+        /// Method used to send a message to someone
+        /// </summary>
+        /// <param name="message">The message to send</param>
+        /// <param name="token">The caller's token</param>
         public void sendMessage(Message message, string token)
         {
             //Make the call to the API
@@ -305,6 +384,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError($"An unexpected error occurred when trying to send a message to {message.receiver}. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to associate a game with someone's account
+        /// </summary>
+        /// <param name="relationship">The relationship to form</param>
+        /// <param name="token">The caller's token</param>
         public void buyGame(UserGames relationship, string token)
         {
             //Make the call to the API
@@ -323,6 +407,14 @@ namespace CHAIRSignalR.Hubs
         }
 
         #region Admin
+
+        /// <summary>
+        /// Method used to ban someone's account
+        /// </summary>
+        /// <param name="nickname">The nickname of the user to be banned</param>
+        /// <param name="reason">The reason the user is been banned</param>
+        /// <param name="until">The date until he is banned</param>
+        /// <param name="token">The caller's token</param>
         public void adminBanUser(string nickname, string reason, DateTime until, string token)
         {
             User user = new User();
@@ -346,6 +438,13 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminNotification($"An unexpected error occurred when trying to ban {nickname}. Please try again when it's fixed :D", AdminNotificationType.BANPLAYER);
         }
 
+        /// <summary>
+        /// Method used to ban someone's account as well as his IP
+        /// </summary>
+        /// <param name="nickname">The nickname of the user to be banned</param>
+        /// <param name="reason">The reason the user is been banned</param>
+        /// <param name="until">The date until he is banned</param>
+        /// <param name="token">The caller's token</param>
         public void adminBanUserAndIp(string nickname, string reason, DateTime until, string token)
         {
             User user = new User();
@@ -369,6 +468,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminNotification($"An unexpected error occurred when trying to ban {nickname} and his IP. Please try again when it's fixed :D", AdminNotificationType.BANPLAYER);
         }
 
+        /// <summary>
+        /// Method used to change the game displayed in the front page
+        /// </summary>
+        /// <param name="gameName">The name of the game to be set to front page</param>
+        /// <param name="token">The caller's token</param>
         public void adminChangeFrontPageGame(string gameName, string token)
         {
             //Make the call to the API
@@ -381,6 +485,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminNotification($"An unexpected error occurred when trying to change the front page game to {gameName}. Please try again when it's fixed :D", AdminNotificationType.FRONTPAGE);
         }
 
+        /// <summary>
+        /// Method used to change the game displayed in the front page
+        /// </summary>
+        /// <param name="gameName">The name of the game to be set to front page</param>
+        /// <param name="token">The caller's token</param>
         public void adminAddGameToStore(Game game, string token)
         {
             //Make the call to the API
@@ -396,6 +505,10 @@ namespace CHAIRSignalR.Hubs
 
         }
 
+        /// <summary>
+        /// Method used to update the list of games being played
+        /// </summary>
+        /// <param name="token">The caller's token</param>
         public void adminUpdateGamesBeingPlayed(string token)
         {
             //Make the call to the API
@@ -408,6 +521,10 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to update your list of games being played. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to get a string list of all the users
+        /// </summary>
+        /// <param name="token">The caller's token</param>
         public void adminGetAllUsers(string token)
         {
             //Make the call to the API
@@ -420,6 +537,10 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get all the players in the application. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to get a list of all the banned users
+        /// </summary>
+        /// <param name="token">The caller's token</param>
         public void adminGetBannedUsers(string token)
         {
             //Make the call to the API
@@ -432,6 +553,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to get all the players in the application. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Method used to pardon a ban from an user
+        /// </summary>
+        /// <param name="username">The name of the user to be pardoned</param>
+        /// <param name="token">The caller's token</param>
         public void adminPardonUser(string username, string token)
         {
             //Make the call to the API
@@ -444,6 +570,11 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminNotification($"There was an error when trying to pardon an user from his sins", AdminNotificationType.PARDONPLAYER);
         }
 
+        /// <summary>
+        /// Method used to pardon a ban and an IP from an user
+        /// </summary>
+        /// <param name="username">The name of the user to be pardoned</param>
+        /// <param name="token">The caller's token</param>
         public void adminPardonUserAndIp(string username, string token)
         {
             //Make the call to the API
@@ -456,6 +587,10 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.adminNotification($"There was an error when trying to pardon an user and his IP from their sins", AdminNotificationType.PARDONPLAYER);
         }
 
+        /// <summary>
+        /// Method used to retrieve the names of all the games in the store
+        /// </summary>
+        /// <param name="token">The caller's token</param>
         public void adminGetAllStoreGamesNames(string token)
         {
             //Make the call to the API
@@ -468,6 +603,9 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.unexpectedError($"There was an error when trying to get all the games names information. Please try again when it's fixed :D");
         }
 
+        /// <summary>
+        /// Small private method added for readability. It tells all online admins to call for an update of their games being played list
+        /// </summary>
         private void tellAllAdminsToUpdateTheirGamesList()
         {
             //Tell every admin to update their games list

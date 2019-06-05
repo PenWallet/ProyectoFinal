@@ -15,6 +15,11 @@ namespace CHAIRSignalR.Hubs
 {
     public class LoginHub : Hub
     {
+        /// <summary>
+        /// Method used to login
+        /// </summary>
+        /// <param name="username">The user's username</param>
+        /// <param name="password">The user's password</param>
         public void login(string username, string password)
         {
             //Prepare the user
@@ -33,6 +38,10 @@ namespace CHAIRSignalR.Hubs
                 Clients.Caller.loginUnauthorized((BanResponse)response);
         }
 
+        /// <summary>
+        /// Method used to register
+        /// </summary>
+        /// <param name="user">The user with all the necessary information to register</param>
         public void register(User user)
         {
             //Get the user's IP

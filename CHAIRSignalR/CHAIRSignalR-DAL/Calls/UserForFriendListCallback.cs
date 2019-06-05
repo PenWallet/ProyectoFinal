@@ -14,6 +14,14 @@ namespace CHAIRSignalR_DAL.Calls
 {
     public static class UserForFriendListCallback
     {
+
+        /// <summary>
+        /// Method used to get all the friends an user has
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="username">The user of whom we want all his friends</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<UserForFriendList> getFriends(string username, string token, out HttpStatusCode status)
         {
             //Prepare the request

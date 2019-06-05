@@ -13,6 +13,14 @@ namespace CHAIRSignalR_DAL.Calls
 {
     public static class MessageCallback
     {
+        /// <summary>
+        /// Method used to get the last 100 messages between two users
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="me">Really, again, again?</param>
+        /// <param name="friend">The nickname of the other user</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static List<Message> getConversation(string me, string friend, string token, out HttpStatusCode status)
         {
             //Prepare the request
@@ -34,6 +42,13 @@ namespace CHAIRSignalR_DAL.Calls
             return null;
         }
 
+        /// <summary>
+        /// Method used to save a message
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="message">The message to save</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
         public static void postMessage(Message message, string token, out HttpStatusCode status)
         {
             //Prepare the request
