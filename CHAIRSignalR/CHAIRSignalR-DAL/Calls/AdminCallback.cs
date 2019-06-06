@@ -219,30 +219,5 @@ namespace CHAIRSignalR_DAL.Calls
             else
                 return null;
         }
-
-        /// <summary>
-        /// Method used to get the names of all the games in the store
-        /// </summary>
-        /// <returns></returns>
-        /// <param name="token">The caller's token</param>
-        /// <param name="status">The API's response</param>
-        public static List<string> getAllStoreGamesNames(string token, out HttpStatusCode status)
-        {
-            //Prepare the request
-            RestRequest request = new RestRequest("admin/gamesnames", Method.GET);
-            request.AddHeader("Authorization", $"Bearer {token}");
-            request.AddHeader("Accept", "application/json");
-
-            //Make the request
-            var response = APIConnection.Client.Execute<List<string>>(request);
-
-            //Profit
-            status = response.StatusCode;
-
-            if (response.StatusCode == HttpStatusCode.OK)
-                return response.Data;
-            else
-                return null;
-        }
     }
 }

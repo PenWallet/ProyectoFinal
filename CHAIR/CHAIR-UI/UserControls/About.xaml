@@ -18,6 +18,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!-- TODO: Añadir foticos -->
 
@@ -40,7 +41,7 @@
                         <TextBlock Text="El ayudante de testing" FontSize="15" FontWeight="Medium" HorizontalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Margin="10">
-                        <Image Source="/Assets/olga.png" Height="400" Width="400" Margin="0 0 0 10"/>
+                        <Image Source="/Assets/olga2.png" Height="400" Width="400" Margin="0 0 0 10"/>
                         <TextBlock Text="Olga" FontSize="30" FontWeight="ExtraBold" HorizontalAlignment="Center"/>
                         <TextBlock Text="La ayudante de las cosas bonicas" FontSize="15" FontWeight="Medium" HorizontalAlignment="Center"/>
                     </StackPanel>
@@ -48,7 +49,7 @@
             </materialDesign:Card>
 
             <!-- dwebBSI oeywvNW -->
-            <TextBlock Text="Fernando apruébame" Grid.Row="2" FontSize="3" FontWeight="ExtraBold" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+            <TextBlock Text="Fernando apruébame" Grid.Row="3" FontSize="10" FontWeight="ExtraBold" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
 
         </Grid>
     </ScrollViewer>

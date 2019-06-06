@@ -182,26 +182,6 @@ namespace CHAIRAPI.Controllers
         }
 
         /// <summary>
-        /// GET Method to get all games names in the database TODO: Quitar
-        /// </summary>
-        [HttpGet("gamesnames")]
-        public IActionResult GetAllGamesNames()
-        {
-            string accept = Request.Headers["Accept"].ToString();
-            if (accept != "application/json" && accept != "*/*")
-                return StatusCode(406); //Not Acceptable
-            else
-            {
-                List<string> list = AdminHandler.getAllStoreGamesNames();
-
-                if (list != null)
-                    return Ok(list);
-                else
-                    return StatusCode(500);
-            }
-        }
-
-        /// <summary>
         /// PUT Method is used to update a game and set its frontpage status to true
         /// </summary>
         /// <param name="game">The name of the game to be set to front page</param>

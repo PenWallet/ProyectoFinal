@@ -137,6 +137,7 @@ namespace CHAIR_UI.ViewModels
         private int _downloadUnzipProgress { get; set; }
         private Process _gameProcess { get; set; }
         private SoundsUtils _sounds { get; set; }
+        private bool _canSeeProfile { get; set; } //Variable used to know whether the user can see another user's profile or not (based on that user's private profile option and whether the current user is admin or not)
 
         //Friend list variables
         private ObservableCollection<UserForFriendList> _friendsList { get; set; }
@@ -163,6 +164,26 @@ namespace CHAIR_UI.ViewModels
 
 
         #region Public properties
+        public bool canSeeProfile
+        {
+            get
+            {
+                return _canSeeProfile;
+            }
+
+            set
+            {
+                _canSeeProfile = value;
+                NotifyPropertyChanged("canSeeProfile");
+            }
+        }
+        public DelegateCommand editProfileCommand
+        {
+            get
+            {
+                return new DelegateCommand(editProfileCommand_Executed);
+            }
+        }
         public DelegateCommand openFolderDialogTempCommand
         {
             get
@@ -679,6 +700,12 @@ namespace CHAIR_UI.ViewModels
             {
                 _profileUser = value;
                 NotifyPropertyChanged("profileUser");
+
+                //The user will be able to see the profile only if it isn't private, if the current user is an admin, or if he's trying to see his own profile
+                if(!value.user.privateProfile || SharedInfo.loggedUser.admin || (value.user.nickname == SharedInfo.loggedUser.nickname))
+                    canSeeProfile = true;
+                else
+                    canSeeProfile = false;
             }
         }
         public bool drawerOpen
@@ -997,6 +1024,11 @@ namespace CHAIR_UI.ViewModels
                 if (result == System.Windows.Forms.DialogResult.OK)
                     tempDownloadFolder = dialog.SelectedPath;
             }
+        }
+
+        private void editProfileCommand_Executed()
+        {
+            notificationsQueue.Enqueue("WIP!");
         }
         #endregion
 

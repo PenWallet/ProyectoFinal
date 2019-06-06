@@ -53,6 +53,12 @@ namespace CHAIR_UI.Views
             (sender as Button).Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2C0735"));
         }
 
+        private void PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(this.DataContext != null)
+                ((RegisterWindowViewModel)this.DataContext).password = ((PasswordBox)sender).Password;
+        }
+
         #region IBasicActions implementation
         public void Maximize()
         {

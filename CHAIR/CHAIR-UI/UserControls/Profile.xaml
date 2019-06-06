@@ -45,21 +45,22 @@
                     </Border>
                     <Grid Margin="10 0 10 0">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <!-- Nickname -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Profile location -->
-                            <RowDefinition Height="*"/>
-                            <!-- Birthday -->
+                            <RowDefinition Height="Auto"/> <!-- Nickname -->
+                            <RowDefinition Height="Auto"/> <!-- Private profile -->
+                            <RowDefinition Height="Auto"/> <!-- Profile location -->
+                            <RowDefinition Height="*"/> <!-- Birthday -->
                         </Grid.RowDefinitions>
                         <!-- Nickname -->
-                        <TextBlock FontSize="40" Grid.Row="0" FontWeight="Bold" Text="{Binding Path=profileUser.user.nickname}" />
+                        <TextBlock FontSize="40" Grid.Row="0" FontWeight="Bold" Text="{Binding Path=profileUser.user.nickname}"/>
+                        
+                        <!-- Private profile -->
+                        <TextBlock FontSize="20" Grid.Row="1" FontWeight="Normal" Text="This profile is private 🤷" Visibility="{Binding Path=profileUser.user.privateProfile, Converter={StaticResource BTVConverter}}"/>
 
                         <!-- Profile location -->
-                        <TextBlock FontSize="15" Grid.Row="1" Text="{Binding Path=profileUser.user.profileLocation}" />
+                        <TextBlock FontSize="15" Grid.Row="2" Text="{Binding Path=profileUser.user.profileLocation}" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}"/>
 
                         <!-- Birthday -->
-                        <StackPanel Orientation="Vertical" Grid.Row="2" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Vertical" Grid.Row="3" VerticalAlignment="Bottom" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
                             <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
                                 <materialDesign:PackIcon Kind="CakeVariant" Height="25" Width="25"/>
                                 <TextBlock FontSize="20" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" VerticalAlignment="Center"/>
@@ -92,10 +93,10 @@
 
             <TextBlock Grid.Row="2" Visibility="{Binding Path=profileUser.user.profileDescription, Converter={StaticResource PDTVConverter}}" Text="{Binding Path=profileUser.user.profileDescription}" FontSize="20" Foreground="{StaticResource FontColor}" Margin="0 10 0 10" TextWrapping="Wrap"/>
 
-            <Separator Grid.Row="3" />
+            <Separator Grid.Row="3" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}"/>
 
             <!-- The user's last 3 played games -->
-            <ItemsControl Grid.Row="4" ItemsSource="{Binding Path=profileUser.games}" HorizontalAlignment="Center" Width="800">
+            <ItemsControl Grid.Row="4" ItemsSource="{Binding Path=profileUser.games}" HorizontalAlignment="Center" Width="800" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel/>

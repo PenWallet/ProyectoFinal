@@ -24,6 +24,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Online sound -->
@@ -126,6 +127,7 @@
             
             <Button Content="Reset" Grid.Row="8" FontSize="30" Height="50" Foreground="#2C0735" Background="{StaticResource PastelRed}" Margin="0 10 0 10" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding resetSettingsCommand}"/>
 
+            <Button Content="Edit Profile" Grid.Row="9" FontSize="30" Height="50" Foreground="#2C0735" Background="{StaticResource PastelBlue}" Margin="0 10 0 10" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding resetSettingsCommand}"/>
         </Grid>
     </ScrollViewer>
 </UserControl>

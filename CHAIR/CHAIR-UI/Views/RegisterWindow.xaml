@@ -57,30 +57,20 @@
                         <RowDefinition Height="Auto"/> <!-- 0: Username -->
                         <RowDefinition Height="15"/> <!-- 1: Separation -->
                         <RowDefinition Height="Auto"/> <!-- 2: Password -->
-                        <RowDefinition Height="15"/>
-                        <!-- 3: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 4: Birthdate -->
-                        <RowDefinition Height="15"/>
-                        <!-- 5: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 6: Location -->
-                        <RowDefinition Height="15"/>
-                        <!-- 7: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 8: Private profile -->
-                        <RowDefinition Height="15"/>
-                        <!-- 9: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 10: Private profile -->
-                        <RowDefinition Height="15"/>
-                        <!-- 11: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 12: Register button -->
-                        <RowDefinition Height="15"/>
-                        <!-- 13: Separation -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- 14: Errors -->
+                        <RowDefinition Height="15"/> <!-- 3: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 4: Birthdate -->
+                        <RowDefinition Height="15"/> <!-- 5: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 6: Location -->
+                        <RowDefinition Height="15"/> <!-- 7: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 8: Private profile -->
+                        <RowDefinition Height="15"/> <!-- 9: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 10: Private profile -->
+                        <RowDefinition Height="15"/> <!-- 11: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 12: Register button -->
+                        <RowDefinition Height="Auto"/> <!-- 13: Register button -->
+                        <RowDefinition Height="Auto"/> <!-- 14: Register button -->
+                        <RowDefinition Height="15"/> <!-- 15: Separation -->
+                        <RowDefinition Height="Auto"/> <!-- 16: Errors -->
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="2*"/>
@@ -93,7 +83,7 @@
 
                     <!-- Password -->
                     <materialDesign:PackIcon Kind="Pound" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="30" Margin="0 0 10 0"/>
-                    <TextBox Text="{Binding password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Margin="5, 0, 0, 0" BorderBrush="{Binding passwordBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="40" materialDesign:HintAssist.Hint="Password" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                    <PasswordBox PasswordChanged="PasswordChanged" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Margin="5, 0, 0, 0" BorderBrush="{Binding passwordBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="40"/>
 
                     <!-- Birthdate -->
                     <materialDesign:PackIcon Kind="CakeVariant" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="30" Margin="0 0 10 0"/>
@@ -108,10 +98,13 @@
                     <CheckBox Content="Set profile to private?" IsChecked="{Binding privateProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="8" Grid.Column="1" FontSize="15" Margin="5, 5, 0, 0"/>
 
                     <!-- Register button -->
-                    <Button Content="Register" Command="{Binding registerCommand}" Height="40" Grid.Row="12" Grid.Column="1" FontSize="20" Foreground="Black" Background="#97DFFC" Margin="10, 10, 0, 0" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding loadingRegister, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:ButtonProgressAssist.IsIndeterminate="True"/>
+                    <Button Content="Register" Command="{Binding registerCommand}" Height="40" Grid.Row="12" Grid.Column="1" FontSize="20" Foreground="Black" Background="{StaticResource PastelGreen}" Margin="10, 10, 0, 0" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding loadingRegister, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:ButtonProgressAssist.IsIndeterminate="True"/>
+
+                    <!-- Cancel button -->
+                    <Button Content="Cancel" Command="{Binding closeCommand}" Height="40" Grid.Row="14" Grid.Column="1" FontSize="20" Foreground="Black" Background="{StaticResource PastelRed}" Margin="10, 10, 0, 0" Style="{StaticResource MaterialDesignRaisedButton}"/>
 
                     <!-- Errors -->
-                    <Border BorderBrush="Red" BorderThickness="2" Grid.Row="14" Grid.ColumnSpan="2" Margin="40, 20, 0, 20" Visibility="{Binding errorsVisibility, Mode=TwoWay}">
+                    <Border BorderBrush="Red" BorderThickness="2" Grid.Row="16" Grid.ColumnSpan="2" Margin="40, 20, 0, 20" Visibility="{Binding errorsVisibility, Mode=TwoWay}">
                         <TextBlock Text="{Binding errors}" Margin="15" Foreground="#2C0735"/>
                     </Border>
 

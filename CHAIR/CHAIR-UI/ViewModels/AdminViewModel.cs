@@ -27,11 +27,11 @@ namespace CHAIR_UI.ViewModels
         {
             _signalR = SignalRHubsConnection.chairHub;
             _processingNewGame = false;
+            _initializingStoreGamesNames = true;
 
             _signalR.proxy.On<string, AdminNotificationType>("adminNotification", adminNotification);
             _signalR.proxy.On<List<string>>("adminGetAllUsers", adminGetAllUsers);
             _signalR.proxy.On<List<string>>("adminGetBannedUsers", adminGetBannedUsers);
-            _signalR.proxy.On<List<string>>("adminGetAllStoreGamesNames", adminGetAllStoreGamesNames);
             _signalR.proxy.On<ObservableCollection<GameBeingPlayed>>("adminUpdateGamesBeingPlayed", adminUpdateGamesBeingPlayed);
             _signalR.proxy.On("adminUpdateGamesBeingPlayedAlert", adminUpdateGamesBeingPlayedAlert);
 
@@ -53,7 +53,6 @@ namespace CHAIR_UI.ViewModels
             _signalR.proxy.Invoke("adminGetAllUsers", SharedInfo.loggedUser.token);
             _signalR.proxy.Invoke("adminUpdateGamesBeingPlayed", SharedInfo.loggedUser.token);
             _signalR.proxy.Invoke("adminGetBannedUsers", SharedInfo.loggedUser.token);
-            _signalR.proxy.Invoke("adminGetAllStoreGamesNames", SharedInfo.loggedUser.token);
         }
         #endregion
 
@@ -74,6 +73,7 @@ namespace CHAIR_UI.ViewModels
         private bool _processingBan;
         private bool _processingPardon;
         private bool _selectedUserToPardonIp;
+        private bool _initializingStoreGamesNames;
         private string _selectedGameToFrontPage;
         private string _selectedUserToBan;
         private string _selectedUserToBanDuration;
@@ -578,6 +578,17 @@ namespace CHAIR_UI.ViewModels
         private void adminUpdateGamesBeingPlayed(ObservableCollection<GameBeingPlayed> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
+                if(_initializingStoreGamesNames)
+                {
+                    List<string> gamesNames = new List<string>();
+                    foreach(GameBeingPlayed game in obj)
+                        gamesNames.Add(game.game);
+
+                    storeGames = gamesNames;
+
+                    _initializingStoreGamesNames = false;
+                }
+
                 if (_gamesBeingPlayed == null || _gamesBeingPlayed.Count == 0)
                     gamesBeingPlayed = obj;
                 else

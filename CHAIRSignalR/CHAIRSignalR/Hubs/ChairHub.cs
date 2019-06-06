@@ -588,22 +588,6 @@ namespace CHAIRSignalR.Hubs
         }
 
         /// <summary>
-        /// Method used to retrieve the names of all the games in the store
-        /// </summary>
-        /// <param name="token">The caller's token</param>
-        public void adminGetAllStoreGamesNames(string token)
-        {
-            //Make the call to the API
-            HttpStatusCode statusCode;
-            List<string> list = AdminCallback.getAllStoreGamesNames(token, out statusCode);
-
-            if (statusCode == HttpStatusCode.OK)
-                Clients.Caller.adminGetAllStoreGamesNames(list);
-            else
-                Clients.Caller.unexpectedError($"There was an error when trying to get all the games names information. Please try again when it's fixed :D");
-        }
-
-        /// <summary>
         /// Small private method added for readability. It tells all online admins to call for an update of their games being played list
         /// </summary>
         private void tellAllAdminsToUpdateTheirGamesList()
