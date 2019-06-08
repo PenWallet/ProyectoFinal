@@ -83,7 +83,7 @@
 
                     <!-- Password -->
                     <materialDesign:PackIcon Kind="Pound" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="30" Margin="0 0 10 0"/>
-                    <PasswordBox PasswordChanged="PasswordChanged" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Margin="5, 0, 0, 0" BorderBrush="{Binding passwordBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="40"/>
+                    <PasswordBox PasswordChanged="PasswordChanged" Background="Transparent" Grid.Row="2" Grid.Column="1" FontSize="15" Margin="5, 0, 0, 0" BorderBrush="{Binding passwordBorder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="40" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" materialDesign:HintAssist.Hint="Password"/>
 
                     <!-- Birthdate -->
                     <materialDesign:PackIcon Kind="CakeVariant" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="30" Margin="0 0 10 0"/>

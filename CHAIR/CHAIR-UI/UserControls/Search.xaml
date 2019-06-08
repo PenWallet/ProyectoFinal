@@ -33,7 +33,7 @@
         </Grid.RowDefinitions>
         
         <!-- Search box -->
-        <TextBox Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}" x:Name="SearchTextBox" Grid.Row="0" FontSize="20" AcceptsReturn="False" MaxLength="20" materialDesign:HintAssist.Hint="Type the nickname of the user" Margin="30 15 30 0">
+        <TextBox Style="{StaticResource MaterialDesignFilledTextFieldTextBox}" x:Name="SearchTextBox" Grid.Row="0" FontSize="20" AcceptsReturn="False" MaxLength="20" materialDesign:HintAssist.Hint="Type the nickname of the user" Margin="30 15 30 0">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding ElementName=SearchUserControl, Path=DataContext.searchUsersCommand}" CommandParameter="{Binding ElementName=SearchTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}" Key="Enter" />
             </TextBox.InputBindings>
@@ -57,9 +57,11 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Profile picture -->
-                                <Border BorderBrush="{Binding Path=user.online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Width="130" Height="130" >
-                                    <Image Source="{Binding Path=user.admin, Converter={StaticResource BTPPConverter}}"/>
+                                <!-- Profile picture (set depending on whether the user is admin or not) -->
+                                <Border BorderBrush="{Binding Path=user.online, Converter={StaticResource OBTBConverter}}" BorderThickness="3" Width="130" Height="130" MouseEnter="MouseEnterUserIcon" MouseLeave="MouseLeaveUserIcon">
+                                    <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=SearchUserControl, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=user.nickname}">
+                                        <Image Source="{Binding Path=user.admin, Converter={StaticResource BTPPConverter}}"/>
+                                    </Button>
                                 </Border>
 
                                 <!-- Game information -->

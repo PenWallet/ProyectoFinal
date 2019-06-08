@@ -124,6 +124,7 @@
     <Compile Include="Converters\ProfDescToVisibility.cs" />
     <Compile Include="Converters\OnlineBooleanToBorderBrush.cs" />
     <Compile Include="Interfaces\IBasicActionsLogin.cs" />
+    <Compile Include="Interfaces\IPasswordBox.cs" />
     <Compile Include="Interfaces\IBasicActionsFriendList.cs" />
     <Compile Include="Interfaces\IBasicActionsChair.cs" />
     <Compile Include="Interfaces\IBasicActionsRegister.cs" />
@@ -144,11 +145,14 @@
     <Compile Include="UserControls\Profile.xaml.cs">
       <DependentUpon>Profile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ProfileEdit.xaml.cs">
+      <DependentUpon>ProfileEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\Search.xaml.cs">
       <DependentUpon>Search.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
+    <Compile Include="UserControls\SettingsUC.xaml.cs">
+      <DependentUpon>SettingsUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\Store.xaml.cs">
       <DependentUpon>Store.xaml</DependentUpon>
@@ -160,6 +164,7 @@
     <Compile Include="Utils\Utilities.cs" />
     <Compile Include="ViewModels\AdminViewModel.cs" />
     <Compile Include="ViewModels\ChairWindowViewModel.cs" />
+    <Compile Include="ViewModels\ProfileEditUserControlViewModel.cs" />
     <Compile Include="ViewModels\RegisterWindowViewModel.cs" />
     <Compile Include="SignalR\SignalRHubsConnection.cs" />
     <Compile Include="Utils\SharedInfo.cs" />
@@ -197,11 +202,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ProfileEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\Search.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Settings.xaml">
+    <Page Include="UserControls\SettingsUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

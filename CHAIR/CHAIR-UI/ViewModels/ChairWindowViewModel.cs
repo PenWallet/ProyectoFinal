@@ -102,7 +102,7 @@ namespace CHAIR_UI.ViewModels
             _offlineNotifications = SettingUtils.getOfflineNotificationSetting();
             _playingGameNotifications = SettingUtils.getPlayingGameNotificationSetting();
             _minimizeToTray = SettingUtils.getMinimizeToTraySetting();
-            _canSave = false;
+            _canSaveSettings = false;
         }
 
         #endregion
@@ -157,13 +157,22 @@ namespace CHAIR_UI.ViewModels
         private bool _offlineNotifications;
         private bool _playingGameNotifications;
         private bool _minimizeToTray;
-        private bool _canSave;
+        private bool _canSaveSettings;
         private DelegateCommand _saveSettingsCommand;
         private DelegateCommand _resetSettingsCommand;
+
+        //ProfileEdit variables
         #endregion
 
 
         #region Public properties
+        public DelegateCommand goToProfileEditCommand
+        {
+            get
+            {
+                return new DelegateCommand(goToProfileEditCommand_Executed);
+            }
+        }
         public bool canSeeProfile
         {
             get
@@ -175,13 +184,6 @@ namespace CHAIR_UI.ViewModels
             {
                 _canSeeProfile = value;
                 NotifyPropertyChanged("canSeeProfile");
-            }
-        }
-        public DelegateCommand editProfileCommand
-        {
-            get
-            {
-                return new DelegateCommand(editProfileCommand_Executed);
             }
         }
         public DelegateCommand openFolderDialogTempCommand
@@ -226,7 +228,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _installingFolder = value;
                 NotifyPropertyChanged("installingFolder");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -241,7 +243,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _tempDownloadFolder = value;
                 NotifyPropertyChanged("tempDownloadFolder");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -256,7 +258,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _messageNotifications = value;
                 NotifyPropertyChanged("messageNotifications");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -271,7 +273,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _onlineNotifications = value;
                 NotifyPropertyChanged("onlineNotifications");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -286,7 +288,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _offlineNotifications = value;
                 NotifyPropertyChanged("offlineNotifications");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -301,7 +303,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _playingGameNotifications = value;
                 NotifyPropertyChanged("playingGameNotifications");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -316,7 +318,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _minimizeToTray = value;
                 NotifyPropertyChanged("minimizeToTray");
-                _canSave = true;
+                _canSaveSettings = true;
                 _saveSettingsCommand.RaiseCanExecuteChanged();
                 _resetSettingsCommand.RaiseCanExecuteChanged();
             }
@@ -974,7 +976,7 @@ namespace CHAIR_UI.ViewModels
 
             installedGames = SettingUtils.scanInstallingFolder();
 
-            _canSave = false;
+            _canSaveSettings = false;
             _saveSettingsCommand.RaiseCanExecuteChanged();
             _resetSettingsCommand.RaiseCanExecuteChanged();
 
@@ -992,14 +994,14 @@ namespace CHAIR_UI.ViewModels
             playingGameNotifications = SettingUtils.getPlayingGameNotificationSetting();
             minimizeToTray = SettingUtils.getMinimizeToTraySetting();
 
-            _canSave = false;
+            _canSaveSettings = false;
             _saveSettingsCommand.RaiseCanExecuteChanged();
             _resetSettingsCommand.RaiseCanExecuteChanged();
         }
 
         private bool SaveAndResetSettingsCommand_CanExecute()
         {
-            return _canSave;
+            return _canSaveSettings;
         }
 
         private void openFolderDialogInstallationCommand_Executed()
@@ -1026,9 +1028,9 @@ namespace CHAIR_UI.ViewModels
             }
         }
 
-        private void editProfileCommand_Executed()
+        private void goToProfileEditCommand_Executed()
         {
-            notificationsQueue.Enqueue("WIP!");
+            _view.ChangePage("ProfileEdit", this);
         }
         #endregion
 

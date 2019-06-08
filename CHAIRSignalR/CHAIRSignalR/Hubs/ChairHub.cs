@@ -19,6 +19,23 @@ namespace CHAIRSignalR.Hubs
     public class ChairHub : Hub
     {
         /// <summary>
+        /// Method used to update the information of an user
+        /// </summary>
+        /// <param name="user">The user with the information to be updated</param>
+        /// <param name="token">The user's token</param>
+        public void updateUser(User user, string token)
+        {
+            //Make the call to the API
+            HttpStatusCode statusCode;
+            UserCallback.update(user, token, out statusCode);
+
+            if (statusCode == HttpStatusCode.NoContent)
+                Clients.Caller.updatedUserSuccessfully();
+            else
+                Clients.Caller.unexpectedError("An unexpected error occurred when trying to update your information. Please try again when it's fixed :D");
+        }
+
+        /// <summary>
         /// Method used to retrieve all the games available in the store
         /// </summary>
         /// <param name="token">The user's token</param>
@@ -123,6 +140,15 @@ namespace CHAIRSignalR.Hubs
 
             if(statusCode != HttpStatusCode.Created)
                 Clients.Caller.unexpectedError("An unexpected error occurred when trying to add a friend. Please try again when it's fixed :D");
+            else
+            {
+                //We need to alert the user receiving the invitation if he's online
+                string conId;
+                ChairInfo.onlineUsers.TryGetValue(user2, out conId);
+
+                if (conId != null)
+                    Clients.Client(conId).updateFriendListWithNotification($"{user1} wants to be friends with you!", NotificationType.GENERIC);
+            }
         }
 
         /// <summary>

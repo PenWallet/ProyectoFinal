@@ -122,20 +122,36 @@ namespace CHAIR_UI.Views
         {
             if (page == SharedInfo.loggedUser.nickname || page == "Profile")
                 ContentCtrl.Content = new Profile(viewmodel);
-            else if (page == "Library")
-                ContentCtrl.Content = new Library(viewmodel);
-            else if (page == "Store")
-                ContentCtrl.Content = new Store(viewmodel);
-            else if (page == "Settings")
-                ContentCtrl.Content = new Settings(viewmodel);
-            else if (page == "Community")
-                ContentCtrl.Content = new Search(viewmodel);
-            else if (page == "Game")
-                ContentCtrl.Content = new UserControls.Game(viewmodel);
-            else if (page == "About")
-                ContentCtrl.Content = new About();
-            else if (page == "Admin")
-                ContentCtrl.Content = new Admin();
+            else
+            {
+                switch(page)
+                {
+                    case "Library":
+                        ContentCtrl.Content = new Library(viewmodel);
+                        break;
+                    case "Store":
+                        ContentCtrl.Content = new Store(viewmodel);
+                        break;
+                    case "Settings":
+                        ContentCtrl.Content = new SettingsUC(viewmodel);
+                        break;
+                    case "Community":
+                        ContentCtrl.Content = new Search(viewmodel);
+                        break;
+                    case "Game":
+                        ContentCtrl.Content = new UserControls.Game(viewmodel);
+                        break;
+                    case "About":
+                        ContentCtrl.Content = new About();
+                        break;
+                    case "Admin":
+                        ContentCtrl.Content = new Admin();
+                        break;
+                    case "ProfileEdit":
+                        ContentCtrl.Content = new ProfileEdit(viewmodel);
+                        break;
+                }
+            }
         }
 
         public void OpenConversation()

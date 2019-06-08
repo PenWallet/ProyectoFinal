@@ -48,7 +48,8 @@
                             <RowDefinition Height="Auto"/> <!-- Nickname -->
                             <RowDefinition Height="Auto"/> <!-- Private profile -->
                             <RowDefinition Height="Auto"/> <!-- Profile location -->
-                            <RowDefinition Height="*"/> <!-- Birthday -->
+                            <RowDefinition Height="Auto"/> <!-- Birthday -->
+                            <RowDefinition Height="Auto"/> <!-- Account creation date -->
                         </Grid.RowDefinitions>
                         <!-- Nickname -->
                         <TextBlock FontSize="40" Grid.Row="0" FontWeight="Bold" Text="{Binding Path=profileUser.user.nickname}"/>
@@ -57,18 +58,21 @@
                         <TextBlock FontSize="20" Grid.Row="1" FontWeight="Normal" Text="This profile is private 🤷" Visibility="{Binding Path=profileUser.user.privateProfile, Converter={StaticResource BTVConverter}}"/>
 
                         <!-- Profile location -->
-                        <TextBlock FontSize="15" Grid.Row="2" Text="{Binding Path=profileUser.user.profileLocation}" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}"/>
-
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
+                            <materialDesign:PackIcon Kind="Location" Height="25" Width="25"/>
+                            <TextBlock FontSize="20" Text="{Binding Path=profileUser.user.profileLocation}"/>
+                        </StackPanel>
+                        
                         <!-- Birthday -->
-                        <StackPanel Orientation="Vertical" Grid.Row="3" VerticalAlignment="Bottom" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
-                            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                                <materialDesign:PackIcon Kind="CakeVariant" Height="25" Width="25"/>
-                                <TextBlock FontSize="20" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Medal" Height="25" Width="25" Grid.Row="0" Grid.Column="0"/>
-                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=profileUser.user.accountCreationDate, Converter={StaticResource ACDTSConverter}}" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
+                            <materialDesign:PackIcon Kind="CakeVariant" Height="25" Width="25"/>
+                            <TextBlock FontSize="20" Grid.Row="0" Text="{Binding Path=profileUser.user.birthDate, Converter={StaticResource DTBDAAConverter}}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <!-- Account creation date -->
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">
+                            <materialDesign:PackIcon Kind="Medal" Height="25" Width="25" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=profileUser.user.accountCreationDate, Converter={StaticResource ACDTSConverter}}" FontSize="20" TextWrapping="Wrap" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>

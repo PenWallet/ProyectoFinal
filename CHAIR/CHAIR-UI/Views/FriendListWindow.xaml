@@ -106,7 +106,7 @@
                                                 <ColumnDefinition Width="120" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <!-- Profile picture (set depending on whether the user is admin or not) -->
+                                            <!-- Profile picture (set depending on whether the user is playing or not) -->
                                             <Border BorderBrush="{Binding gamePlaying, Converter={StaticResource GPTBBConverter}, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" BorderThickness="3" Width="100" Height="100" Margin="10 0 0 0" MouseEnter="MouseEnterFriendIcon" MouseLeave="MouseLeaveFriendIcon">
                                                 <Button BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Padding="0" Command="{Binding ElementName=FrListWindow, Path=DataContext.goToProfileCommand}" CommandParameter="{Binding Path=nickname}">
                                                     <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>

@@ -48,7 +48,7 @@ namespace CHAIRAPI.Utils
             return true;
         }
 
-        public static bool checkUserHasRequiredFieldsToLoginOrUpdate(User user)
+        public static bool checkUserHasRequiredFieldsToLogin(User user)
         {
             if (isNullOrEmpty(user.nickname, user.password, user.lastIP))
                 return false;
@@ -56,12 +56,20 @@ namespace CHAIRAPI.Utils
             return true;
         }
 
+        public static bool checkUserHasRequiredFieldsToUpdate(User user)
+        {
+            if (isNullOrEmpty(user.nickname))
+                return false;
+
+            return true;
+        }
+
         /// <summary>
-        /// Small method that returns if a string or a set of strings are null or empty
+        /// Small method used to check if any of the strings in the parameters is empty or null
         /// </summary>
         /// <param name="strings"></param>
         /// <returns>If one of the strings is null or is empty, it returns true. If none of them are null or empty, it returns false</returns>
-        public static bool isNullOrEmpty(string algo, params string[] strings)
+        public static bool isNullOrEmpty(params string[] strings)
         {
             foreach(string str in strings)
             {

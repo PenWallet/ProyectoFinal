@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CHAIR_UI.Interfaces
 {
-    public interface IBasicActionsLogin : IBasicActions, IPasswordBox
+    public interface IPasswordBox
     {
+        void SetPassword(string password);
     }
 }

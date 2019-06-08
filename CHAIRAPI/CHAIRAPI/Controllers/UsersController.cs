@@ -73,7 +73,7 @@ namespace CHAIRAPI.Controllers
             string accept = Request.Headers["Accept"].ToString();
             if (accept != "application/json" && accept != "*/*")
                 return StatusCode(406); //Not Acceptable
-            else if(Utilities.checkUserHasRequiredFieldsToLoginOrUpdate(user)) //If it has username, password and IP
+            else if(Utilities.checkUserHasRequiredFieldsToLogin(user)) //If it has username, password and IP
             {
                 UserWithSalt userWithSalt = UsersHandler.searchUserByNickname(user.nickname);
 
@@ -105,20 +105,23 @@ namespace CHAIRAPI.Controllers
         /// </summary>
         /// <param name="user">The user with the updated information</param>
         /// <param name="nickname">The user's nickname</param>
-        [HttpPut("{nickname}")]
-        public IActionResult UpdateUser([FromBody] User user, string nickname)
+        [HttpPut]
+        public IActionResult UpdateUser([FromBody] User user)
         {
-            if (Utilities.checkUserHasRequiredFieldsToLoginOrUpdate(user))
+            if (Utilities.checkUserHasRequiredFieldsToUpdate(user))
             {
-                if (Utilities.checkUsrClaimValidity(User, nickname) && nickname == user.nickname)
+                if (Utilities.checkUsrClaimValidity(User, user.nickname))
                 {
+                    UserWithSalt userWS = Utilities.convertUserToUserWithSalt(user);
                     //Since we're updating, we're going to create another salt and hashed password for the user
                     //just in case he has decided to update his password
-                    UserWithSalt userWS = Utilities.convertUserToUserWithSalt(user);
-                    userWS.salt = Hash.CreateSalt();
-                    userWS.password = Hash.Create(userWS.password, userWS.password);
+                    if(!string.IsNullOrWhiteSpace(user.password))
+                    {
+                        userWS.salt = Hash.CreateSalt();
+                        userWS.password = Hash.Create(userWS.password, userWS.salt);
+                    }
 
-                    int updateStatus = UsersHandler.updateUser(userWS, nickname);
+                    int updateStatus = UsersHandler.updateUser(userWS);
 
                     if (updateStatus == 1)
                     {

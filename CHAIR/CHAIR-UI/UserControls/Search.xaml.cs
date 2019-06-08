@@ -26,5 +26,15 @@ namespace CHAIR_UI.UserControls
             InitializeComponent();
             this.DataContext = (ChairWindowViewModel)viewmodel;
         }
+
+        private void MouseEnterUserIcon(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = Cursors.Hand;
+        }
+
+        private void MouseLeaveUserIcon(object sender, MouseEventArgs e)
+        {
+            Mouse.OverrideCursor = null;
+        }
     }
 }

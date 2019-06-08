@@ -114,5 +114,27 @@ namespace CHAIRSignalR_DAL.Calls
             //Profit
             status = response.StatusCode;
         }
+
+        /// <summary>
+        /// Method used to update an user's information
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="user">The user with the information to update</param>
+        /// <param name="token">The caller's token</param>
+        /// <param name="status">The API's response</param>
+        public static void update(User user, string token, out HttpStatusCode status)
+        {
+            //Prepare the request
+            RestRequest request = new RestRequest("users", Method.PUT);
+            request.AddHeader("Authorization", $"Bearer {token}");
+            request.AddHeader("Content-Type", "application/json");
+            request.AddJsonBody(user);
+
+            //Make the request
+            var response = APIConnection.Client.Execute(request);
+
+            //Profit
+            status = response.StatusCode;
+        }
     }
 }

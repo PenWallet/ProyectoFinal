@@ -71,7 +71,7 @@ namespace CHAIR_UI.Utils
             string instFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             instFolder += "\\CHAIR\\Games";
 
-            //This creates the directory if it doesn't exist. If it does, it doesn't do anyt
+            //This creates the directory if it doesn't exist. If it does, it doesn't do anything
             Directory.CreateDirectory(instFolder);
 
             return instFolder;

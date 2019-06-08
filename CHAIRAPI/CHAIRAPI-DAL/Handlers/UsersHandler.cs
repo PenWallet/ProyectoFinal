@@ -73,7 +73,7 @@ namespace CHAIRAPI_DAL.Handlers
         /// <param name="user">The updated info of the user</param>
         /// <param name="nickname">The nickname of the user (in case the user is changing his nickname)</param>
         /// <returns>1 if it updated successfully; 0 if the user can't be found; -1 if the nickname is taken; -2 otherwise</returns>
-        public static int updateUser(UserWithSalt user, string nickname)
+        public static int updateUser(UserWithSalt user)
         {
             Connection connection = new Connection();
             SqlConnection sqlConnection = new SqlConnection();
@@ -83,18 +83,18 @@ namespace CHAIRAPI_DAL.Handlers
             try
             {
                 //Define parameters
-                command.CommandText = "UPDATE Users SET nickname = @nickname, [password] = @password, salt = @salt, profileDescription = @profileDescription, profileLocation = @profileLocation, birthDate = @birthDate, privateProfile = @privateProfile, lastIP = @lastIP WHERE nickname = @previousNickname";
+                command.CommandText = $"UPDATE Users SET {(string.IsNullOrWhiteSpace(user.password) ? "" : "[password] = @password, salt = @salt, ")} profileDescription = @profileDescription, profileLocation = @profileLocation, privateProfile = @privateProfile WHERE nickname = @nickname";
 
                 //Create parameters
-                command.Parameters.Add("@nickname", SqlDbType.VarChar).Value = user.nickname;
-                command.Parameters.Add("@password", SqlDbType.VarChar).Value = user.password;
-                command.Parameters.Add("@salt", SqlDbType.VarChar).Value = user.salt;
+                if(!string.IsNullOrWhiteSpace(user.password))
+                {
+                    command.Parameters.Add("@password", SqlDbType.VarChar).Value = user.password;
+                    command.Parameters.Add("@salt", SqlDbType.VarChar).Value = user.salt;
+                }
                 command.Parameters.Add("@profileDescription", SqlDbType.VarChar).Value = user.profileDescription ?? "";
                 command.Parameters.Add("@profileLocation", SqlDbType.VarChar).Value = user.profileLocation ?? "";
-                command.Parameters.Add("@birthDate", SqlDbType.DateTime).Value = user.birthDate;
                 command.Parameters.Add("@privateProfile", SqlDbType.Bit).Value = user.privateProfile;
-                command.Parameters.Add("@lastIP", SqlDbType.VarChar).Value = user.lastIP;
-                command.Parameters.Add("@previousNickname", SqlDbType.VarChar).Value = nickname;
+                command.Parameters.Add("@nickname", SqlDbType.VarChar).Value = user.nickname;
 
                 //Get connection
                 sqlConnection = connection.getConnection();
