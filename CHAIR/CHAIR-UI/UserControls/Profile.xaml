@@ -93,11 +93,11 @@
             </StackPanel>
 
             <!-- If there is no description, then the separator and the textblock are hidden -->
-            <Separator Grid.Row="1" Visibility="{Binding Path=profileUser.user.profileDescription, Converter={StaticResource PDTVConverter}}"/>
+            <Separator Grid.Row="1"/>
 
-            <TextBlock Grid.Row="2" Visibility="{Binding Path=profileUser.user.profileDescription, Converter={StaticResource PDTVConverter}}" Text="{Binding Path=profileUser.user.profileDescription}" FontSize="20" Foreground="{StaticResource FontColor}" Margin="0 10 0 10" TextWrapping="Wrap"/>
+            <TextBlock Grid.Row="2" Visibility="{Binding canSeeProfileDescription, Converter={StaticResource BTVConverter}}" Text="{Binding Path=profileUser.user.profileDescription}" FontSize="20" Foreground="{StaticResource FontColor}" Margin="0 10 0 10" TextWrapping="Wrap"/>
 
-            <Separator Grid.Row="3" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}"/>
+            <Separator Grid.Row="3" Visibility="{Binding canSeeProfileDescription, Converter={StaticResource BTVConverter}}"/>
 
             <!-- The user's last 3 played games -->
             <ItemsControl Grid.Row="4" ItemsSource="{Binding Path=profileUser.games}" HorizontalAlignment="Center" Width="800" Visibility="{Binding canSeeProfile, Converter={StaticResource BTVConverter}}">

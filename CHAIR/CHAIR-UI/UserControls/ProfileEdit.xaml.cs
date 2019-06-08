@@ -36,7 +36,7 @@ namespace CHAIR_UI.UserControls
 
         public void SetPassword(string password)
         {
-            PassBox.Password = "";
+            Pass.Password = password;
         }
     }
 }

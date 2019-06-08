@@ -39,7 +39,6 @@ namespace CHAIR_UI.ViewModels
             _drawerOpen = false;
             _libraryGameVisible = Visibility.Hidden;
             _openCommunity = true;
-            _conversations = new ObservableCollection<UserForFriendList>();
             notificationsQueue = new SnackbarMessageQueue(TimeSpan.FromMilliseconds(4000)); //We create a new snackbar with a time duration for each notification of 3 seconds
             _installedGames = new List<string>();
             _goToGamePage = false;
@@ -138,15 +137,12 @@ namespace CHAIR_UI.ViewModels
         private Process _gameProcess { get; set; }
         private SoundsUtils _sounds { get; set; }
         private bool _canSeeProfile { get; set; } //Variable used to know whether the user can see another user's profile or not (based on that user's private profile option and whether the current user is admin or not)
+        private bool _canSeeProfileDescription { get; set; } //Variable used to know whether the user can see another user's description or not (based on that user's private profile option, whether the current user is admin or not, and if the description is null or not)
 
         //Friend list variables
         private ObservableCollection<UserForFriendList> _friendsList { get; set; }
 
         //ConversationWindow
-        private ObservableCollection<UserForFriendList> _conversations { get; set; }
-        private ObservableCollection<UserForFriendList> _friendsListOnline { get; set; }
-        private ObservableCollection<UserForFriendList> _friendsListOffline { get; set; }
-        private ObservableCollection<UserForFriendList> _friendsListPending { get; set; }
         private UserForFriendList _selectedConversation { get; set; }
 
         //Settings variables
@@ -171,6 +167,19 @@ namespace CHAIR_UI.ViewModels
             get
             {
                 return new DelegateCommand(goToProfileEditCommand_Executed);
+            }
+        }
+        public bool canSeeProfileDescription
+        {
+            get
+            {
+                return _canSeeProfileDescription;
+            }
+
+            set
+            {
+                _canSeeProfileDescription = value;
+                NotifyPropertyChanged("canSeeProfileDescription");
             }
         }
         public bool canSeeProfile
@@ -422,19 +431,6 @@ namespace CHAIR_UI.ViewModels
                 NotifyPropertyChanged("selectedConversation");
             }
         }
-        public ObservableCollection<UserForFriendList> conversations
-        {
-            get
-            {
-                return _conversations;
-            }
-
-            set
-            {
-                _conversations = value;
-                NotifyPropertyChanged("conversations");
-            }
-        }
         public RelayCommand<string> openGameCommand
         {
             get
@@ -494,52 +490,41 @@ namespace CHAIR_UI.ViewModels
                 return new RelayCommand<string>(acceptFriendshipCommand_Executed);
             }
         }
-        public ObservableCollection<UserForFriendList> friendsListOnline
+        public List<UserForFriendList> friendsListOnline
         {
             get
             {
-                return _friendsListOnline;
-            }
-            set
-            {
-                _friendsListOnline = value;
-                NotifyPropertyChanged("friendsListOnline");
+                return _friendsList.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList();
             }
         }
-        public ObservableCollection<UserForFriendList> friendsListOffline
+        public List<UserForFriendList> friendsListOffline
         {
             get
             {
-                return _friendsListOffline;
-            }
-            set
-            {
-                _friendsListOffline = value;
-                NotifyPropertyChanged("friendsListOffline");
+                return _friendsList.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList();
             }
         }
-        public ObservableCollection<UserForFriendList> friendsListPending
+        public List<UserForFriendList> friendsListPending
         {
             get
             {
-                return _friendsListPending;
-            }
-            set
-            {
-                _friendsListPending = value;
-                NotifyPropertyChanged("friendsListPending");
+                return _friendsList.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList();
             }
         }
         public ObservableCollection<UserForFriendList> friendsList
         {
+            get
+            {
+                return _friendsList;
+            }
             set
             {
                 //We set the new value and notify changes to all lists which depend on friendList
                 _friendsList = value;
-                friendsListOnline = new ObservableCollection<UserForFriendList>(value?.Where(x => x.online && x.relationship.acceptedRequestDate != null).ToList());
-                friendsListOffline = new ObservableCollection<UserForFriendList>(value?.Where(x => !x.online && x.relationship.acceptedRequestDate != null).ToList());
-                //All the requests from other users we haven't accepted yet (where the user1 -the friend request sender- is not us)
-                friendsListPending = new ObservableCollection<UserForFriendList>(value?.Where(x => x.relationship.acceptedRequestDate == null && x.relationship.user1 != SharedInfo.loggedUser.nickname).ToList());
+                NotifyPropertyChanged("friendsList");
+                NotifyPropertyChanged("friendsListOnline");
+                NotifyPropertyChanged("friendsListOffline");
+                NotifyPropertyChanged("friendsListPending");
             }
         }
         public RelayCommand<string> addFriendCommand
@@ -705,9 +690,18 @@ namespace CHAIR_UI.ViewModels
 
                 //The user will be able to see the profile only if it isn't private, if the current user is an admin, or if he's trying to see his own profile
                 if(!value.user.privateProfile || SharedInfo.loggedUser.admin || (value.user.nickname == SharedInfo.loggedUser.nickname))
+                {
                     canSeeProfile = true;
+                    if (string.IsNullOrWhiteSpace(value.user.profileDescription))
+                        canSeeProfileDescription = false;
+                    else
+                        canSeeProfileDescription = true;
+                }
                 else
+                {
                     canSeeProfile = false;
+                    canSeeProfileDescription = false;
+                }
             }
         }
         public bool drawerOpen
@@ -1088,17 +1082,32 @@ namespace CHAIR_UI.ViewModels
         private void getFriends(ObservableCollection<UserForFriendList> obj)
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                friendsList = obj;
+                UserForFriendList user;
+                foreach(UserForFriendList item in obj)
+                {
+                    //Check if the object already exists in the friendsList
+                    try
+                    {
+                        user = friendsList.Single(x => x.nickname == item.nickname);
+                        user.online = item.online;
+                        user.gamePlaying = item.gamePlaying;
+                    }
+                    catch (InvalidOperationException ex) { friendsList.Add(item); };
+                }
+                NotifyPropertyChanged("friendsList");
+                NotifyPropertyChanged("friendsListOnline");
+                NotifyPropertyChanged("friendsListOffline");
+                NotifyPropertyChanged("friendsListPending");
 
-                if(_initializing)
+                if (_initializing)
                 {
                     //Set this back to false so all of this doesn't get called when we update our friends while using the application
                     _initializing = false;
 
                     //We get all friends who are connected
                     List<string> usersNicknameList = new List<string>();
-                    foreach(UserForFriendList user in friendsListOnline)
-                        usersNicknameList.Add(user.nickname);
+                    foreach(UserForFriendList item in friendsListOnline)
+                        usersNicknameList.Add(item.nickname);
 
                     //Go online!!!
                     _signalR.proxy.Invoke("goOnline", SharedInfo.loggedUser.nickname, SharedInfo.loggedUser.admin, SharedInfo.loggedUser.token, usersNicknameList);
@@ -1165,10 +1174,10 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 //Update the UserForFriendList object with the messages
-                conversations.Single(x => x.nickname == friendName).messages = obj;
+                friendsList.Single(x => x.nickname == friendName).messages = obj;
                 
                 //We change the selected conversation to the one we just opened
-                selectedConversation = conversations.Single(x => x.nickname == friendName);
+                selectedConversation = friendsList.Single(x => x.nickname == friendName);
             });
         }
 
@@ -1189,18 +1198,15 @@ namespace CHAIR_UI.ViewModels
                 _sounds.PlayMessageSound();
 
                 string friend = message.sender;
-
-                try
+                //Basically, a Contains check
+                if (friendsList.Single(x => x.nickname == friend).messages == null)
                 {
-                    //Basically, a Contains check
-                    conversations.Single(x => x.nickname == friend).messages.Add(message);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    //If it throws this exception, it means that the conversations doesn't contain our conversation with that user
+                    //If it the messages are set to null, it means that the conversations doesn't contain our conversation with that user
                     openNewConversation(friend);
                     _view.OpenConversation();
                 }
+                else
+                    friendsList.Single(x => x.nickname == friend).messages.Add(message);
             });
         }
 
@@ -1278,18 +1284,6 @@ namespace CHAIR_UI.ViewModels
 
         private void openNewConversation(string friend)
         {
-            UserForFriendList user = null;
-
-            try
-            {
-                user = conversations.Single(x => x.nickname == friend);
-            }
-            catch (InvalidOperationException ex) { }
-
-            //Add the reference of the friendsList object to the conversations list
-            if (user == null)
-                conversations.Add(_friendsList.Single(x => x.nickname == friend));
-            
             _signalR.proxy.Invoke("getConversation", SharedInfo.loggedUser.nickname, friend, SharedInfo.loggedUser.token);
         }
         #endregion

@@ -168,22 +168,24 @@ namespace CHAIR_UI.ViewModels
         #region SignalR Methods
         private void updatedUserSuccessfully()
         {
-            _notificationsQueue.Enqueue("Updated successfully!");
+            Application.Current.Dispatcher.Invoke(delegate {
+                _notificationsQueue.Enqueue("Updated successfully!");
 
-            //Update the SharedInfo.loggedUser with the new info
-            SharedInfo.loggedUser.profileLocation = _profileEditLocation;
-            SharedInfo.loggedUser.profileDescription = _profileEditDescription;
-            SharedInfo.loggedUser.privateProfile = _profileEditPrivateProfile;
+                //Update the SharedInfo.loggedUser with the new info
+                SharedInfo.loggedUser.profileLocation = _profileEditLocation;
+                SharedInfo.loggedUser.profileDescription = _profileEditDescription;
+                SharedInfo.loggedUser.privateProfile = _profileEditPrivateProfile;
 
-            //If we have the password saved in the Registry, then save it
-            if (!string.IsNullOrWhiteSpace(SettingUtils.getPasswordRememberMe()))
-                SettingUtils.setPasswordRememberMe(_profileEditPassword);
+                //If we have the password saved in the Registry, then save it
+                if (!string.IsNullOrWhiteSpace(SettingUtils.getPasswordRememberMe()))
+                    SettingUtils.setPasswordRememberMe(_profileEditPassword);
 
-            //Reset the fields
-            _view.SetPassword("");
-            _canSaveProfileEdit = false;
-            _saveProfileEditCommand.RaiseCanExecuteChanged();
-            _resetProfileEditCommand.RaiseCanExecuteChanged();
+                //Reset the fields
+                _view.SetPassword("");
+                _canSaveProfileEdit = false;
+                _saveProfileEditCommand.RaiseCanExecuteChanged();
+                _resetProfileEditCommand.RaiseCanExecuteChanged();
+            });
         }
         #endregion
     }

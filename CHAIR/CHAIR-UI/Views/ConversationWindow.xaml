@@ -92,24 +92,24 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Listbox with all the users we are having conversations with -->
-                <ListBox Background="White" Grid.Column="0" Grid.RowSpan="3" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding conversations, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <!-- Listbox with all the users, and we only show those who have messages -->
+                <ListBox Background="White" Grid.Column="0" Grid.RowSpan="3" x:Name="ListBoxFriends" BorderBrush="DimGray" BorderThickness="0 0 1 0" ItemsSource="{Binding friendsList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding selectedConversation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="model:UserForFriendList">
                             <StackPanel Orientation="Horizontal">
                                 <!-- Profile picture (Visibility is collapsed if the user is playing a game) -->
                                 <Border BorderBrush="{Binding online, Converter={StaticResource OBTBConverter}, UpdateSourceTrigger=PropertyChanged}" BorderThickness="3" Width="55" Height="55" Margin="10 0 0 0" Visibility="{Binding gamePlaying, Converter={StaticResource NTVIConverter}, UpdateSourceTrigger=PropertyChanged}">
-                                    <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                    <Image Source="{Binding admin, Converter={StaticResource BTPPConverter}}"/>
                                 </Border>
 
                                 <!-- Profile picture (set depending on whether the user is admin or not) -->
                                 <Border BorderBrush="Purple"  BorderThickness="3" Width="55" Height="55" Margin="10 0 0 0" Visibility="{Binding gamePlaying, Converter={StaticResource NTVConverter}, UpdateSourceTrigger=PropertyChanged}">
-                                    <Image Source="{Binding Path=admin, Converter={StaticResource BTPPConverter}}"/>
+                                    <Image Source="{Binding admin, Converter={StaticResource BTPPConverter}}"/>
                                 </Border>
 
                                 <!-- Nickname -->
                                 <StackPanel Orientation="Vertical" Margin="10">
-                                    <TextBlock FontSize="25" Text="{Binding Path=nickname}" Foreground="{StaticResource FontColor}" />
+                                    <TextBlock FontSize="25" Text="{Binding nickname}" Foreground="{StaticResource FontColor}" />
                                     <TextBlock FontWeight="Medium" FontSize="20" Foreground="Purple" Visibility="{Binding gamePlaying, Converter={StaticResource NTVConverter}, UpdateSourceTrigger=PropertyChanged}">
                                         Playing <TextBlock FontWeight="ExtraBold" Text="{Binding gamePlaying, UpdateSourceTrigger=PropertyChanged}"/>
                                     </TextBlock>
@@ -117,6 +117,11 @@
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Visibility" Value="{Binding Path=messages, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NTVConverter}}"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                 </ListBox>
 
                 <!-- Messages -->

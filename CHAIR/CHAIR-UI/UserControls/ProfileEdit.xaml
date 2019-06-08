@@ -52,7 +52,7 @@
                         <materialDesign:PackIcon Kind="Hashtag" Height="40" Width="40" Margin="0 0 10 0"/>
                         <TextBlock Text="Change your current password" FontSize="25" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <PasswordBox FontSize="20" Margin="10" PasswordChanged="PasswordChanged" x:Name="PassBox" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" materialDesign:HintAssist.Hint="New password"/>
+                    <PasswordBox FontSize="20" Margin="10" PasswordChanged="PasswordChanged" x:Name="Pass" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" materialDesign:HintAssist.Hint="New password" MaxLength="50"/>
                 </StackPanel>
             </materialDesign:Card>
 

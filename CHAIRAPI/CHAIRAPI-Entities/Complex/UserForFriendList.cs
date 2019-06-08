@@ -27,7 +27,7 @@ namespace CHAIRAPI_Entidades.Complex
         public UserForFriendList()
         {
             this.relationship = new UserFriends();
-            this.messages = new List<Message>();
+            this.messages = null;
             this.nickname = "";
             this.online = false;
             this.admin = false;

@@ -67,7 +67,7 @@ namespace CHAIR_Entities.Complex
         public UserForFriendList()
         {
             this.relationship = new UserFriends();
-            this.messages = new ObservableCollection<Message>();
+            this.messages = null;
             this.nickname = "";
             this.online = false;
             this.admin = false;
