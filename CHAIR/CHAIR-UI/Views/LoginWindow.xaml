@@ -25,7 +25,10 @@
     <Window.BorderBrush>#613DC1</Window.BorderBrush>
     <Window.BorderThickness>1</Window.BorderThickness>
 
-    <materialDesign:DialogHost Identifier="LoginDialog" CloseOnClickAway="True">
+    <materialDesign:DialogHost Identifier="LoginDialog" CloseOnClickAway="True" IsOpen="{Binding dialogOpened, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+        <materialDesign:DialogHost.DialogContent>
+            <TextBlock Text="{Binding dialogText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15, 10, 15, 10"/>
+        </materialDesign:DialogHost.DialogContent>
         <StackPanel Orientation="Vertical" x:Name="RootWindow">
             <DockPanel x:Name="TitleBar" Height="30" MouseDown="TitleBar_MouseDown" Grid.Row="0">
 

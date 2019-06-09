@@ -12,10 +12,22 @@ namespace CHAIR_Entities.Complex
         private ObservableCollection<Message> _messages;
         public bool _online { get; set; }
         public string _gamePlaying { get; set; }
+        private UserFriends _relationship { get; set; }
 
-        public UserFriends relationship { get; set; }
         public bool admin { get; set; }
         public string nickname { get; set; }
+        public UserFriends relationship
+        {
+            get
+            {
+                return _relationship;
+            }
+            set
+            {
+                _relationship = value;
+                NotifyPropertyChanged("relationship");
+            }
+        }
         public ObservableCollection<Message> messages
         {
             get

@@ -89,26 +89,12 @@ namespace CHAIR_UI.Views
             }
         }
 
-        public async void ShowPopUp(string message)
+        public void ShowLogin()
         {
-            TextBlock view = new TextBlock()
-            {
-                Text = message,
-                Margin = new Thickness(15, 10, 15, 10)
-            };
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
 
-            await DialogHost.Show(view, "RegisterDialog");
-        }
-
-        public async void ShowPopUpAndLogin()
-        {
-            TextBlock view = new TextBlock()
-            {
-                Text = "Registered succesfully!",
-                Margin = new Thickness(15, 10, 15, 10)
-            };
-
-            await DialogHost.Show(view, "RegisterDialog", closingEvent);
+            this.Close();
         }
 
         private void closingEvent(object sender, DialogClosingEventArgs eventArgs)

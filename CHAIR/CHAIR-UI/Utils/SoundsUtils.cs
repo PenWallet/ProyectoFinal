@@ -22,10 +22,10 @@ namespace CHAIR_UI.Utils
             _messagePlayer = new MediaPlayer();
             _playingPlayer = new MediaPlayer();
 
-            _onlinePlayer.Open(new Uri(@"../../Assets/online.mp3", UriKind.Relative));
-            _offlinePlayer.Open(new Uri(@"../../Assets/offline.mp3", UriKind.Relative));
-            _messagePlayer.Open(new Uri(@"../../Assets/message.mp3", UriKind.Relative));
-            _playingPlayer.Open(new Uri(@"../../Assets/playing.mp3", UriKind.Relative));
+            _onlinePlayer.Open(new Uri(@"Assets/online.mp3", UriKind.Relative));
+            _offlinePlayer.Open(new Uri(@"Assets/offline.mp3", UriKind.Relative));
+            _messagePlayer.Open(new Uri(@"Assets/message.mp3", UriKind.Relative));
+            _playingPlayer.Open(new Uri(@"Assets/playing.mp3", UriKind.Relative));
 
             //Notification sounds are a bit too loud (default is 0.5, so lower than that)
             _offlinePlayer.Volume = 0.3;

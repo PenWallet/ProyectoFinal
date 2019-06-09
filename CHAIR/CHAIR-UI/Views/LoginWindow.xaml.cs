@@ -103,17 +103,6 @@ namespace CHAIR_UI
             }
         }
 
-        public async void ShowPopUp(string message)
-        {
-            TextBlock view = new TextBlock()
-            {
-                Text = message,
-                Margin = new Thickness(15, 10, 15, 10)
-            };
-
-            await DialogHost.Show(view, "LoginDialog");
-        }
-
         public void SetPassword(string password)
         {
             Pass.Password = password;

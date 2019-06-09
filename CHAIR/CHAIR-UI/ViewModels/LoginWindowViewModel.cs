@@ -55,10 +55,38 @@ namespace CHAIR_UI.ViewModels
         private IBasicActionsLogin _view; //This allows me to close and minimize the view without breaking the MVVM pattern because it's an interface
         private bool _isNotLoadingLogin;
         private DelegateCommand _loginCommand;
+        private string _dialogText;
+        private bool _dialogOpened;
         #endregion
 
         #region Public properties
         public bool rememberMe { get; set; }
+        public string dialogText
+        {
+            get
+            {
+                return _dialogText;
+            }
+
+            set
+            {
+                _dialogText = value;
+                NotifyPropertyChanged("dialogText");
+            }
+        }
+        public bool dialogOpened
+        {
+            get
+            {
+                return _dialogOpened;
+            }
+
+            set
+            {
+                _dialogOpened = value;
+                NotifyPropertyChanged("dialogOpened");
+            }
+        }
         public bool isNotLoadingLogin
         {
             get
@@ -232,7 +260,12 @@ namespace CHAIR_UI.ViewModels
             Application.Current.Dispatcher.Invoke(delegate {
                 //If the object is null, it means there is no ban, and the Unauthorized comes from an incorrect login (username or password)
                 if(ban == null)
-                    _view.ShowPopUp("The username or password you introduced is incorrect! Please try again.");
+                {
+                    //_view.ShowPopUp("The username or password you introduced is incorrect! Please try again.");
+
+                    dialogText = "The username or password you introduced is incorrect! Please try again.";
+                    dialogOpened = true;
+                }
                 else
                 {
                     string str = "";
@@ -240,7 +273,9 @@ namespace CHAIR_UI.ViewModels
                     str += $"You are banned until {ban.bannedUntil}.\n";
                     str += $"Reason: {ban.banReason}";
 
-                    _view.ShowPopUp(str);
+                    //_view.ShowPopUp(str);
+                    dialogText = str;
+                    dialogOpened = true;
                 }
 
                 isNotLoadingLogin = true;

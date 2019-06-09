@@ -1091,6 +1091,7 @@ namespace CHAIR_UI.ViewModels
                         user = friendsList.Single(x => x.nickname == item.nickname);
                         user.online = item.online;
                         user.gamePlaying = item.gamePlaying;
+                        user.relationship = item.relationship;
                     }
                     catch (InvalidOperationException ex) { friendsList.Add(item); };
                 }

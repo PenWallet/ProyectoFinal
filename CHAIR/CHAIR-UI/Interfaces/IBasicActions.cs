@@ -8,7 +8,6 @@ namespace CHAIR_UI.Interfaces
 {
     public interface IBasicActions
     {
-        void ShowPopUp(string message);
         void OpenWindow(string window);
         void Close();
         void Maximize();

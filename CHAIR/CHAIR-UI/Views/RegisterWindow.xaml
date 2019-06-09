@@ -18,9 +18,9 @@
     <Window.BorderBrush>#613DC1</Window.BorderBrush>
     <Window.BorderThickness>1</Window.BorderThickness>
 
-    <materialDesign:DialogHost Identifier="RegisterDialog" CloseOnClickAway="True" IsOpen="{Binding dialogOpened, Mode=TwoWay}">
+    <materialDesign:DialogHost Identifier="RegisterDialog" CloseOnClickAway="True" IsOpen="{Binding dialogOpened, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
         <materialDesign:DialogHost.DialogContent>
-            <TextBlock Text="{Binding dialogText, Mode=TwoWay}" Margin="15, 10, 15, 10"/>
+            <TextBlock Text="{Binding dialogText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15, 10, 15, 10"/>
         </materialDesign:DialogHost.DialogContent>
         <StackPanel Orientation="Vertical" x:Name="RootWindow">
             <DockPanel x:Name="TitleBar" Height="30" MouseDown="TitleBar_MouseDown" Grid.Row="0">
@@ -95,7 +95,7 @@
 
                     <!-- Private profile -->
                     <materialDesign:PackIcon Kind="Lock" Grid.Row="8" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Width="30" Margin="0 0 10 0"/>
-                    <CheckBox Content="Set profile to private?" IsChecked="{Binding privateProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" Grid.Row="8" Grid.Column="1" FontSize="15" Margin="5, 5, 0, 0"/>
+                    <CheckBox Content="Set profile to private?" FontSize="15" IsChecked="{Binding privateProfile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="8" Grid.Column="1"  Margin="5, 5, 0, 0"/>
 
                     <!-- Register button -->
                     <Button Content="Register" Command="{Binding registerCommand}" Height="40" Grid.Row="12" Grid.Column="1" FontSize="20" Foreground="Black" Background="{StaticResource PastelGreen}" Margin="10, 10, 0, 0" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding loadingRegister, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:ButtonProgressAssist.IsIndeterminate="True"/>

@@ -8,6 +8,6 @@ namespace CHAIR_UI.Interfaces
 {
     public interface IBasicActionsRegister : IBasicActions
     {
-        void ShowPopUpAndLogin();
+        void ShowLogin();
     }
 }

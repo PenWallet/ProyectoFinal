@@ -28,6 +28,7 @@ namespace CHAIR_UI.ViewModels
             _view = view;
             _signalR = SignalRHubsConnection.loginHub;
             maximumDate = DateTime.Now;
+            _goToLoginOnDialogClose = false;
 
             _signalR.proxy.On("registerSuccessful", registerSuccessful);
             _signalR.proxy.On("registerUserTaken", registerUserTaken);
@@ -52,10 +53,45 @@ namespace CHAIR_UI.ViewModels
         private DelegateCommand _registerCommand;
         private SignalRConnection _signalR;
         private bool _loadingRegister;
+        private string _dialogText;
+        private bool _dialogOpened;
+        private bool _goToLoginOnDialogClose;
         #endregion
 
         #region Public properties
         public DateTime maximumDate { get; set; }
+        public string dialogText
+        {
+            get
+            {
+                return _dialogText;
+            }
+
+            set
+            {
+                _dialogText = value;
+                NotifyPropertyChanged("dialogText");
+            }
+        }
+        public bool dialogOpened
+        {
+            get
+            {
+                return _dialogOpened;
+            }
+
+            set
+            {
+                _dialogOpened = value;
+                NotifyPropertyChanged("dialogOpened");
+
+                if (!value && _goToLoginOnDialogClose)
+                {
+                    _goToLoginOnDialogClose = false;
+                    _view.ShowLogin();
+                }
+            }
+        }
         public bool loadingRegister
         {
             get
@@ -67,7 +103,7 @@ namespace CHAIR_UI.ViewModels
             {
                 _loadingRegister = value;
                 NotifyPropertyChanged("loadingRegister");
-                _registerCommand.RaiseCanExecuteChanged();
+                _registerCommand?.RaiseCanExecuteChanged();
             }
         }
         public DelegateCommand closeCommand
@@ -323,7 +359,7 @@ namespace CHAIR_UI.ViewModels
                 wrongUsername = true;
             }
 
-            if(!Regex.Match(_password, @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$").Success)
+            if(!Regex.Match(_password, @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#/\·~?.&])[A-Za-z\d@$!·%~/\*#.?&]{8,}$").Success)
             {
                 errorsList.Add("The password must be at least 8 characters long, contain one letter, one number and one special character!");
                 wrongPassword = true;
@@ -365,17 +401,19 @@ namespace CHAIR_UI.ViewModels
         {
             Application.Current.Dispatcher.Invoke(delegate {
                 //Show a pop up
-                _view.ShowPopUpAndLogin();
-
+                dialogText = "Registered succesfully!";
+                dialogOpened = true;
                 loadingRegister = false;
+                _goToLoginOnDialogClose = true;
             });
         }
 
         private void registerUserTaken()
         {
             Application.Current.Dispatcher.Invoke(delegate {
-                _view.ShowPopUp("That username is already taken!");
-
+                //_view.ShowPopUp("That username is already taken!");
+                dialogText = "That username is already taken!";
+                dialogOpened = true;
                 loadingRegister = false;
             });
         }
@@ -388,7 +426,8 @@ namespace CHAIR_UI.ViewModels
                 str += $"You are banned until {ban.bannedUntil}.\n";
                 str += $"Reason: {ban.banReason}";
 
-                _view.ShowPopUp(str);
+                dialogText = str;
+                dialogOpened = true;
 
                 loadingRegister = false;
             });
