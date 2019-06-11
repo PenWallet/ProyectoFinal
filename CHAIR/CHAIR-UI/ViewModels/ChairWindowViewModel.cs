@@ -134,6 +134,9 @@ namespace CHAIR_UI.ViewModels
         private string _gameBeingUnzipped { get; set; }
         private string _gameBeingPlayed { get; set; }
         private int _downloadUnzipProgress { get; set; }
+        private long _zipTotalBytes { get; set; }
+        private long _zipTotalBytesLeft { get; set; }
+        private long _zipLastValue { get; set; }
         private Process _gameProcess { get; set; }
         private SoundsUtils _sounds { get; set; }
         private bool _canSeeProfile { get; set; } //Variable used to know whether the user can see another user's profile or not (based on that user's private profile option and whether the current user is admin or not)
@@ -1297,36 +1300,66 @@ namespace CHAIR_UI.ViewModels
 
         private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            gameBeingUnzipped = gameBeingDownloaded;
-            downloadUnzipProgress = 0;
-            gameBeingDownloaded = null;
+            Application.Current.Dispatcher.Invoke(async delegate {
+                string _game = gameBeingDownloaded;
+                gameBeingUnzipped = gameBeingDownloaded;
+                downloadUnzipProgress = 0;
+                gameBeingDownloaded = null;
 
-            using (ZipFile zip = ZipFile.Read(SettingUtils.getTempDownloadFolder()+$"\\{gameBeingUnzipped}.zip"))
-            {
-                zip.ExtractProgress += new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
-                zip.ExtractAll(SettingUtils.getInstallingFolder(), ExtractExistingFileAction.OverwriteSilently);
-            }
+                await Task.Run(() =>
+                {
+                    using (ZipFile zip = ZipFile.Read(SettingUtils.getTempDownloadFolder() + $"\\{gameBeingUnzipped}.zip"))
+                    {
+                        _zipTotalBytes = 0;
+
+                        //First we have to add up the total size of the zip
+                        foreach(ZipEntry entry in zip)
+                            _zipTotalBytes += entry.UncompressedSize;
+
+                        _zipTotalBytesLeft = _zipTotalBytes;
+
+                        zip.ExtractProgress += new EventHandler<ExtractProgressEventArgs>(zip_ExtractProgress);
+                        zip.ExtractAll(SettingUtils.getInstallingFolder(), ExtractExistingFileAction.OverwriteSilently);
+                    }
+
+                    try
+                    {
+                        //Delete the temporary file
+                        File.Delete(SettingUtils.getTempDownloadFolder() + $"\\{_game}.zip");
+                    }
+                    catch (Exception ex) { }
+                }
+                );
+            });
         }
 
         private void zip_ExtractProgress(object sender, ExtractProgressEventArgs e)
         {
-            if (e.TotalBytesToTransfer > 0)
-            {
-                downloadUnzipProgress = Convert.ToInt32(100 * e.BytesTransferred / e.TotalBytesToTransfer);
-
-                if (e.BytesTransferred == e.TotalBytesToTransfer && gameBeingUnzipped != null)
+            Application.Current.Dispatcher.Invoke(delegate {
+                if (e.TotalBytesToTransfer > 0)
                 {
-                    notificationsQueue.Enqueue($"{gameBeingUnzipped} is now playable");
-                    //File.Delete(SettingUtils.getTempDownloadFolder() + $"\\{gameBeingUnzipped}.zip");
-                    gameBeingUnzipped = null;
-                    downloadUnzipProgress = 0;
-                    installedGames = SettingUtils.scanInstallingFolder();
+                    _zipTotalBytesLeft -= e.BytesTransferred - _zipLastValue;
 
-                    _downloadGameCommand.RaiseCanExecuteChanged();
-                    
-                    NotifyPropertyChanged("isDownloadButtonVisible");
+                    downloadUnzipProgress = Convert.ToInt32(100 - (100 * _zipTotalBytesLeft / _zipTotalBytes));
+
+                    if(e.BytesTransferred == e.TotalBytesToTransfer)
+                        _zipLastValue = 0;
+                    else
+                        _zipLastValue = e.BytesTransferred;
+
+                    if (_zipTotalBytesLeft == 0 && gameBeingUnzipped != null)
+                    {
+                        notificationsQueue.Enqueue($"{gameBeingUnzipped} is now playable");
+                        gameBeingUnzipped = null;
+                        downloadUnzipProgress = 0;
+                        installedGames = SettingUtils.scanInstallingFolder();
+
+                        _downloadGameCommand.RaiseCanExecuteChanged();
+
+                        NotifyPropertyChanged("isDownloadButtonVisible");
+                    }
                 }
-            }
+            });
         }
         #endregion
 
